@@ -109,7 +109,9 @@ Reads always merge stored data over defaults, so new fields added to `DEFAULT_SE
 
 ### Model
 
-`gemini-2.0-flash` with `responseMimeType: 'application/json'` and `temperature: 0.1`.
+`gemini-2.5-flash` with `responseMimeType: 'application/json'` and `temperature: 0.1`.
+
+> Note: `gemini-2.0-flash` was retired on 2026-03-03. `gemini-2.5-flash` is the current replacement (free tier: 10 RPM, 250–500 RPD).
 
 ### Prompt design
 
@@ -160,7 +162,7 @@ This corrects common LLM rounding errors where the stated calorie count doesn't 
 | JSON parse failure | `'PARSE_ERROR'` | Show manual fallback |
 | Other network/API error | `'API_ERROR: ...'` | Show error message |
 
-Rate limit detection checks both `err.status` (numeric) and `err.message` text for `'429'`, `'quota'`, `'rate limit'`, `'resource_exhausted'` — the Gemini SDK embeds HTTP status in the message string rather than always exposing it as a numeric property.
+Rate limit detection checks both `err.status` (numeric) and `err.message` text for `'resource_exhausted'` and `'quota exceeded'` — the Gemini SDK embeds HTTP status in the message string rather than always exposing it as a numeric property.
 
 ---
 

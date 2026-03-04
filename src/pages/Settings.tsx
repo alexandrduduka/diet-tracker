@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Eye, EyeOff, ExternalLink, Check } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { getSettings, saveSettings } from '../store/settings';
 import { db } from '../db';
 import { Button } from '../components/ui/button';
@@ -15,6 +16,7 @@ const LANGUAGES: AppLanguage[] = ['en', 'ru', 'cs', 'de', 'fr', 'es', 'uk'];
 
 export function Settings() {
   const { t, lang, setLang } = useLang();
+  const navigate = useNavigate();
   const [settings, setSettings] = useState(getSettings);
   const [goalStrings, setGoalStrings] = useState<Record<GoalKey, string>>(() => {
     const g = getSettings().goals;
@@ -79,7 +81,10 @@ export function Settings() {
   return (
     <div className="flex flex-col min-h-full pb-24">
       {/* Header */}
-      <div className="px-4 pt-12 pb-4 border-b border-[#3a3a2a]">
+      <div className="px-4 pt-12 pb-4 border-b border-[#3a3a2a] flex items-center gap-3">
+        <button onClick={() => navigate('/')} className="text-[#9a9680] hover:text-[#f0ede4] p-1">
+          ←
+        </button>
         <h1 className="text-xl font-bold text-[#f0ede4]">{t.settings}</h1>
       </div>
 

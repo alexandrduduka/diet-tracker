@@ -123,7 +123,7 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 
 ## Gemini Integration
 
-- Model: `gemini-2.0-flash`, `responseMimeType: 'application/json'`, `temperature: 0.1`
+- Model: `gemini-2.5-flash`, `responseMimeType: 'application/json'`, `temperature: 0.1`
 - Returns structured JSON: `{ foods[], confidence, notes }`
 - Post-processing: `validateAndFixCalories` recalculates if LLM calories are >10% off from macros
 - Error detection checks both `err.status` AND `err.message` text (SDK embeds status in message string)
@@ -207,7 +207,8 @@ New test files go alongside source in `src/**/*.test.ts`.
 
 - HashRouter over BrowserRouter: Cloudflare Pages serves a single static file, no server routing
 - No auth: single-user, personal device app — intentional
-- Gemini free tier: 1,500 req/day, 15 RPM — sufficient for personal use
+- Gemini free tier (gemini-2.5-flash): ~250–500 req/day, 10 RPM — sufficient for personal use
+- gemini-2.0-flash was retired 2026-03-03; use gemini-2.5-flash going forward
 - `llmConfidence: 'manual'` is a valid value (used when user logs macros by hand, not in the union type — works fine at runtime)
 - Rate limit error detection: must check `err.message` text, not just `err.status` — Gemini SDK embeds HTTP status in message
 - `sharp` is already available in node_modules (pulled in transitively) — no need to install separately for icon generation

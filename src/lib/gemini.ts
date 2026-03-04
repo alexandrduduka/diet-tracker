@@ -50,7 +50,7 @@ export async function parseMealDescription(userInput: string, lang: AppLanguage 
 
   const client = new GoogleGenerativeAI(key);
   const model = client.getGenerativeModel({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     generationConfig: {
       responseMimeType: 'application/json',
       temperature: 0.1,
@@ -63,12 +63,16 @@ export async function parseMealDescription(userInput: string, lang: AppLanguage 
   try {
     result = await model.generateContent(userInput);
   } catch (err: any) {
+    console.error('[Gemini] raw error:', err);
     const status = err?.status ?? err?.statusCode ?? err?.httpErrorCode;
     const msg = (err?.message ?? '').toLowerCase();
-    if (status === 429 || msg.includes('429') || msg.includes('quota') || msg.includes('rate limit') || msg.includes('resource_exhausted')) {
+    if (status === 429 || msg.includes('resource_exhausted') || (msg.includes('quota') && msg.includes('exceeded'))) {
       throw new Error('RATE_LIMIT');
     }
-    if (status === 403 || msg.includes('api key') || msg.includes('api_key') || msg.includes('invalid key')) {
+    if (status === 400 && (msg.includes('api key') || msg.includes('api_key') || msg.includes('invalid key') || msg.includes('invalid argument'))) {
+      throw new Error('INVALID_API_KEY');
+    }
+    if (status === 403 || msg.includes('api_key_invalid') || msg.includes('permission_denied')) {
       throw new Error('INVALID_API_KEY');
     }
     throw new Error(`API_ERROR: ${err?.message ?? 'Unknown error'}`);

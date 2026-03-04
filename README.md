@@ -22,7 +22,7 @@ A personal nutrition tracking PWA — log meals with AI, track macros, and monit
 
 1. Go to [aistudio.google.com](https://aistudio.google.com) and sign in with a Google account
 2. Click **Get API key** → **Create API key**
-3. Copy the key (free tier: 1,500 requests/day, 15 RPM)
+3. Copy the key (free tier: ~250–500 requests/day, 10 RPM)
 
 ### 2. Open the app and configure
 

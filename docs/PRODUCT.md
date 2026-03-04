@@ -33,7 +33,7 @@ Look for the install icon in the browser's address bar and click it.
 
 ### Get a free Gemini API key
 
-The AI meal logging feature requires a Google Gemini API key. The free tier allows 1,500 requests per day (15 per minute), which is more than enough for personal use.
+The AI meal logging feature requires a Google Gemini API key. The free tier allows ~250–500 requests per day (10 per minute), which is sufficient for personal use.
 
 1. Go to https://aistudio.google.com
 2. Sign in with your Google account
@@ -195,7 +195,7 @@ The app shell (all HTML/CSS/JS) is cached by the service worker on first load, s
 
 ## Troubleshooting
 
-**"API quota exceeded"** — you've hit the Gemini free tier rate limit (15 requests/minute) or daily limit (1,500/day). Wait a minute and try again, or use manual logging.
+**"API quota exceeded"** — you've hit the Gemini free tier rate limit (10 requests/minute) or daily limit (~250–500/day). Wait a minute and try again, or use manual logging.
 
 **"Invalid API key"** — the key was entered incorrectly, or has been deleted in Google AI Studio. Go to Settings and re-enter a valid key.
 

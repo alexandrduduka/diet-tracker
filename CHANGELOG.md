@@ -8,6 +8,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+- Migrated from `gemini-2.0-flash` (retired 2026-03-03) to `gemini-2.5-flash`
+- Tightened rate-limit error detection to avoid false positives
+- Back button added to Settings screen
+- Improved fallback error message to surface raw API error text for easier debugging
+
 ---
 
 ## [1.0.0] — 2026-03-04
@@ -17,7 +23,7 @@ Initial public release.
 ### Added
 
 **Core features**
-- AI meal logging via Google Gemini 2.0 Flash — describe what you ate in plain text and get structured macro breakdown
+- AI meal logging via Google Gemini 2.5 Flash — describe what you ate in plain text and get structured macro breakdown
 - Manual meal logging fallback — enter macros by hand when offline or without an API key
 - Daily dashboard with calorie ring (SVG donut) and per-macro progress bars vs. configurable goals
 - Meal history with week selector and daily breakdowns

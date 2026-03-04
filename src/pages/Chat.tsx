@@ -57,7 +57,7 @@ export function Chat() {
       setPendingMeal(parsed);
       setMessages((m) => [...m, { role: 'result', parsed }]);
     } catch (err: any) {
-      let errMsg = 'Something went wrong. You can log manually below.';
+      let errMsg = `Something went wrong: ${err?.message ?? 'unknown'}. You can log manually below.`;
       const msg: string = err?.message ?? '';
       if (msg === 'NO_API_KEY') {
         errMsg = t.noApiKey;
