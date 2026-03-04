@@ -89,6 +89,17 @@ export interface Translations {
   deleteEverything: string;
   language: string;
 
+  // API key setup wizard (shown inline in Chat when no key is set)
+  apiKeySetupTitle: string;
+  apiKeySetupFree: string;
+  apiKeyOpenStudio: string;
+  apiKeyOnceThereTitle: string;
+  apiKeyStep1: string;
+  apiKeyStep2: string;
+  apiKeyStep3: string;
+  apiKeyStep4: string;
+  apiKeySaveAndContinue: string;
+
   // Analytics
   analytics: string;
   nutrition: string;
@@ -186,6 +197,16 @@ const en: Translations = {
   deleteEverything: 'Delete everything',
   language: 'Language',
 
+  apiKeySetupTitle: 'AI meal logging needs a Google API key',
+  apiKeySetupFree: "It's free and takes about 30 seconds to set up.",
+  apiKeyOpenStudio: 'Open Google AI Studio',
+  apiKeyOnceThereTitle: 'Once there:',
+  apiKeyStep1: 'Sign in with any Google account',
+  apiKeyStep2: 'Tap "Create API key"',
+  apiKeyStep3: 'Copy the key (it starts with AIza)',
+  apiKeyStep4: 'Paste it below and tap Save',
+  apiKeySaveAndContinue: 'Save & continue',
+
   analytics: 'Analytics',
   nutrition: 'Nutrition',
   body: 'Body',
@@ -281,6 +302,16 @@ const ru: Translations = {
   clearAllDataDesc: 'Это удалит все приёмы пищи и измерения. Это действие нельзя отменить.',
   deleteEverything: 'Удалить всё',
   language: 'Язык',
+
+  apiKeySetupTitle: 'Для ИИ-записи нужен Google API-ключ',
+  apiKeySetupFree: 'Это бесплатно и займёт около 30 секунд.',
+  apiKeyOpenStudio: 'Открыть Google AI Studio',
+  apiKeyOnceThereTitle: 'Там нужно:',
+  apiKeyStep1: 'Войти через любой Google-аккаунт',
+  apiKeyStep2: 'Нажать «Create API key»',
+  apiKeyStep3: 'Скопировать ключ (начинается с AIza)',
+  apiKeyStep4: 'Вставить его ниже и нажать «Сохранить»',
+  apiKeySaveAndContinue: 'Сохранить и продолжить',
 
   analytics: 'Аналитика',
   nutrition: 'Питание',
@@ -378,6 +409,16 @@ const cs: Translations = {
   deleteEverything: 'Smazat vše',
   language: 'Jazyk',
 
+  apiKeySetupTitle: 'AI záznam potřebuje Google API klíč',
+  apiKeySetupFree: 'Je to zdarma a zabere asi 30 sekund.',
+  apiKeyOpenStudio: 'Otevřít Google AI Studio',
+  apiKeyOnceThereTitle: 'Tam je potřeba:',
+  apiKeyStep1: 'Přihlásit se libovolným Google účtem',
+  apiKeyStep2: 'Klepnout na „Create API key"',
+  apiKeyStep3: 'Zkopírovat klíč (začíná AIza)',
+  apiKeyStep4: 'Vložit ho níže a klepnout na Uložit',
+  apiKeySaveAndContinue: 'Uložit a pokračovat',
+
   analytics: 'Analytika',
   nutrition: 'Výživa',
   body: 'Tělo',
@@ -473,6 +514,16 @@ const de: Translations = {
   clearAllDataDesc: 'Löscht alle Mahlzeiten und Messungen dauerhaft. Kann nicht rückgängig gemacht werden.',
   deleteEverything: 'Alles löschen',
   language: 'Sprache',
+
+  apiKeySetupTitle: 'KI-Protokollierung benötigt einen Google API-Schlüssel',
+  apiKeySetupFree: 'Es ist kostenlos und dauert etwa 30 Sekunden.',
+  apiKeyOpenStudio: 'Google AI Studio öffnen',
+  apiKeyOnceThereTitle: 'Dort:',
+  apiKeyStep1: 'Mit einem beliebigen Google-Konto anmelden',
+  apiKeyStep2: 'Auf „Create API key" tippen',
+  apiKeyStep3: 'Den Schlüssel kopieren (beginnt mit AIza)',
+  apiKeyStep4: 'Hier einfügen und Speichern tippen',
+  apiKeySaveAndContinue: 'Speichern & fortfahren',
 
   analytics: 'Analytik',
   nutrition: 'Ernährung',
@@ -570,6 +621,16 @@ const fr: Translations = {
   deleteEverything: 'Tout supprimer',
   language: 'Langue',
 
+  apiKeySetupTitle: "L'enregistrement IA nécessite une clé API Google",
+  apiKeySetupFree: "C'est gratuit et prend environ 30 secondes.",
+  apiKeyOpenStudio: 'Ouvrir Google AI Studio',
+  apiKeyOnceThereTitle: 'Une fois là :',
+  apiKeyStep1: 'Connectez-vous avec n\'importe quel compte Google',
+  apiKeyStep2: 'Appuyez sur « Create API key »',
+  apiKeyStep3: 'Copiez la clé (commence par AIza)',
+  apiKeyStep4: 'Collez-la ci-dessous et appuyez sur Enregistrer',
+  apiKeySaveAndContinue: 'Enregistrer & continuer',
+
   analytics: 'Analytique',
   nutrition: 'Nutrition',
   body: 'Corps',
@@ -666,6 +727,16 @@ const es: Translations = {
   deleteEverything: 'Eliminar todo',
   language: 'Idioma',
 
+  apiKeySetupTitle: 'El registro con IA necesita una clave API de Google',
+  apiKeySetupFree: 'Es gratis y tarda unos 30 segundos en configurarse.',
+  apiKeyOpenStudio: 'Abrir Google AI Studio',
+  apiKeyOnceThereTitle: 'Una vez allí:',
+  apiKeyStep1: 'Inicia sesión con cualquier cuenta de Google',
+  apiKeyStep2: 'Toca "Create API key"',
+  apiKeyStep3: 'Copia la clave (empieza con AIza)',
+  apiKeyStep4: 'Pégala abajo y toca Guardar',
+  apiKeySaveAndContinue: 'Guardar y continuar',
+
   analytics: 'Analítica',
   nutrition: 'Nutrición',
   body: 'Cuerpo',
@@ -761,6 +832,16 @@ const uk: Translations = {
   clearAllDataDesc: 'Це назавжди видалить усі прийоми їжі та вимірювання. Скасувати неможливо.',
   deleteEverything: 'Видалити все',
   language: 'Мова',
+
+  apiKeySetupTitle: 'ІІ-запис потребує Google API-ключа',
+  apiKeySetupFree: 'Це безкоштовно і займе близько 30 секунд.',
+  apiKeyOpenStudio: 'Відкрити Google AI Studio',
+  apiKeyOnceThereTitle: 'Там потрібно:',
+  apiKeyStep1: 'Увійти з будь-якого Google-акаунту',
+  apiKeyStep2: 'Натиснути «Create API key»',
+  apiKeyStep3: 'Скопіювати ключ (починається з AIza)',
+  apiKeyStep4: 'Вставити нижче і натиснути Зберегти',
+  apiKeySaveAndContinue: 'Зберегти та продовжити',
 
   analytics: 'Аналітика',
   nutrition: 'Харчування',

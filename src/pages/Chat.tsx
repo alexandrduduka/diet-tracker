@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff } from 'lucide-react';
 import { parseMealDescription, type ParsedMeal } from '../lib/gemini';
 import { sumMacros } from '../lib/nutrition';
 import { db } from '../db';
@@ -10,12 +10,14 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useLang } from '../store/langContext';
+import { saveSettings } from '../store/settings';
 
 type ChatMessage =
   | { role: 'assistant'; text: string }
   | { role: 'user'; text: string }
   | { role: 'result'; parsed: ParsedMeal }
-  | { role: 'error'; text: string };
+  | { role: 'error'; text: string }
+  | { role: 'setup'; retryText: string };
 
 export function Chat() {
   const { t, lang } = useLang();
@@ -27,6 +29,8 @@ export function Chat() {
   const [pendingMeal, setPendingMeal] = useState<ParsedMeal | null>(null);
   const [showManual, setShowManual] = useState(false);
   const [manualFields, setManualFields] = useState({ name: '', calories: '', protein: '', fat: '', carbs: '' });
+  const [setupKey, setSetupKey] = useState('');
+  const [showSetupKey, setShowSetupKey] = useState(false);
   const isOnline = useOnlineStatus();
   const navigate = useNavigate();
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -60,7 +64,9 @@ export function Chat() {
       let errMsg = `Something went wrong: ${err?.message ?? 'unknown'}. You can log manually below.`;
       const msg: string = err?.message ?? '';
       if (msg === 'NO_API_KEY') {
-        errMsg = t.noApiKey;
+        setMessages((m) => [...m, { role: 'setup', retryText: userText }]);
+        setLoading(false);
+        return;
       } else if (msg === 'INVALID_API_KEY') {
         errMsg = t.invalidApiKey;
       } else if (msg === 'RATE_LIMIT') {
@@ -90,6 +96,35 @@ export function Chat() {
     });
     setPendingMeal(null);
     navigate('/');
+  }
+
+  async function handleSetupSave(retryText: string) {
+    const trimmed = setupKey.trim();
+    if (!trimmed) return;
+    saveSettings({ geminiApiKey: trimmed });
+    window.dispatchEvent(new Event('dtk:settings-changed'));
+    // Remove the setup card and re-send the original message
+    setMessages((m) => m.filter((msg) => msg.role !== 'setup'));
+    setSetupKey('');
+    setInput('');
+    setLoading(true);
+    setMessages((m) => [...m, { role: 'user', text: retryText }]);
+    try {
+      const parsed = await parseMealDescription(retryText, lang);
+      setPendingMeal(parsed);
+      setMessages((m) => [...m, { role: 'result', parsed }]);
+    } catch (err: any) {
+      const msg: string = err?.message ?? '';
+      let errMsg = `Something went wrong: ${msg || 'unknown'}. You can log manually below.`;
+      if (msg === 'INVALID_API_KEY') errMsg = t.invalidApiKey;
+      else if (msg === 'RATE_LIMIT') errMsg = t.rateLimit;
+      else if (msg === 'PARSE_ERROR') errMsg = t.parseError;
+      else if (msg.startsWith('API_ERROR:')) errMsg = `API error: ${msg.slice(10).trim()}`;
+      setMessages((m) => [...m, { role: 'error', text: errMsg }]);
+      setShowManual(true);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function saveManual() {
@@ -148,6 +183,57 @@ export function Chat() {
               <div key={i} className="flex gap-2 items-start">
                 <AlertCircle className="w-5 h-5 text-[#d4a24c] shrink-0 mt-0.5" />
                 <div className="bg-[#3a2a1a] border border-[#5a3a20] rounded-2xl px-4 py-3 max-w-[85%] text-sm text-[#d4a24c]">{msg.text}</div>
+              </div>
+            );
+          }
+          if (msg.role === 'setup') {
+            return (
+              <div key={i} className="flex gap-2">
+                <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
+                <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-4 max-w-[95%] w-full text-sm space-y-3">
+                  <p className="font-semibold text-[#f0ede4]">{t.apiKeySetupTitle}</p>
+                  <p className="text-[#9a9680] text-xs">{t.apiKeySetupFree}</p>
+                  <a
+                    href="https://aistudio.google.com/app/apikey"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#7cb87a] text-[#18180f] font-medium text-sm hover:bg-[#8fce8d] active:bg-[#6aa368]"
+                  >
+                    {t.apiKeyOpenStudio} <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  <div className="space-y-1.5">
+                    <p className="text-xs font-medium text-[#c8c4b0]">{t.apiKeyOnceThereTitle}</p>
+                    {([t.apiKeyStep1, t.apiKeyStep2, t.apiKeyStep3, t.apiKeyStep4] as string[]).map((step, si) => (
+                      <p key={si} className="text-xs text-[#9a9680]">
+                        <span className="text-[#5a5a44] mr-1.5">{si + 1}.</span>{step}
+                      </p>
+                    ))}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type={showSetupKey ? 'text' : 'password'}
+                      placeholder="AIza..."
+                      value={setupKey}
+                      onChange={(e) => setSetupKey(e.target.value)}
+                      className="w-full bg-[#1a1a12] border border-[#3a3a2a] rounded-xl px-3 py-2.5 pr-10 text-sm text-[#f0ede4] placeholder:text-[#5a5a44] focus:outline-none focus:ring-2 focus:ring-[#7cb87a]/60"
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9a9680] hover:text-[#c8c4b0]"
+                      onClick={() => setShowSetupKey((v) => !v)}
+                    >
+                      {showSetupKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    disabled={!setupKey.trim() || loading}
+                    onClick={() => handleSetupSave(msg.retryText)}
+                  >
+                    {t.apiKeySaveAndContinue}
+                  </Button>
+                </div>
               </div>
             );
           }
