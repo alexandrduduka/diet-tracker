@@ -9,7 +9,7 @@ import { Articles } from './pages/Articles';
 import { ArticleDetail } from './pages/ArticleDetail';
 import { BottomNav } from './components/BottomNav';
 
-const HIDE_NAV_ROUTES = ['/chat', '/settings'];
+const HIDE_NAV_ROUTES = ['/settings'];
 
 function AppShell() {
   const location = useLocation();

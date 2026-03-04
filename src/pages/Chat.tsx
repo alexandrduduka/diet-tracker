@@ -271,7 +271,7 @@ export function Chat() {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col min-h-screen pb-20">
       {/* Header */}
       <div className="px-4 pt-12 pb-3 border-b border-[#3a3a2a] flex items-center gap-3">
         <button onClick={() => navigate('/')} className="text-[#9a9680] hover:text-[#f0ede4] p-1">

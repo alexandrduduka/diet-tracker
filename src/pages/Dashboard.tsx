@@ -94,17 +94,19 @@ export function Dashboard() {
         )}
       </div>
 
-      {/* FAB */}
-      <button
-        onClick={() => navigate('/chat')}
-        aria-label="Log a meal"
-        className="fixed bottom-24 right-4 w-14 h-14 rounded-full bg-[#7cb87a] shadow-lg shadow-[#7cb87a]/30 flex items-center justify-center active:scale-95 transition-transform hover:bg-[#8fce8d] relative"
-      >
-        {meals?.length === 0 && (
-          <span className="absolute inset-0 rounded-full bg-[#7cb87a]/40 animate-ping" />
-        )}
-        <Plus className="w-6 h-6 text-[#18180f] relative z-10" aria-hidden="true" />
-      </button>
+      {/* FAB — wrapper constrains to the same max-w-md column as the app */}
+      <div className="fixed bottom-24 inset-x-0 max-w-md mx-auto pointer-events-none">
+        <button
+          onClick={() => navigate('/chat')}
+          aria-label="Log a meal"
+          className="absolute right-4 bottom-0 w-14 h-14 rounded-full bg-[#7cb87a] shadow-lg shadow-[#7cb87a]/30 flex items-center justify-center active:scale-95 transition-transform hover:bg-[#8fce8d] relative pointer-events-auto"
+        >
+          {meals?.length === 0 && (
+            <span className="absolute inset-0 rounded-full bg-[#7cb87a]/40 animate-ping" />
+          )}
+          <Plus className="w-6 h-6 text-[#18180f] relative z-10" aria-hidden="true" />
+        </button>
+      </div>
     </div>
   );
 }
