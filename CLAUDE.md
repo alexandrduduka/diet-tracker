@@ -123,11 +123,22 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 
 ## Gemini Integration
 
-- Model: `gemini-2.5-flash`, `responseMimeType: 'application/json'`, `temperature: 0.1`
-- Returns structured JSON: `{ foods[], confidence, notes }`
+- Model: `gemini-2.5-flash`, `responseMimeType: 'application/json'`
+- `temperature: 0.1` (no context) / `0.4` (with coaching context), `maxOutputTokens: 2048`
+- Returns structured JSON: `{ foods[], confidence, notes?, message? }`
+- `message` is a 2–3 sentence coaching comment in the app language; only present when `MealContext` is passed
+- `MealContext` carries today's `goals` + `consumed` macros — injected into system prompt as remaining budget
 - Post-processing: `validateAndFixCalories` recalculates if LLM calories are >10% off from macros
 - Error detection checks both `err.status` AND `err.message` text (SDK embeds status in message string)
 - Error types thrown: `'NO_API_KEY'` | `'RATE_LIMIT'` | `'INVALID_API_KEY'` | `'PARSE_ERROR'` | `'API_ERROR: ...'`
+- `maxOutputTokens` must stay ≥ 2048 — gemini-2.5-flash uses thinking tokens internally; lower values cause truncated JSON → PARSE_ERROR
+
+## Chat Page — Key Behaviours
+
+- **No API key**: shows inline setup wizard card instead of error. Card opens `aistudio.google.com/app/apikey`, accepts key inline, and retries the original message automatically.
+- **After save**: if `parsed.message` is present, appends a `'coach'` bubble and keeps the input open (no navigation). If no message, navigates to `/`.
+- **ChatMessage roles**: `'assistant' | 'user' | 'result' | 'error' | 'setup' | 'coach'`
+- `'assistant'` and `'coach'` render identically (green avatar bubble).
 
 ## Internationalization
 
@@ -212,3 +223,15 @@ New test files go alongside source in `src/**/*.test.ts`.
 - `llmConfidence: 'manual'` is a valid value (used when user logs macros by hand, not in the union type — works fine at runtime)
 - Rate limit error detection: must check `err.message` text, not just `err.status` — Gemini SDK embeds HTTP status in message
 - `sharp` is already available in node_modules (pulled in transitively) — no need to install separately for icon generation
+- `maxOutputTokens: 1024` caused PARSE_ERROR for gemini-2.5-flash when coaching context was included — raised to 2048
+
+## Definition of Done (follow for every feature/fix)
+
+Every change — however small — must clear all of these before it is considered complete:
+
+1. **Tests pass**: `npm test` — all existing tests green. Add new tests for any new pure logic in `src/lib/`.
+2. **Build passes**: `npm run build` — zero TypeScript errors, clean Vite output.
+3. **Docs updated**: update this file (`CLAUDE.md`) for any architectural or behavioural change. Update `CHANGELOG.md` (Unreleased section). Update `docs/TECHNICAL.md` / `docs/PRODUCT.md` if the change affects documented architecture or user-facing features.
+4. **Committed**: `git add <specific files>` + `git commit` with a clear message. Never use `git add -A` or `git add .`.
+5. **Pushed**: `git push origin main`.
+6. **Deployed**: `npm run deploy` (or `npx wrangler pages deploy dist --project-name diet-tracker`).

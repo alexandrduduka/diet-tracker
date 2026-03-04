@@ -109,9 +109,12 @@ Reads always merge stored data over defaults, so new fields added to `DEFAULT_SE
 
 ### Model
 
-`gemini-2.5-flash` with `responseMimeType: 'application/json'` and `temperature: 0.1`.
+`gemini-2.5-flash` with `responseMimeType: 'application/json'`, `maxOutputTokens: 2048`.
 
-> Note: `gemini-2.0-flash` was retired on 2026-03-03. `gemini-2.5-flash` is the current replacement (free tier: 10 RPM, 250–500 RPD).
+- `temperature: 0.1` when no coaching context is provided
+- `temperature: 0.4` when `MealContext` is provided (allows more natural coaching phrasing)
+
+> Note: `gemini-2.0-flash` was retired on 2026-03-03. `gemini-2.5-flash` is the current replacement (free tier: 10 RPM, 250–500 RPD). Keep `maxOutputTokens` ≥ 2048 — this model uses internal thinking tokens, and lower values cause truncated JSON → PARSE_ERROR.
 
 ### Prompt design
 
@@ -130,7 +133,8 @@ A system prompt instructs the model to return a strict JSON schema:
     }
   ],
   "confidence": "high | medium | low",
-  "notes": "optional string"
+  "notes": "optional string",
+  "message": "optional coaching string (only when MealContext is supplied)"
 }
 ```
 
@@ -139,6 +143,15 @@ Rules embedded in the prompt:
 - When quantity is vague, assume typical portion and state it in `quantity`
 - `confidence: "high"` = explicit weight given; `"medium"` = typical portion; `"low"` = guesswork
 - Never refuse — always return best estimate
+
+### MealContext (coaching)
+
+When the caller provides a `MealContext`, the system prompt is extended with:
+- The user's daily goals (kcal / P / C / F)
+- Already consumed today
+- Remaining today (pre-calculated)
+
+The model is instructed to add a `message` field: 2–3 sentences of friendly, motivational coaching in the app language mentioning specific remaining budget figures. This context is assembled in `Chat.tsx` from `getGoals()` (localStorage) and a live Dexie reduce of today's `totalMacros`.
 
 ### Post-processing
 
@@ -154,15 +167,23 @@ This corrects common LLM rounding errors where the stated calorie count doesn't 
 
 ### Error handling
 
-| Error condition | Thrown as | UI message |
+| Error condition | Thrown as | UI behaviour |
 |---|---|---|
-| No API key in settings | `'NO_API_KEY'` | Prompt to go to Settings |
+| No API key in settings | `'NO_API_KEY'` | Inline setup wizard card in Chat |
 | HTTP 429 / quota / rate limit | `'RATE_LIMIT'` | Suggest manual logging or retry |
 | HTTP 403 / invalid key | `'INVALID_API_KEY'` | Prompt to check Settings |
 | JSON parse failure | `'PARSE_ERROR'` | Show manual fallback |
 | Other network/API error | `'API_ERROR: ...'` | Show error message |
 
 Rate limit detection checks both `err.status` (numeric) and `err.message` text for `'resource_exhausted'` and `'quota exceeded'` — the Gemini SDK embeds HTTP status in the message string rather than always exposing it as a numeric property.
+
+### API key setup wizard
+
+When `NO_API_KEY` is thrown, instead of a generic error the Chat page appends a `{ role: 'setup', retryText }` message. This renders as an assistant-style card with:
+- "Free, ~30 seconds" framing
+- A button that opens `https://aistudio.google.com/app/apikey` in a new tab
+- An inline key input with show/hide toggle
+- A "Save & continue" button that calls `saveSettings({ geminiApiKey })` and retries the original meal text automatically
 
 ---
 

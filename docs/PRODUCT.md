@@ -33,19 +33,22 @@ Look for the install icon in the browser's address bar and click it.
 
 ### Get a free Gemini API key
 
-The AI meal logging feature requires a Google Gemini API key. The free tier allows ~250–500 requests per day (10 per minute), which is sufficient for personal use.
+The AI meal logging feature requires a Google Gemini API key. It's **free** and takes about **30 seconds** to set up.
 
-1. Go to https://aistudio.google.com
-2. Sign in with your Google account
-3. Click **Get API key** in the left sidebar
-4. Click **Create API key** and copy it
+The easiest way: just type any meal in the Chat screen. If no key is configured, the app shows a step-by-step setup card right there — tap **Open Google AI Studio**, sign in, tap **Create API key**, copy it, paste it back in the app, and tap **Save & continue**. Your meal is sent automatically without you having to do anything else.
+
+Alternatively, you can set it up in advance:
+
+1. Go to https://aistudio.google.com/app/apikey
+2. Sign in with any Google account
+3. Tap **Create API key** and copy it (starts with `AIza`)
+4. Open the app → **Settings** → paste the key → **Save**
 
 ### Configure the app
 
-1. Open the app and tap the **gear icon** in the top right of the Dashboard (or navigate to Settings from the bottom bar)
-2. Paste your Gemini API key into the **API Key** field and tap Save
-3. Set your daily nutrition goals (calories, protein, fat, carbs) — defaults are 2000 kcal / 150g protein / 65g fat / 250g carbs
-4. Choose your preferred language
+1. Open **Settings** (gear icon on Dashboard or Settings tab)
+2. Set your daily nutrition goals (calories, protein, fat, carbs) — defaults are 2000 kcal / 150g protein / 65g fat / 250g carbs
+3. Choose your preferred language
 
 ---
 
@@ -72,7 +75,7 @@ The main screen shows your nutrition progress for today.
 
 ### Chat (Log Meal)
 
-The meal logging screen. Type a description of what you ate and the AI returns a structured breakdown.
+The meal logging screen. Type a description of what you ate and the AI returns a structured breakdown plus personalised coaching feedback.
 
 **How to describe meals:**
 
@@ -82,6 +85,7 @@ The meal logging screen. Type a description of what you ate and the AI returns a
 | `"200g grilled chicken breast"` | High confidence — explicit weight |
 | `"a bowl of pasta"` | Medium confidence — typical portion assumed |
 | `"homemade stew"` | Low confidence — estimated from generic recipe |
+| `"30g ham, 60g oatmeal"` | Two items parsed as separate entries in one meal |
 
 After the AI responds, you see:
 - Each food item with name, quantity, and macros
@@ -89,9 +93,13 @@ After the AI responds, you see:
 - Confidence level and any notes/assumptions
 - **Save** and **Discard** buttons
 
-Tapping **Save** adds the meal to today's log and returns to the Dashboard.
+Tapping **Save** adds the meal to today's log. A coaching message then appears showing how this meal fits your remaining daily budget — the input bar stays open so you can log another meal straight away without navigating back to the Dashboard.
 
-**Manual fallback** — if the AI call fails (no internet, rate limit, or no API key), a manual entry form appears where you can type in macros directly.
+**Coaching** — the AI knows your daily goals and what you've already eaten today. After each meal it tells you how many calories remain, whether you're on track for protein, and gives encouragement or a gentle warning if you're approaching a limit.
+
+**No API key** — if you haven't set up a key yet, a guided setup card appears instead of an error. It walks you through getting a free key from Google AI Studio and lets you paste it inline without leaving the Chat screen.
+
+**Manual fallback** — if the AI call fails (no internet, rate limit), a manual entry form appears where you can type in macros directly.
 
 **Offline mode** — when there's no internet connection, the AI input is replaced with a prompt to use manual logging.
 
