@@ -1,0 +1,78 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'>
+  <defs>
+    <linearGradient id='bgGrad' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0%' stop-color='#1e1e12'/>
+      <stop offset='100%' stop-color='#111109'/>
+    </linearGradient>
+    <linearGradient id='flameGrad' x1='0.5' y1='0' x2='0.5' y2='1'>
+      <stop offset='0%' stop-color='#f5c842'/>
+      <stop offset='55%' stop-color='#d4a24c'/>
+      <stop offset='100%' stop-color='#7cb87a'/>
+    </linearGradient>
+    <filter id='glow' x='-30%' y='-30%' width='160%' height='160%'>
+      <feGaussianBlur in='SourceGraphic' stdDeviation='10' result='blur'/>
+      <feMerge>
+        <feMergeNode in='blur'/>
+        <feMergeNode in='SourceGraphic'/>
+      </feMerge>
+    </filter>
+    <filter id='leafShadow' x='-20%' y='-20%' width='140%' height='140%'>
+      <feDropShadow dx='0' dy='4' stdDeviation='6' flood-color='#7cb87a' flood-opacity='0.4'/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width='512' height='512' rx='108' fill='url(#bgGrad)'/>
+  <rect x='6' y='6' width='500' height='500' rx='104' fill='none' stroke='#ffffff' stroke-width='1.5' stroke-opacity='0.06'/>
+
+  <!-- Ambient glow blobs -->
+  <ellipse cx='256' cy='290' rx='130' ry='80' fill='#7cb87a' opacity='0.07'/>
+  <ellipse cx='256' cy='210' rx='80' ry='60' fill='#d4a24c' opacity='0.10'/>
+
+  <!-- Flame / water drop shape -->
+  <path
+    d='M256 100
+       C256 100 178 178 174 256
+       C170 316 206 372 256 382
+       C306 372 342 316 338 256
+       C334 178 256 100 256 100Z'
+    fill='url(#flameGrad)'
+    filter='url(#glow)'
+  />
+
+  <!-- Inner specular highlight -->
+  <path
+    d='M242 148 C242 148 208 206 207 258 C206 292 218 316 232 330'
+    stroke='#ffffff'
+    stroke-width='10'
+    stroke-linecap='round'
+    fill='none'
+    opacity='0.22'
+  />
+  <circle cx='228' cy='172' r='11' fill='#ffffff' opacity='0.18'/>
+
+  <!-- Leaf crossing lower portion of drop -->
+  <path
+    d='M185 320 C210 290 252 282 314 306 C298 348 244 364 185 320Z'
+    fill='#4a9e48'
+    filter='url(#leafShadow)'
+  />
+  <!-- Leaf midrib -->
+  <path
+    d='M185 320 C222 308 268 306 314 306'
+    stroke='#8fce8d'
+    stroke-width='5'
+    stroke-linecap='round'
+    fill='none'
+    opacity='0.55'
+  />
+  <!-- Leaf vein -->
+  <path
+    d='M248 321 C264 315 280 312 298 308'
+    stroke='#c8f0c6'
+    stroke-width='3'
+    stroke-linecap='round'
+    fill='none'
+    opacity='0.3'
+  />
+</svg>
