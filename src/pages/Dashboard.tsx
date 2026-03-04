@@ -36,9 +36,10 @@ export function Dashboard() {
         </div>
         <button
           onClick={() => navigate('/settings')}
+          aria-label="Open settings"
           className="w-10 h-10 rounded-full bg-[#2e2e22] flex items-center justify-center text-[#9a9680] hover:text-[#f0ede4] hover:bg-[#3a3a2a]"
         >
-          <Settings className="w-5 h-5" />
+          <Settings className="w-5 h-5" aria-hidden="true" />
         </button>
       </div>
 
@@ -96,12 +97,13 @@ export function Dashboard() {
       {/* FAB */}
       <button
         onClick={() => navigate('/chat')}
+        aria-label="Log a meal"
         className="fixed bottom-24 right-4 w-14 h-14 rounded-full bg-[#7cb87a] shadow-lg shadow-[#7cb87a]/30 flex items-center justify-center active:scale-95 transition-transform hover:bg-[#8fce8d] relative"
       >
         {meals?.length === 0 && (
           <span className="absolute inset-0 rounded-full bg-[#7cb87a]/40 animate-ping" />
         )}
-        <Plus className="w-6 h-6 text-[#18180f] relative z-10" />
+        <Plus className="w-6 h-6 text-[#18180f] relative z-10" aria-hidden="true" />
       </button>
     </div>
   );

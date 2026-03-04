@@ -25,7 +25,14 @@ export function MacroBar({ label, value, goal, unit = 'g', color = '#7cb87a', an
           {Math.round(value)}<span className="text-[#5a5a44]">/{goal}{unit}</span>
         </span>
       </div>
-      <div className="h-2 rounded-full bg-[#2e2e22] overflow-hidden">
+      <div
+        className="h-2 rounded-full bg-[#2e2e22] overflow-hidden"
+        role="progressbar"
+        aria-valuenow={Math.round(value)}
+        aria-valuemin={0}
+        aria-valuemax={goal}
+        aria-label={`${label}: ${Math.round(value)} of ${goal}${unit}`}
+      >
         <div
           className={`h-full rounded-full transition-all duration-500 ${isNearGoal ? 'shadow-[0_0_6px_0_var(--glow-color)]' : ''}`}
           style={{

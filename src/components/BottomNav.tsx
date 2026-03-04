@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, MessageSquare, History, Ruler, BarChart2 } from 'lucide-react';
+import { Home, MessageSquare, History, Ruler, BarChart2, BookOpen } from 'lucide-react';
 import { useLang } from '../store/langContext';
 
 export function BottomNav() {
@@ -11,10 +11,14 @@ export function BottomNav() {
     { to: '/history', label: t.navHistory, icon: History },
     { to: '/measurements', label: t.navBody, icon: Ruler },
     { to: '/analytics', label: t.navCharts, icon: BarChart2 },
+    { to: '/articles', label: t.navArticles, icon: BookOpen },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#18180f]/95 backdrop-blur border-t border-[#3a3a2a] safe-bottom">
+    <nav
+      aria-label="Main navigation"
+      className="fixed bottom-0 left-0 right-0 z-40 bg-[#18180f]/95 backdrop-blur border-t border-[#3a3a2a] safe-bottom"
+    >
       <div className="flex">
         {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
           <NavLink
@@ -29,10 +33,13 @@ export function BottomNav() {
           >
             {({ isActive }) => (
               <>
-                <Icon className={`w-5 h-5 transition-transform duration-200 ${isActive ? 'scale-110' : 'scale-100'}`} />
+                <Icon
+                  aria-hidden="true"
+                  className={`w-5 h-5 transition-transform duration-200 ${isActive ? 'scale-110' : 'scale-100'}`}
+                />
                 <span className="text-[9px] font-medium">{label}</span>
                 {isActive && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#7cb87a] animate-scale-in" />
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#7cb87a] animate-scale-in" aria-hidden="true" />
                 )}
               </>
             )}

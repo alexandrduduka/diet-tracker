@@ -106,6 +106,15 @@ export interface Translations {
   photoRemove: string;
   takePhotoOrChoose: string;
 
+  // Articles
+  navArticles: string;
+  articlesTitle: string;
+  articlesSubtitle: string;
+  readMore: string;
+  minRead: string;
+  backToArticles: string;
+  articleNotFound: string;
+
   // Analytics
   analytics: string;
   nutrition: string;
@@ -218,6 +227,14 @@ const en: Translations = {
   apiKeyStep4: 'Paste it below and tap Save',
   apiKeySaveAndContinue: 'Save & continue',
 
+  navArticles: 'Learn',
+  articlesTitle: 'Nutrition Guides',
+  articlesSubtitle: 'Evidence-based articles on nutrition science',
+  readMore: 'Read article',
+  minRead: 'min read',
+  backToArticles: '← Articles',
+  articleNotFound: 'Article not found.',
+
   analytics: 'Analytics',
   nutrition: 'Nutrition',
   body: 'Body',
@@ -328,6 +345,14 @@ const ru: Translations = {
   apiKeyStep3: 'Скопировать ключ (начинается с AIza)',
   apiKeyStep4: 'Вставить его ниже и нажать «Сохранить»',
   apiKeySaveAndContinue: 'Сохранить и продолжить',
+
+  navArticles: 'Статьи',
+  articlesTitle: 'Статьи о питании',
+  articlesSubtitle: 'Научно обоснованные материалы о диетологии',
+  readMore: 'Читать статью',
+  minRead: 'мин. чтения',
+  backToArticles: '← Статьи',
+  articleNotFound: 'Статья не найдена.',
 
   analytics: 'Аналитика',
   nutrition: 'Питание',
@@ -440,6 +465,14 @@ const cs: Translations = {
   apiKeyStep4: 'Vložit ho níže a klepnout na Uložit',
   apiKeySaveAndContinue: 'Uložit a pokračovat',
 
+  navArticles: 'Články',
+  articlesTitle: 'Nutriční průvodci',
+  articlesSubtitle: 'Vědecky podložené články o výživě',
+  readMore: 'Číst článek',
+  minRead: 'min čtení',
+  backToArticles: '← Články',
+  articleNotFound: 'Článek nenalezen.',
+
   analytics: 'Analytika',
   nutrition: 'Výživa',
   body: 'Tělo',
@@ -550,6 +583,14 @@ const de: Translations = {
   apiKeyStep3: 'Den Schlüssel kopieren (beginnt mit AIza)',
   apiKeyStep4: 'Hier einfügen und Speichern tippen',
   apiKeySaveAndContinue: 'Speichern & fortfahren',
+
+  navArticles: 'Lernen',
+  articlesTitle: 'Ernährungsratgeber',
+  articlesSubtitle: 'Wissenschaftlich fundierte Artikel zur Ernährung',
+  readMore: 'Artikel lesen',
+  minRead: 'Min. Lesezeit',
+  backToArticles: '← Artikel',
+  articleNotFound: 'Artikel nicht gefunden.',
 
   analytics: 'Analytik',
   nutrition: 'Ernährung',
@@ -662,6 +703,14 @@ const fr: Translations = {
   apiKeyStep4: 'Collez-la ci-dessous et appuyez sur Enregistrer',
   apiKeySaveAndContinue: 'Enregistrer & continuer',
 
+  navArticles: 'Apprendre',
+  articlesTitle: 'Guides nutrition',
+  articlesSubtitle: 'Articles scientifiques sur la nutrition',
+  readMore: 'Lire l\'article',
+  minRead: 'min de lecture',
+  backToArticles: '← Articles',
+  articleNotFound: 'Article introuvable.',
+
   analytics: 'Analytique',
   nutrition: 'Nutrition',
   body: 'Corps',
@@ -773,6 +822,14 @@ const es: Translations = {
   apiKeyStep4: 'Pégala abajo y toca Guardar',
   apiKeySaveAndContinue: 'Guardar y continuar',
 
+  navArticles: 'Aprender',
+  articlesTitle: 'Guías de nutrición',
+  articlesSubtitle: 'Artículos científicos sobre nutrición',
+  readMore: 'Leer artículo',
+  minRead: 'min de lectura',
+  backToArticles: '← Artículos',
+  articleNotFound: 'Artículo no encontrado.',
+
   analytics: 'Analítica',
   nutrition: 'Nutrición',
   body: 'Cuerpo',
@@ -883,6 +940,14 @@ const uk: Translations = {
   apiKeyStep3: 'Скопіювати ключ (починається з AIza)',
   apiKeyStep4: 'Вставити нижче і натиснути Зберегти',
   apiKeySaveAndContinue: 'Зберегти та продовжити',
+
+  navArticles: 'Статті',
+  articlesTitle: 'Статті про харчування',
+  articlesSubtitle: 'Науково обґрунтовані матеріали про дієтологію',
+  readMore: 'Читати статтю',
+  minRead: 'хв читання',
+  backToArticles: '← Статті',
+  articleNotFound: 'Статтю не знайдено.',
 
   analytics: 'Аналітика',
   nutrition: 'Харчування',

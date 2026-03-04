@@ -34,6 +34,7 @@ export function MealCard({ meal, animationDelay = 0 }: MealCardProps) {
       <button
         className="w-full flex items-center justify-between p-4 text-left active:bg-[#2e2e22]"
         onClick={() => setExpanded((e) => !e)}
+        aria-expanded={expanded}
       >
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-[#f0ede4] truncate">{meal.rawInput}</p>

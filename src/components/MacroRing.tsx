@@ -31,10 +31,15 @@ export function MacroRing({
   return (
     <div className="flex flex-col items-center gap-2 animate-fade-in">
       <div
+        role="meter"
+        aria-valuenow={Math.round(value)}
+        aria-valuemin={0}
+        aria-valuemax={goal}
+        aria-label={`${label}: ${Math.round(value)} of ${goal} ${unit}`}
         className={`relative transition-all duration-500 ${glowClass}`}
         style={{ width: size, height: size }}
       >
-        <svg width={size} height={size} className="-rotate-90">
+        <svg width={size} height={size} className="-rotate-90" aria-hidden="true">
           <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={trackColor} strokeWidth={strokeWidth} />
           <circle
             cx={size / 2}
