@@ -41,9 +41,9 @@ function LogDrawer({ onClose, t }: { onClose: () => void; t: Translations }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end">
+    <div className="fixed inset-0 z-50 flex flex-col justify-end items-center">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative bg-[#242419] rounded-t-3xl border-t border-[#3a3a2a] px-4 pt-4 pb-8 safe-bottom max-h-[90vh] overflow-y-auto no-scrollbar">
+      <div className="relative bg-[#242419] rounded-t-3xl border-t border-[#3a3a2a] px-4 pt-4 pb-8 safe-bottom max-h-[90vh] overflow-y-auto no-scrollbar w-full max-w-md">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-semibold text-[#f0ede4]">{t.logMeasurements}</h2>
           <button onClick={onClose} className="text-[#9a9680] hover:text-[#f0ede4]">
@@ -91,7 +91,7 @@ export function Measurements() {
   const allMeasurements = useAllMeasurements();
 
   return (
-    <div className="flex flex-col min-h-full pb-24 max-w-2xl mx-auto w-full">
+    <div className="flex flex-col min-h-full pb-24">
       {showDrawer && <LogDrawer onClose={() => setShowDrawer(false)} t={t} />}
 
       {/* Header */}
