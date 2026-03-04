@@ -122,39 +122,65 @@ export async function parseMealDescription(userInput: string, lang: AppLanguage 
     throw new Error(`API_ERROR: ${err?.message ?? 'Unknown error'}`);
   }
 
-  const text = result.response.text().trim();
-  // Strip markdown code fences if model wraps output anyway
-  const cleaned = text.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+  function parseResponseText(raw: string): any {
+    const cleaned = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+    return JSON.parse(cleaned);
+  }
 
+  function buildResult(parsed: any): ParsedMeal {
+    if (!parsed.foods || !Array.isArray(parsed.foods) || parsed.foods.length === 0) {
+      throw new Error('PARSE_ERROR');
+    }
+    const foods: FoodItem[] = parsed.foods.map((f: any) => ({
+      name: String(f.name ?? 'Unknown'),
+      quantity: String(f.quantity ?? '1 serving'),
+      macros: validateAndFixCalories(
+        roundMacros({
+          calories: Number(f.calories) || 0,
+          protein: Number(f.protein) || 0,
+          fat: Number(f.fat) || 0,
+          carbs: Number(f.carbs) || 0,
+        })
+      ),
+    }));
+    return {
+      foods,
+      confidence: ['high', 'medium', 'low'].includes(parsed.confidence) ? parsed.confidence : 'medium',
+      notes: parsed.notes ? String(parsed.notes) : undefined,
+      message: parsed.message ? String(parsed.message) : undefined,
+    };
+  }
+
+  const rawText = result.response.text().trim();
   let parsed: any;
   try {
-    parsed = JSON.parse(cleaned);
+    parsed = parseResponseText(rawText);
+    return buildResult(parsed);
   } catch {
-    console.error('[Gemini] PARSE_ERROR — raw response:', text);
-    throw new Error('PARSE_ERROR');
+    // Response was likely truncated — retry once using a chat session so the
+    // model can see what it already produced and complete the JSON.
+    console.warn('[Gemini] PARSE_ERROR on first attempt, retrying. Raw:', rawText);
+    try {
+      const chat = model.startChat();
+      // First turn: replicate the original request
+      if (image) {
+        await chat.sendMessage([
+          { inlineData: { data: image.base64, mimeType: image.mimeType } },
+          { text: userInput.trim() || 'Identify the food in this image and estimate the nutrition.' },
+        ]);
+      } else {
+        await chat.sendMessage(userInput);
+      }
+      // Second turn: ask it to complete the truncated response
+      const retryResult = await chat.sendMessage(
+        'Your previous response was cut off before the JSON was complete. Please output the full, valid JSON object from the beginning — no truncation.'
+      );
+      const retryText = retryResult.response.text().trim();
+      const retryParsed = parseResponseText(retryText);
+      return buildResult(retryParsed);
+    } catch (retryErr: any) {
+      console.error('[Gemini] PARSE_ERROR after retry. Original raw:', rawText);
+      throw new Error('PARSE_ERROR');
+    }
   }
-
-  if (!parsed.foods || !Array.isArray(parsed.foods) || parsed.foods.length === 0) {
-    throw new Error('PARSE_ERROR');
-  }
-
-  const foods: FoodItem[] = parsed.foods.map((f: any) => ({
-    name: String(f.name ?? 'Unknown'),
-    quantity: String(f.quantity ?? '1 serving'),
-    macros: validateAndFixCalories(
-      roundMacros({
-        calories: Number(f.calories) || 0,
-        protein: Number(f.protein) || 0,
-        fat: Number(f.fat) || 0,
-        carbs: Number(f.carbs) || 0,
-      })
-    ),
-  }));
-
-  return {
-    foods,
-    confidence: ['high', 'medium', 'low'].includes(parsed.confidence) ? parsed.confidence : 'medium',
-    notes: parsed.notes ? String(parsed.notes) : undefined,
-    message: parsed.message ? String(parsed.message) : undefined,
-  };
 }

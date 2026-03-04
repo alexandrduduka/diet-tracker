@@ -124,7 +124,7 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 ## Gemini Integration
 
 - Model: `gemini-2.5-flash`, `responseMimeType: 'application/json'`
-- `temperature: 0.1` (no context) / `0.4` (with coaching context), `maxOutputTokens: 2048`
+- `temperature: 0.1` (no context) / `0.4` (with coaching context), `maxOutputTokens: 4096`
 - Returns structured JSON: `{ foods[], confidence, notes?, message? }`
 - `message` is a 2–3 sentence coaching comment in the app language; only present when `MealContext` is passed
 - `MealContext` carries today's `goals` + `consumed` macros — injected into system prompt as remaining budget
@@ -132,7 +132,8 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 - Post-processing: `validateAndFixCalories` recalculates if LLM calories are >10% off from macros
 - Error detection checks both `err.status` AND `err.message` text (SDK embeds status in message string)
 - Error types thrown: `'NO_API_KEY'` | `'RATE_LIMIT'` | `'INVALID_API_KEY'` | `'PARSE_ERROR'` | `'API_ERROR: ...'`
-- `maxOutputTokens` must stay ≥ 2048 — gemini-2.5-flash uses thinking tokens internally; lower values cause truncated JSON → PARSE_ERROR
+- `maxOutputTokens` must stay ≥ 4096 — gemini-2.5-flash uses thinking tokens internally; lower values cause truncated JSON → PARSE_ERROR (confirmed: 2048 caused truncation even on simple queries like "banana")
+- On PARSE_ERROR, `parseMealDescription` automatically retries once with a corrective prompt appended asking the model to complete the truncated JSON
 
 ## Chat Page — Key Behaviours
 
@@ -226,7 +227,7 @@ New test files go alongside source in `src/**/*.test.ts`.
 - `llmConfidence: 'manual'` is a valid value (used when user logs macros by hand, not in the union type — works fine at runtime)
 - Rate limit error detection: must check `err.message` text, not just `err.status` — Gemini SDK embeds HTTP status in message
 - `sharp` is already available in node_modules (pulled in transitively) — no need to install separately for icon generation
-- `maxOutputTokens: 1024` caused PARSE_ERROR for gemini-2.5-flash when coaching context was included — raised to 2048
+- `maxOutputTokens: 1024` caused PARSE_ERROR for gemini-2.5-flash when coaching context was included — raised to 2048, then raised again to 4096 after truncation observed even on simple queries ("banana")
 
 ## Definition of Done (follow for every feature/fix)
 
