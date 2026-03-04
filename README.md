@@ -1,73 +1,109 @@
-# React + TypeScript + Vite
+# Diet Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A personal nutrition tracking PWA — log meals with AI, track macros, and monitor body measurements. No backend, no accounts, everything stays on your device.
 
-Currently, two official plugins are available:
+**Live app:** https://diet-tracker-f3b.pages.dev
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **AI meal logging** — describe what you ate in plain text; Gemini parses foods, quantities, and macros automatically
+- **Manual fallback** — log macros by hand when offline or without an API key
+- **Daily dashboard** — calorie ring and per-macro progress bars vs. your goals
+- **History** — week-by-week breakdown of daily intake
+- **Analytics** — calorie and macro trends (30-day / 12-month charts), body measurement charts
+- **Body measurements** — log and chart weight, waist, chest, arms, thighs over time
+- **Fully offline** — app shell and all data cached locally; only Gemini calls require internet
+- **PWA** — installable on iOS and Android, works as a standalone app
+- **Multi-language** — English, Russian, Ukrainian, Czech, German, French, Spanish
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Quick Start
 
-## Expanding the ESLint configuration
+### 1. Get a Gemini API key
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Go to [aistudio.google.com](https://aistudio.google.com) and sign in with a Google account
+2. Click **Get API key** → **Create API key**
+3. Copy the key (free tier: 1,500 requests/day, 15 RPM)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 2. Open the app and configure
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+1. Open https://diet-tracker-f3b.pages.dev in Chrome or Safari
+2. Tap the gear icon (Settings)
+3. Paste your Gemini API key and save
+4. Adjust calorie and macro goals if needed
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 3. Log your first meal
+
+1. Tap the **+** button or the Chat tab
+2. Type what you ate: *"2 scrambled eggs, a slice of toast with butter, and a coffee with milk"*
+3. Review the parsed breakdown, then tap **Save**
+
+## Local Development
+
+```bash
+git clone git@github.com:alexandrduduka/diet-tracker.git
+cd diet-tracker
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The app runs at `http://localhost:5173`. A Gemini API key is required for the AI logging feature.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Commands
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Command | Description |
+|---|---|
+| `npm run dev` | Start dev server |
+| `npm run build` | Type-check and build to `dist/` |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run unit tests (Vitest) |
+| `npm run deploy` | Build and deploy to Cloudflare Pages |
+
+## Deploy
+
+The app deploys to Cloudflare Pages. Any push to `main` triggers a new build.
+
+Manual deploy:
+
+```bash
+npm run deploy
 ```
+
+Requires [Wrangler](https://developers.cloudflare.com/workers/wrangler/) and a Cloudflare account with the `diet-tracker` Pages project created.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| UI | React 19 + TypeScript + Tailwind CSS v4 |
+| Components | Radix UI primitives (shadcn/ui) |
+| Charts | Recharts |
+| Local DB | Dexie.js (IndexedDB) |
+| AI | Google Gemini 2.0 Flash |
+| Date utilities | date-fns |
+| PWA / Service Worker | vite-plugin-pwa (Workbox) |
+| Build | Vite 7 |
+| Deploy | Cloudflare Pages |
+
+## Project Structure
+
+```
+src/
+├── db/index.ts          — Dexie schema (meals, measurements tables)
+├── types/index.ts       — Shared TypeScript interfaces
+├── lib/
+│   ├── gemini.ts        — Gemini API client + structured prompt
+│   ├── nutrition.ts     — Macro math helpers
+│   ├── date.ts          — Date key utilities
+│   └── i18n.ts          — Translation strings + language helpers
+├── store/settings.ts    — localStorage wrapper (API key, goals, language)
+├── hooks/               — Dexie useLiveQuery hooks
+├── components/          — Reusable UI components
+└── pages/               — Route-level page components
+```
+
+See [docs/TECHNICAL.md](docs/TECHNICAL.md) for architecture details and [docs/PRODUCT.md](docs/PRODUCT.md) for a full feature guide.
+
+## Privacy
+
+All meal and measurement data is stored locally in your browser's IndexedDB. Nothing is sent to any server except Gemini API calls (your meal descriptions go to Google's API when using AI logging). No analytics, no tracking, no accounts.
