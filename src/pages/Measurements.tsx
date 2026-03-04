@@ -12,7 +12,7 @@ import { Input } from '../components/ui/input';
 import { useLang } from '../store/langContext';
 import type { Translations } from '../lib/i18n';
 
-const METRICS: MeasurementKey[] = ['weight', 'waist', 'chest', 'hips', 'leftArm', 'rightArm', 'leftThigh', 'rightThigh'];
+const METRICS: MeasurementKey[] = ['weight', 'waist', 'chest', 'hips', 'arm', 'thigh'];
 
 function LogDrawer({ onClose, t }: { onClose: () => void; t: Translations }) {
   const [fields, setFields] = useState<Record<string, string>>({});
@@ -33,10 +33,8 @@ function LogDrawer({ onClose, t }: { onClose: () => void; t: Translations }) {
       waist: fields.waist ? Number(fields.waist) : undefined,
       chest: fields.chest ? Number(fields.chest) : undefined,
       hips: fields.hips ? Number(fields.hips) : undefined,
-      leftArm: fields.leftArm ? Number(fields.leftArm) : undefined,
-      rightArm: fields.rightArm ? Number(fields.rightArm) : undefined,
-      leftThigh: fields.leftThigh ? Number(fields.leftThigh) : undefined,
-      rightThigh: fields.rightThigh ? Number(fields.rightThigh) : undefined,
+      arm: fields.arm ? Number(fields.arm) : undefined,
+      thigh: fields.thigh ? Number(fields.thigh) : undefined,
       notes: fields.notes || undefined,
     });
     onClose();
@@ -93,7 +91,7 @@ export function Measurements() {
   const allMeasurements = useAllMeasurements();
 
   return (
-    <div className="flex flex-col min-h-full pb-24">
+    <div className="flex flex-col min-h-full pb-24 max-w-2xl mx-auto w-full">
       {showDrawer && <LogDrawer onClose={() => setShowDrawer(false)} t={t} />}
 
       {/* Header */}
@@ -163,10 +161,10 @@ export function Measurements() {
                   {m.waist != null && <span className="text-[#c8c4b0]">{t.waist}: {m.waist}cm</span>}
                   {m.chest != null && <span className="text-[#c8c4b0]">{t.chest}: {m.chest}cm</span>}
                   {m.hips != null && <span className="text-[#c8c4b0]">{t.hips}: {m.hips}cm</span>}
-                  {m.leftArm != null && <span className="text-[#c8c4b0]">{t.leftArm}: {m.leftArm}cm</span>}
-                  {m.rightArm != null && <span className="text-[#c8c4b0]">{t.rightArm}: {m.rightArm}cm</span>}
-                  {m.leftThigh != null && <span className="text-[#c8c4b0]">{t.leftThigh}: {m.leftThigh}cm</span>}
-                  {m.rightThigh != null && <span className="text-[#c8c4b0]">{t.rightThigh}: {m.rightThigh}cm</span>}
+                  {(m.arm ?? m.leftArm) != null && <span className="text-[#c8c4b0]">{t.arm}: {m.arm ?? m.leftArm}cm</span>}
+                  {m.rightArm != null && m.arm == null && m.leftArm == null && <span className="text-[#c8c4b0]">{t.arm}: {m.rightArm}cm</span>}
+                  {(m.thigh ?? m.leftThigh) != null && <span className="text-[#c8c4b0]">{t.thigh}: {m.thigh ?? m.leftThigh}cm</span>}
+                  {m.rightThigh != null && m.thigh == null && m.leftThigh == null && <span className="text-[#c8c4b0]">{t.thigh}: {m.rightThigh}cm</span>}
                 </div>
                 {m.notes && <p className="mt-1.5 text-xs text-[#9a9680] italic">{m.notes}</p>}
               </div>

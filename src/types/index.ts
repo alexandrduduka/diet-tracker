@@ -30,10 +30,13 @@ export interface BodyMeasurement {
   waist?: number;      // cm
   chest?: number;      // cm
   hips?: number;       // cm
-  leftArm?: number;    // cm
-  rightArm?: number;   // cm
-  leftThigh?: number;  // cm
-  rightThigh?: number; // cm
+  arm?: number;        // cm (replaces leftArm/rightArm)
+  thigh?: number;      // cm (replaces leftThigh/rightThigh)
+  // Legacy fields kept for backward-compat with existing IndexedDB records
+  leftArm?: number;
+  rightArm?: number;
+  leftThigh?: number;
+  rightThigh?: number;
   notes?: string;
 }
 
@@ -52,15 +55,13 @@ export interface UserSettings {
   language: AppLanguage;
 }
 
-export type MeasurementKey = 'weight' | 'waist' | 'chest' | 'hips' | 'leftArm' | 'rightArm' | 'leftThigh' | 'rightThigh';
+export type MeasurementKey = 'weight' | 'waist' | 'chest' | 'hips' | 'arm' | 'thigh';
 
 export const MEASUREMENT_LABELS: Record<MeasurementKey, string> = {
   weight: 'Weight',
   waist: 'Waist',
   chest: 'Chest',
   hips: 'Hips',
-  leftArm: 'Left Arm',
-  rightArm: 'Right Arm',
-  leftThigh: 'Left Thigh',
-  rightThigh: 'Right Thigh',
+  arm: 'Arm',
+  thigh: 'Thigh',
 };

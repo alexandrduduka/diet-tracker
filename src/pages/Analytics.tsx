@@ -24,7 +24,7 @@ import { useLang } from '../store/langContext';
 type Tab = 'nutrition' | 'body';
 type Period = 'daily' | 'monthly';
 
-const METRICS: MeasurementKey[] = ['weight', 'waist', 'chest', 'hips', 'leftArm', 'rightArm', 'leftThigh', 'rightThigh'];
+const METRICS: MeasurementKey[] = ['weight', 'waist', 'chest', 'hips', 'arm', 'thigh'];
 
 const CHART_STYLES = {
   grid: { strokeDasharray: '3 3', stroke: '#3a3a2a' },

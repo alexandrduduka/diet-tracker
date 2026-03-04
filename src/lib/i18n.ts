@@ -67,10 +67,8 @@ export interface Translations {
   waist: string;
   chest: string;
   hips: string;
-  leftArm: string;
-  rightArm: string;
-  leftThigh: string;
-  rightThigh: string;
+  arm: string;
+  thigh: string;
 
   // Settings
   settings: string;
@@ -176,10 +174,8 @@ const en: Translations = {
   waist: 'Waist',
   chest: 'Chest',
   hips: 'Hips',
-  leftArm: 'Left Arm',
-  rightArm: 'Right Arm',
-  leftThigh: 'Left Thigh',
-  rightThigh: 'Right Thigh',
+  arm: 'Arm',
+  thigh: 'Thigh',
 
   settings: 'Settings',
   geminiApiKey: 'Gemini API Key',
@@ -282,10 +278,8 @@ const ru: Translations = {
   waist: 'Талия',
   chest: 'Грудь',
   hips: 'Бёдра',
-  leftArm: 'Лев. рука',
-  rightArm: 'Прав. рука',
-  leftThigh: 'Лев. бедро',
-  rightThigh: 'Прав. бедро',
+  arm: 'Рука',
+  thigh: 'Бедро',
 
   settings: 'Настройки',
   geminiApiKey: 'Ключ Gemini API',
@@ -388,10 +382,8 @@ const cs: Translations = {
   waist: 'Pas',
   chest: 'Hrudník',
   hips: 'Boky',
-  leftArm: 'Levá paže',
-  rightArm: 'Pravá paže',
-  leftThigh: 'Levé stehno',
-  rightThigh: 'Pravé stehno',
+  arm: 'Paže',
+  thigh: 'Stehno',
 
   settings: 'Nastavení',
   geminiApiKey: 'Klíč Gemini API',
@@ -494,10 +486,8 @@ const de: Translations = {
   waist: 'Taille',
   chest: 'Brust',
   hips: 'Hüfte',
-  leftArm: 'Linker Arm',
-  rightArm: 'Rechter Arm',
-  leftThigh: 'Linker Oberschenkel',
-  rightThigh: 'Rechter Oberschenkel',
+  arm: 'Arm',
+  thigh: 'Oberschenkel',
 
   settings: 'Einstellungen',
   geminiApiKey: 'Gemini API-Schlüssel',
@@ -600,10 +590,8 @@ const fr: Translations = {
   waist: 'Taille',
   chest: 'Poitrine',
   hips: 'Hanches',
-  leftArm: 'Bras gauche',
-  rightArm: 'Bras droit',
-  leftThigh: 'Cuisse gauche',
-  rightThigh: 'Cuisse droite',
+  arm: 'Bras',
+  thigh: 'Cuisse',
 
   settings: 'Paramètres',
   geminiApiKey: 'Clé API Gemini',
@@ -706,10 +694,8 @@ const es: Translations = {
   waist: 'Cintura',
   chest: 'Pecho',
   hips: 'Caderas',
-  leftArm: 'Brazo izq.',
-  rightArm: 'Brazo der.',
-  leftThigh: 'Muslo izq.',
-  rightThigh: 'Muslo der.',
+  arm: 'Brazo',
+  thigh: 'Muslo',
 
   settings: 'Configuración',
   geminiApiKey: 'Clave API de Gemini',
@@ -812,10 +798,8 @@ const uk: Translations = {
   waist: 'Талія',
   chest: 'Груди',
   hips: 'Стегна',
-  leftArm: 'Лів. рука',
-  rightArm: 'Пр. рука',
-  leftThigh: 'Лів. стегно',
-  rightThigh: 'Пр. стегно',
+  arm: 'Рука',
+  thigh: 'Стегно',
 
   settings: 'Налаштування',
   geminiApiKey: 'Ключ Gemini API',
