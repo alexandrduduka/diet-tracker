@@ -1,0 +1,213 @@
+# Diet Tracker — Claude Development Context
+
+This file gives Claude full context to continue development without re-exploring the codebase from scratch.
+
+## Project Summary
+
+Personal nutrition PWA. No backend. All data in IndexedDB (Dexie.js). AI meal parsing via Google Gemini. Deployed to Cloudflare Pages.
+
+**Live URL:** https://diet-tracker-f3b.pages.dev
+**Repo:** git@github-personal:alexandrduduka/diet-tracker.git (personal GitHub: `alexandrduduka`)
+**Deploy project name:** `diet-tracker` (Cloudflare Pages)
+
+## Commands
+
+```bash
+npm run dev          # Vite dev server at localhost:5173
+npm run build        # tsc -b && vite build → dist/
+npm run preview      # Preview dist/ at :4173
+npm run lint         # ESLint
+npm test             # Vitest (run once)
+npm run test:watch   # Vitest (watch)
+npm run deploy       # build + wrangler pages deploy dist --project-name diet-tracker
+```
+
+## Git Setup
+
+Two GitHub accounts on this machine:
+- `alexduduka-jt` — work account (default HTTPS token in Keychain — avoid for this repo)
+- `alexandrduduka` — personal account (uses SSH key `~/.ssh/id_ed25519_personal`)
+
+**Always push using SSH alias:**
+```bash
+git remote get-url origin  # should be git@github-personal:alexandrduduka/diet-tracker.git
+git push origin main
+```
+
+If origin is wrong: `git remote set-url origin git@github-personal:alexandrduduka/diet-tracker.git`
+
+## Project Structure
+
+```
+diet-tracker/
+├── index.html
+├── vite.config.ts          ← PWA config, Workbox, chunk splitting
+├── vitest.config.ts        ← Vitest with jsdom environment
+├── public/icons/           ← icon.svg (source), *.png (generated with sharp)
+├── docs/
+│   ├── TECHNICAL.md        ← Architecture, data models, API details
+│   └── PRODUCT.md          ← Feature guide, user-facing docs
+└── src/
+    ├── App.tsx              ← HashRouter, 6 routes, AppShell with BottomNav logic
+    ├── main.tsx
+    ├── index.css
+    ├── db/index.ts          ← Dexie DB (meals, measurements tables)
+    ├── types/index.ts       ← All shared interfaces
+    ├── store/
+    │   ├── settings.ts      ← localStorage wrapper (STORAGE_KEY='dtk_settings')
+    │   └── langContext.tsx  ← React context + useLang() hook
+    ├── lib/
+    │   ├── gemini.ts        ← Gemini 2.0 Flash client, structured JSON prompt
+    │   ├── nutrition.ts     ← sumMacros, validateAndFixCalories, roundMacros, etc.
+    │   ├── date.ts          ← getTodayKey, getWeekKeys, getLast12MonthBuckets, etc.
+    │   ├── i18n.ts          ← All UI strings in 7 languages + getGeminiLanguageInstruction()
+    │   ├── utils.ts         ← cn() (clsx + tailwind-merge)
+    │   ├── nutrition.test.ts ← 20 Vitest tests
+    │   └── date.test.ts     ← 18 Vitest tests (pinned to 2026-03-04 via vi.useFakeTimers)
+    ├── hooks/
+    │   ├── useTodayMeals.ts        ← useLiveQuery for today's meals
+    │   ├── useGoals.ts             ← reads goals from settings
+    │   ├── useMeasurements.ts      ← useLiveQuery for measurements
+    │   └── useNutritionHistory.ts  ← daily/monthly nutrition aggregation
+    ├── components/
+    │   ├── BottomNav.tsx    ← 5-tab nav (Today/Log/History/Body/Charts)
+    │   ├── MacroRing.tsx    ← SVG donut for calories
+    │   ├── MacroBar.tsx     ← progress bar per macro vs goal
+    │   ├── MealCard.tsx     ← single meal display + delete
+    │   ├── MeasurementChart.tsx ← Recharts line chart wrapper
+    │   ├── OfflineBanner.tsx + useOnlineStatus hook
+    │   └── ui/             ← shadcn/ui primitives (button, card, dialog, input)
+    └── pages/
+        ├── Dashboard.tsx   ← MacroRing + MacroBar + meal list + FAB
+        ├── Chat.tsx        ← LLM meal logging + manual fallback
+        ├── History.tsx     ← Week selector + daily breakdown
+        ├── Analytics.tsx   ← Nutrition/Body tabs, Daily/Monthly toggle, Recharts
+        ├── Measurements.tsx ← Log drawer + Recharts chart + entries list
+        └── Settings.tsx    ← API key + goals form + language + export + clear
+```
+
+## Routing
+
+`HashRouter` (required for Cloudflare Pages static deployment).
+
+| Path | Page | Nav visible |
+|---|---|---|
+| `/` | Dashboard | yes |
+| `/chat` | Chat | no |
+| `/history` | History | yes |
+| `/measurements` | Measurements | yes |
+| `/analytics` | Analytics | yes |
+| `/settings` | Settings | no |
+
+`HIDE_NAV_ROUTES = ['/chat', '/settings']` in `App.tsx`.
+
+## Data Layer
+
+### IndexedDB (Dexie)
+
+```typescript
+// src/db/index.ts
+db.version(1).stores({
+  meals: '++id, dayKey, timestamp',
+  measurements: '++id, dayKey, timestamp',
+});
+```
+
+`dayKey` format: `'yyyy-MM-dd'` — primary query index for all reads.
+
+### localStorage (settings)
+
+Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs / language: 'en'.
+
+`getSettings()` always merges stored values over defaults (safe to add new fields to `DEFAULT_SETTINGS`).
+
+## Gemini Integration
+
+- Model: `gemini-2.0-flash`, `responseMimeType: 'application/json'`, `temperature: 0.1`
+- Returns structured JSON: `{ foods[], confidence, notes }`
+- Post-processing: `validateAndFixCalories` recalculates if LLM calories are >10% off from macros
+- Error detection checks both `err.status` AND `err.message` text (SDK embeds status in message string)
+- Error types thrown: `'NO_API_KEY'` | `'RATE_LIMIT'` | `'INVALID_API_KEY'` | `'PARSE_ERROR'` | `'API_ERROR: ...'`
+
+## Internationalization
+
+7 languages: `'en' | 'ru' | 'uk' | 'cs' | 'de' | 'fr' | 'es'`
+
+- All strings in `src/lib/i18n.ts` — `Translations` interface + per-language objects
+- Language stored in `UserSettings.language` (localStorage)
+- Provided via `LangContext` / `useLang()` — returns `{ t, lang, setLang }`
+- `getGeminiLanguageInstruction(lang)` appends language directive to Gemini system prompt
+
+**To add a new string:** add to `Translations` interface in `i18n.ts`, then add to all 7 language objects.
+
+## Design System
+
+Dark olive palette:
+- Background: `#18180f`
+- Surface: `#2e2e22`, `#242419`
+- Border: `#3a3a2a`
+- Text primary: `#f0ede4`
+- Text muted: `#9a9680`, `#5a5a44`
+- Green accent: `#7cb87a` (active nav, buttons, rings)
+- Amber accent: `#d4a24c` (calories, warnings)
+- Error/warning bg: `#3a2a1a` border `#5a3a20`
+
+Chart colors: calories=`#d4a24c`, protein=`#7cb87a`, carbs=`#d4a24c`, fat=`#c17a5a`
+
+Chart styling pattern:
+```tsx
+<CartesianGrid stroke="#3a3a2a" strokeDasharray="3 3" />
+<XAxis tick={{ fill: '#9a9680', fontSize: 11 }} axisLine={false} tickLine={false} />
+<Tooltip contentStyle={{ backgroundColor: '#242419', border: '1px solid #3a3a2a', borderRadius: '12px' }} />
+```
+
+## PWA / Offline
+
+- `vite-plugin-pwa` with Workbox
+- App shell: cache-first
+- `generativelanguage.googleapis.com`: `NetworkOnly` (Gemini must be online)
+- Icons: `icon.svg` (source SVG, teardrop/flame design), regenerate PNGs with `sharp` if changed
+- Manifest: standalone, theme `#7cb87a`, background `#18180f`
+
+## Regenerating PNG Icons
+
+If `public/icons/icon.svg` is changed:
+```bash
+node -e "
+const sharp = require('sharp');
+const fs = require('fs');
+const svg = fs.readFileSync('public/icons/icon.svg');
+Promise.all([
+  sharp(svg).resize(192,192).png().toFile('public/icons/icon-192x192.png'),
+  sharp(svg).resize(512,512).png().toFile('public/icons/icon-512x512.png'),
+  sharp(svg).resize(180,180).png().toFile('public/icons/apple-touch-icon.png'),
+]).then(() => console.log('Icons generated'));
+"
+```
+
+## Build Output
+
+Vite splits into 4 chunks for cache efficiency:
+- `vendor` — react, react-dom, react-router-dom
+- `charts` — recharts
+- `db` — dexie, dexie-react-hooks
+- `gemini` — @google/generative-ai
+
+## Testing
+
+```bash
+npm test
+```
+
+38 tests in `src/lib/nutrition.test.ts` (20) and `src/lib/date.test.ts` (18).
+Date tests use `vi.useFakeTimers()` pinned to `2026-03-04` for determinism.
+New test files go alongside source in `src/**/*.test.ts`.
+
+## Known Decisions / History
+
+- HashRouter over BrowserRouter: Cloudflare Pages serves a single static file, no server routing
+- No auth: single-user, personal device app — intentional
+- Gemini free tier: 1,500 req/day, 15 RPM — sufficient for personal use
+- `llmConfidence: 'manual'` is a valid value (used when user logs macros by hand, not in the union type — works fine at runtime)
+- Rate limit error detection: must check `err.message` text, not just `err.status` — Gemini SDK embeds HTTP status in message
+- `sharp` is already available in node_modules (pulled in transitively) — no need to install separately for icon generation
