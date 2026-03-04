@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff } from 'lucide-react';
-import { parseMealDescription, type ParsedMeal } from '../lib/gemini';
+import { parseMealDescription, type ParsedMeal, type MealContext } from '../lib/gemini';
 import { sumMacros } from '../lib/nutrition';
 import { db } from '../db';
 import { getTodayKey } from '../lib/date';
@@ -10,17 +10,20 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useLang } from '../store/langContext';
-import { saveSettings } from '../store/settings';
+import { saveSettings, getGoals } from '../store/settings';
+import { useTodayMeals } from '../hooks/useTodayMeals';
 
 type ChatMessage =
   | { role: 'assistant'; text: string }
   | { role: 'user'; text: string }
   | { role: 'result'; parsed: ParsedMeal }
   | { role: 'error'; text: string }
-  | { role: 'setup'; retryText: string };
+  | { role: 'setup'; retryText: string }
+  | { role: 'coach'; text: string };
 
 export function Chat() {
   const { t, lang } = useLang();
+  const todayMeals = useTodayMeals();
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
     { role: 'assistant', text: t.chatWelcome },
   ]);
@@ -57,7 +60,20 @@ export function Chat() {
     setLoading(true);
 
     try {
-      const parsed = await parseMealDescription(userText, lang);
+      const goals = getGoals();
+      const consumed = todayMeals
+        ? todayMeals.reduce(
+            (acc, m) => ({
+              calories: acc.calories + m.totalMacros.calories,
+              protein: acc.protein + m.totalMacros.protein,
+              fat: acc.fat + m.totalMacros.fat,
+              carbs: acc.carbs + m.totalMacros.carbs,
+            }),
+            { calories: 0, protein: 0, fat: 0, carbs: 0 }
+          )
+        : { calories: 0, protein: 0, fat: 0, carbs: 0 };
+      const context: MealContext = { goals, consumed };
+      const parsed = await parseMealDescription(userText, lang, context);
       setPendingMeal(parsed);
       setMessages((m) => [...m, { role: 'result', parsed }]);
     } catch (err: any) {
@@ -95,7 +111,11 @@ export function Chat() {
       notes: parsed.notes,
     });
     setPendingMeal(null);
-    navigate('/');
+    if (parsed.message) {
+      setMessages((m) => [...m, { role: 'coach', text: parsed.message! }]);
+    } else {
+      navigate('/');
+    }
   }
 
   async function handleSetupSave(retryText: string) {
@@ -163,7 +183,7 @@ export function Chat() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 no-scrollbar">
         {messages.map((msg, i) => {
-          if (msg.role === 'assistant') {
+          if (msg.role === 'assistant' || msg.role === 'coach') {
             return (
               <div key={i} className="flex gap-2">
                 <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>

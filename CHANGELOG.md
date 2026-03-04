@@ -8,6 +8,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Inline API key setup wizard in Chat: when no key is configured, a step-by-step card replaces the error message. Leads with "free, ~30 seconds", opens Google AI Studio directly, and retries the meal automatically after saving.
+- LLM coaching chat: Gemini now returns a 2–3 sentence coaching message alongside the meal analysis. Today's goals and consumed macros are passed as context so the coach knows the remaining budget. After saving a meal the coaching message appears as an assistant bubble; the input stays open to log more.
+
 ### Changed
 - Migrated from `gemini-2.0-flash` (retired 2026-03-03) to `gemini-2.5-flash`
 - Tightened rate-limit error detection to avoid false positives
