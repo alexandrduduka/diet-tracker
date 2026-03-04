@@ -73,7 +73,12 @@ export interface ParsedMeal {
   message?: string;
 }
 
-export async function parseMealDescription(userInput: string, lang: AppLanguage = 'en', context?: MealContext): Promise<ParsedMeal> {
+export interface ImageAttachment {
+  base64: string;
+  mimeType: string;
+}
+
+export async function parseMealDescription(userInput: string, lang: AppLanguage = 'en', context?: MealContext, image?: ImageAttachment): Promise<ParsedMeal> {
   const key = getApiKey();
   if (!key) {
     throw new Error('NO_API_KEY');
@@ -90,9 +95,19 @@ export async function parseMealDescription(userInput: string, lang: AppLanguage 
     systemInstruction: buildSystemPrompt(lang, context),
   });
 
+  const contentParts: any[] = [];
+  if (image) {
+    contentParts.push({ inlineData: { data: image.base64, mimeType: image.mimeType } });
+  }
+  if (userInput.trim()) {
+    contentParts.push({ text: userInput });
+  } else if (image) {
+    contentParts.push({ text: 'Identify the food in this image and estimate the nutrition.' });
+  }
+
   let result;
   try {
-    result = await model.generateContent(userInput);
+    result = await model.generateContent(contentParts.length === 1 && !image ? userInput : contentParts);
   } catch (err: any) {
     console.error('[Gemini] raw error:', err);
     const status = err?.status ?? err?.statusCode ?? err?.httpErrorCode;

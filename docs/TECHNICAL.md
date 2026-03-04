@@ -153,6 +153,19 @@ When the caller provides a `MealContext`, the system prompt is extended with:
 
 The model is instructed to add a `message` field: 2–3 sentences of friendly, motivational coaching in the app language mentioning specific remaining budget figures. This context is assembled in `Chat.tsx` from `getGoals()` (localStorage) and a live Dexie reduce of today's `totalMacros`.
 
+### Image / multimodal input
+
+`parseMealDescription` accepts an optional `image?: ImageAttachment` parameter:
+
+```typescript
+interface ImageAttachment {
+  base64: string;   // raw base64 (no data URL prefix)
+  mimeType: string; // e.g. "image/jpeg"
+}
+```
+
+When an image is provided, it is passed to Gemini as an `inlineData` content part alongside any user text. If no text is provided, a default prompt `"Identify the food in this image and estimate the nutrition."` is used. The same JSON schema and post-processing pipeline applies regardless of whether input is text, image, or both.
+
 ### Post-processing
 
 After parsing the JSON response, the app runs `validateAndFixCalories`:

@@ -75,7 +75,16 @@ The main screen shows your nutrition progress for today.
 
 ### Chat (Log Meal)
 
-The meal logging screen. Type a description of what you ate and the AI returns a structured breakdown plus personalised coaching feedback.
+The meal logging screen. Describe what you ate by typing, speaking, or taking a photo — the AI returns a structured breakdown plus personalised coaching feedback.
+
+**Input methods:**
+
+| Method | How to use |
+|---|---|
+| **Type** | Type your meal description in the text box and tap Send |
+| **Voice** | Tap the mic icon, speak your meal, tap again to stop — the transcript fills the text box |
+| **Photo** | Tap the camera icon to take a photo or choose from your library — the image is sent to Gemini for food recognition |
+| **Photo + text** | Attach a photo and add a text description for best accuracy |
 
 **How to describe meals:**
 

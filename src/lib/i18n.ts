@@ -98,6 +98,14 @@ export interface Translations {
   apiKeyStep4: string;
   apiKeySaveAndContinue: string;
 
+  // Voice & photo input
+  micTapToSpeak: string;
+  micListening: string;
+  micNotSupported: string;
+  photoAttached: string;
+  photoRemove: string;
+  takePhotoOrChoose: string;
+
   // Analytics
   analytics: string;
   nutrition: string;
@@ -152,6 +160,13 @@ const en: Translations = {
   invalidApiKey: 'Invalid API key. Check your key in Settings — it should start with "AIza".',
   rateLimit: 'API quota exceeded (rate limit or daily cap). Log manually below or try again in a minute.',
   parseError: 'Unexpected response from Gemini. Try rephrasing or log manually.',
+
+  micTapToSpeak: 'Tap to speak',
+  micListening: 'Listening...',
+  micNotSupported: 'Speech recognition not supported in this browser.',
+  photoAttached: 'Photo attached',
+  photoRemove: 'Remove',
+  takePhotoOrChoose: 'Take a photo or choose from library',
 
   history: 'History',
   thisWeek: 'This week',
@@ -257,6 +272,13 @@ const ru: Translations = {
   rateLimit: 'Превышена квота API. Введите вручную или подождите минуту.',
   parseError: 'Неожиданный ответ от Gemini. Перефразируйте или введите вручную.',
 
+  micTapToSpeak: 'Нажмите для голосового ввода',
+  micListening: 'Слушаю...',
+  micNotSupported: 'Голосовой ввод не поддерживается в этом браузере.',
+  photoAttached: 'Фото прикреплено',
+  photoRemove: 'Удалить',
+  takePhotoOrChoose: 'Сделать фото или выбрать из галереи',
+
   history: 'История',
   thisWeek: 'Эта неделя',
   lastWeek: 'Прошлая неделя',
@@ -360,6 +382,13 @@ const cs: Translations = {
   invalidApiKey: 'Neplatný API klíč. Měl by začínat "AIza".',
   rateLimit: 'Překročena kvóta API. Zadejte ručně nebo zkuste za chvíli.',
   parseError: 'Neočekávaná odpověď od Gemini. Přeformulujte nebo zadejte ručně.',
+
+  micTapToSpeak: 'Klepněte pro hlasový vstup',
+  micListening: 'Poslouchám...',
+  micNotSupported: 'Rozpoznávání řeči není v tomto prohlížeči podporováno.',
+  photoAttached: 'Foto přiloženo',
+  photoRemove: 'Odebrat',
+  takePhotoOrChoose: 'Vyfotografujte nebo vyberte z galerie',
 
   history: 'Historie',
   thisWeek: 'Tento týden',
@@ -465,6 +494,13 @@ const de: Translations = {
   rateLimit: 'API-Kontingent überschritten. Manuell eingeben oder in einer Minute erneut versuchen.',
   parseError: 'Unerwartete Antwort von Gemini. Umformulieren oder manuell eingeben.',
 
+  micTapToSpeak: 'Zum Sprechen tippen',
+  micListening: 'Höre zu...',
+  micNotSupported: 'Spracherkennung wird in diesem Browser nicht unterstützt.',
+  photoAttached: 'Foto angehängt',
+  photoRemove: 'Entfernen',
+  takePhotoOrChoose: 'Foto aufnehmen oder aus Galerie wählen',
+
   history: 'Verlauf',
   thisWeek: 'Diese Woche',
   lastWeek: 'Letzte Woche',
@@ -568,6 +604,13 @@ const fr: Translations = {
   invalidApiKey: 'Clé API invalide. Elle doit commencer par "AIza".',
   rateLimit: 'Quota API dépassé. Saisir manuellement ou réessayer dans une minute.',
   parseError: 'Réponse inattendue de Gemini. Reformulez ou saisissez manuellement.',
+
+  micTapToSpeak: 'Appuyez pour parler',
+  micListening: 'Écoute en cours...',
+  micNotSupported: 'La reconnaissance vocale n\'est pas prise en charge dans ce navigateur.',
+  photoAttached: 'Photo jointe',
+  photoRemove: 'Supprimer',
+  takePhotoOrChoose: 'Prendre une photo ou choisir dans la bibliothèque',
 
   history: 'Historique',
   thisWeek: 'Cette semaine',
@@ -673,6 +716,13 @@ const es: Translations = {
   rateLimit: 'Cuota de API excedida. Ingresa manualmente o intenta en un minuto.',
   parseError: 'Respuesta inesperada de Gemini. Reformula o ingresa manualmente.',
 
+  micTapToSpeak: 'Toca para hablar',
+  micListening: 'Escuchando...',
+  micNotSupported: 'El reconocimiento de voz no es compatible con este navegador.',
+  photoAttached: 'Foto adjunta',
+  photoRemove: 'Eliminar',
+  takePhotoOrChoose: 'Tomar foto o elegir de la galería',
+
   history: 'Historial',
   thisWeek: 'Esta semana',
   lastWeek: 'Semana pasada',
@@ -776,6 +826,13 @@ const uk: Translations = {
   invalidApiKey: 'Невірний API-ключ. Він має починатися з «AIza».',
   rateLimit: 'Перевищено квоту API. Введіть вручну або спробуйте за хвилину.',
   parseError: 'Несподівана відповідь від Gemini. Перефразуйте або введіть вручну.',
+
+  micTapToSpeak: 'Натисніть для голосового вводу',
+  micListening: 'Слухаю...',
+  micNotSupported: 'Голосовий ввід не підтримується в цьому браузері.',
+  photoAttached: 'Фото додано',
+  photoRemove: 'Видалити',
+  takePhotoOrChoose: 'Зробити фото або вибрати з галереї',
 
   history: 'Історія',
   thisWeek: 'Цей тиждень',

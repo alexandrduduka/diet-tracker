@@ -128,6 +128,7 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 - Returns structured JSON: `{ foods[], confidence, notes?, message? }`
 - `message` is a 2–3 sentence coaching comment in the app language; only present when `MealContext` is passed
 - `MealContext` carries today's `goals` + `consumed` macros — injected into system prompt as remaining budget
+- **Multimodal image support**: `parseMealDescription` accepts an optional `ImageAttachment { base64, mimeType }`. When provided, the image is passed as an `inlineData` part alongside the text — Gemini identifies the food visually.
 - Post-processing: `validateAndFixCalories` recalculates if LLM calories are >10% off from macros
 - Error detection checks both `err.status` AND `err.message` text (SDK embeds status in message string)
 - Error types thrown: `'NO_API_KEY'` | `'RATE_LIMIT'` | `'INVALID_API_KEY'` | `'PARSE_ERROR'` | `'API_ERROR: ...'`
@@ -139,6 +140,8 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 - **After save**: if `parsed.message` is present, appends a `'coach'` bubble and keeps the input open (no navigation). If no message, navigates to `/`.
 - **ChatMessage roles**: `'assistant' | 'user' | 'result' | 'error' | 'setup' | 'coach'`
 - `'assistant'` and `'coach'` render identically (green avatar bubble).
+- **Mic button**: uses Web Speech API (`window.SpeechRecognition || window.webkitSpeechRecognition`). Hidden when not supported. Recognition language matches the app language. Transcript is appended to the text input. Tap again or it ends automatically to stop listening.
+- **Camera / photo button**: `<input type="file" accept="image/*" capture="environment">` — opens camera on mobile, file picker on desktop. Image is read as DataURL, split into base64 + mimeType, stored in `attachedImage` state, and sent to Gemini as `ImageAttachment`. Thumbnail preview shown above input bar with a remove button. Can be sent with or without accompanying text.
 
 ## Internationalization
 

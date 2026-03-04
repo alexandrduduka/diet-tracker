@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff } from 'lucide-react';
-import { parseMealDescription, type ParsedMeal, type MealContext } from '../lib/gemini';
+import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X } from 'lucide-react';
+import { parseMealDescription, type ParsedMeal, type MealContext, type ImageAttachment } from '../lib/gemini';
 import { sumMacros } from '../lib/nutrition';
 import { db } from '../db';
 import { getTodayKey } from '../lib/date';
@@ -15,11 +15,19 @@ import { useTodayMeals } from '../hooks/useTodayMeals';
 
 type ChatMessage =
   | { role: 'assistant'; text: string }
-  | { role: 'user'; text: string }
+  | { role: 'user'; text: string; image?: string }
   | { role: 'result'; parsed: ParsedMeal }
   | { role: 'error'; text: string }
   | { role: 'setup'; retryText: string }
   | { role: 'coach'; text: string };
+
+// Extend browser types for SpeechRecognition (not in all TS libs)
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
 
 export function Chat() {
   const { t, lang } = useLang();
@@ -34,6 +42,17 @@ export function Chat() {
   const [manualFields, setManualFields] = useState({ name: '', calories: '', protein: '', fat: '', carbs: '' });
   const [setupKey, setSetupKey] = useState('');
   const [showSetupKey, setShowSetupKey] = useState(false);
+
+  // Mic state
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
+  const speechSupported = typeof window !== 'undefined' && !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+
+  // Photo state
+  const [attachedImage, setAttachedImage] = useState<ImageAttachment | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
   const isOnline = useOnlineStatus();
   const navigate = useNavigate();
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -52,11 +71,92 @@ export function Chat() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Clean up speech recognition on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.abort();
+      }
+    };
+  }, []);
+
+  function toggleMic() {
+    if (!speechSupported) {
+      setMessages((m) => [...m, { role: 'error', text: t.micNotSupported }]);
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = lang === 'en' ? 'en-US'
+      : lang === 'ru' ? 'ru-RU'
+      : lang === 'uk' ? 'uk-UA'
+      : lang === 'cs' ? 'cs-CZ'
+      : lang === 'de' ? 'de-DE'
+      : lang === 'fr' ? 'fr-FR'
+      : lang === 'es' ? 'es-ES'
+      : 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = (e: any) => {
+      const transcript = e.results[0][0].transcript;
+      setInput((prev) => prev ? `${prev} ${transcript}` : transcript);
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
+  }
+
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      // dataUrl = "data:<mimeType>;base64,<data>"
+      const commaIdx = dataUrl.indexOf(',');
+      const meta = dataUrl.slice(0, commaIdx); // "data:image/jpeg;base64"
+      const base64 = dataUrl.slice(commaIdx + 1);
+      const mimeType = meta.split(':')[1].split(';')[0];
+      setAttachedImage({ base64, mimeType });
+      setImagePreview(dataUrl);
+    };
+    reader.readAsDataURL(file);
+    // Reset input so same file can be re-selected
+    e.target.value = '';
+  }
+
+  function removePhoto() {
+    setAttachedImage(null);
+    setImagePreview(null);
+  }
+
   async function handleSend() {
-    if (!input.trim() || loading) return;
+    if ((!input.trim() && !attachedImage) || loading) return;
     const userText = input.trim();
+    const imageSnapshot = attachedImage;
+    const previewSnapshot = imagePreview;
     setInput('');
-    setMessages((m) => [...m, { role: 'user', text: userText }]);
+    setAttachedImage(null);
+    setImagePreview(null);
+    setMessages((m) => [...m, { role: 'user', text: userText || '📷', image: previewSnapshot ?? undefined }]);
     setLoading(true);
 
     try {
@@ -73,7 +173,7 @@ export function Chat() {
           )
         : { calories: 0, protein: 0, fat: 0, carbs: 0 };
       const context: MealContext = { goals, consumed };
-      const parsed = await parseMealDescription(userText, lang, context);
+      const parsed = await parseMealDescription(userText, lang, context, imageSnapshot ?? undefined);
       setPendingMeal(parsed);
       setMessages((m) => [...m, { role: 'result', parsed }]);
     } catch (err: any) {
@@ -193,8 +293,17 @@ export function Chat() {
           }
           if (msg.role === 'user') {
             return (
-              <div key={i} className="flex justify-end">
-                <div className="bg-[#3a3a2a] rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] text-sm text-[#f0ede4]">{msg.text}</div>
+              <div key={i} className="flex justify-end flex-col items-end gap-1">
+                {msg.image && (
+                  <img
+                    src={msg.image}
+                    alt="attached"
+                    className="max-w-[200px] max-h-[150px] rounded-xl object-cover border border-[#3a3a2a]"
+                  />
+                )}
+                {msg.text && msg.text !== '📷' && (
+                  <div className="bg-[#3a3a2a] rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] text-sm text-[#f0ede4]">{msg.text}</div>
+                )}
               </div>
             );
           }
@@ -345,22 +454,88 @@ export function Chat() {
               </Button>
             </div>
           ) : (
-            <div className="flex gap-2">
-              <input
-                className="flex-1 bg-[#2e2e22] border border-[#3a3a2a] rounded-xl px-4 py-3 text-sm text-[#f0ede4] placeholder:text-[#5a5a44] focus:outline-none focus:ring-2 focus:ring-[#7cb87a]/60"
-                placeholder={t.describeWhatYouAte}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-                disabled={loading}
-              />
-              <button
-                onClick={handleSend}
-                disabled={loading || !input.trim()}
-                className="w-11 h-11 rounded-xl bg-[#7cb87a] flex items-center justify-center disabled:opacity-40 active:bg-[#6aa368] hover:bg-[#8fce8d]"
-              >
-                <Send className="w-4 h-4 text-[#18180f]" />
-              </button>
+            <div className="space-y-2">
+              {/* Photo preview */}
+              {imagePreview && (
+                <div className="flex items-center gap-2 px-1">
+                  <img
+                    src={imagePreview}
+                    alt="preview"
+                    className="w-12 h-12 rounded-lg object-cover border border-[#3a3a2a]"
+                  />
+                  <span className="text-xs text-[#9a9680] flex-1">{t.photoAttached}</span>
+                  <button
+                    onClick={removePhoto}
+                    className="text-[#9a9680] hover:text-[#f0ede4] p-1"
+                    aria-label={t.photoRemove}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
+              {/* Input row */}
+              <div className="flex gap-2 items-center">
+                {/* Hidden file input for photo */}
+                <input
+                  ref={photoInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  onChange={handlePhotoChange}
+                />
+
+                {/* Camera button */}
+                <button
+                  onClick={() => photoInputRef.current?.click()}
+                  disabled={loading}
+                  title={t.takePhotoOrChoose}
+                  className="w-11 h-11 rounded-xl border border-[#3a3a2a] bg-[#2e2e22] flex items-center justify-center text-[#9a9680] hover:text-[#7cb87a] hover:border-[#7cb87a]/50 disabled:opacity-40 shrink-0 transition-colors"
+                >
+                  <Camera className="w-4 h-4" />
+                </button>
+
+                {/* Text input */}
+                <input
+                  className="flex-1 bg-[#2e2e22] border border-[#3a3a2a] rounded-xl px-4 py-3 text-sm text-[#f0ede4] placeholder:text-[#5a5a44] focus:outline-none focus:ring-2 focus:ring-[#7cb87a]/60"
+                  placeholder={t.describeWhatYouAte}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
+                  disabled={loading}
+                />
+
+                {/* Mic button — only shown when speech is supported */}
+                {speechSupported && (
+                  <button
+                    onClick={toggleMic}
+                    disabled={loading}
+                    title={isListening ? t.micListening : t.micTapToSpeak}
+                    className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 disabled:opacity-40 transition-colors ${
+                      isListening
+                        ? 'bg-[#7cb87a] text-[#18180f] animate-pulse'
+                        : 'border border-[#3a3a2a] bg-[#2e2e22] text-[#9a9680] hover:text-[#7cb87a] hover:border-[#7cb87a]/50'
+                    }`}
+                  >
+                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                  </button>
+                )}
+
+                {/* Send button */}
+                <button
+                  onClick={handleSend}
+                  disabled={loading || (!input.trim() && !attachedImage)}
+                  className="w-11 h-11 rounded-xl bg-[#7cb87a] flex items-center justify-center disabled:opacity-40 active:bg-[#6aa368] hover:bg-[#8fce8d] shrink-0"
+                >
+                  <Send className="w-4 h-4 text-[#18180f]" />
+                </button>
+              </div>
+
+              {/* Mic status hint */}
+              {isListening && (
+                <p className="text-xs text-[#7cb87a] text-center animate-pulse">{t.micListening}</p>
+              )}
             </div>
           )}
         </div>
