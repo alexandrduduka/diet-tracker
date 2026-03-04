@@ -41,7 +41,7 @@ function LogDrawer({ onClose, t }: { onClose: () => void; t: Translations }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end items-center">
+    <div className="fixed inset-0 z-50 flex justify-center items-end">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div className="relative bg-[#242419] rounded-t-3xl border-t border-[#3a3a2a] px-4 pt-4 pb-8 safe-bottom max-h-[90vh] overflow-y-auto no-scrollbar w-full max-w-md">
         <div className="flex items-center justify-between mb-4">
