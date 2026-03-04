@@ -90,24 +90,22 @@ export async function parseMealDescription(userInput: string, lang: AppLanguage 
     generationConfig: {
       responseMimeType: 'application/json',
       temperature: context ? 0.4 : 0.1,
-      maxOutputTokens: 2048,
+      maxOutputTokens: 4096,
     },
     systemInstruction: buildSystemPrompt(lang, context),
   });
 
-  const contentParts: any[] = [];
-  if (image) {
-    contentParts.push({ inlineData: { data: image.base64, mimeType: image.mimeType } });
-  }
-  if (userInput.trim()) {
-    contentParts.push({ text: userInput });
-  } else if (image) {
-    contentParts.push({ text: 'Identify the food in this image and estimate the nutrition.' });
-  }
-
   let result;
   try {
-    result = await model.generateContent(contentParts.length === 1 && !image ? userInput : contentParts);
+    if (image) {
+      const parts: any[] = [
+        { inlineData: { data: image.base64, mimeType: image.mimeType } },
+        { text: userInput.trim() || 'Identify the food in this image and estimate the nutrition.' },
+      ];
+      result = await model.generateContent(parts);
+    } else {
+      result = await model.generateContent(userInput);
+    }
   } catch (err: any) {
     console.error('[Gemini] raw error:', err);
     const status = err?.status ?? err?.statusCode ?? err?.httpErrorCode;
