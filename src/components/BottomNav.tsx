@@ -22,13 +22,20 @@ export function BottomNav() {
             to={to}
             end={to === '/'}
             className={({ isActive }) =>
-              `flex-1 flex flex-col items-center py-2 gap-1 transition-colors ${
+              `flex-1 flex flex-col items-center py-2 gap-1 transition-all duration-200 relative ${
                 isActive ? 'text-[#7cb87a]' : 'text-[#5a5a44] hover:text-[#9a9680]'
               }`
             }
           >
-            <Icon className="w-5 h-5" />
-            <span className="text-[9px] font-medium">{label}</span>
+            {({ isActive }) => (
+              <>
+                <Icon className={`w-5 h-5 transition-transform duration-200 ${isActive ? 'scale-110' : 'scale-100'}`} />
+                <span className="text-[9px] font-medium">{label}</span>
+                {isActive && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#7cb87a] animate-scale-in" />
+                )}
+              </>
+            )}
           </NavLink>
         ))}
       </div>

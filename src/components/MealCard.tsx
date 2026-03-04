@@ -6,6 +6,7 @@ import { formatTime } from '../lib/date';
 
 interface MealCardProps {
   meal: MealEntry;
+  animationDelay?: number;
 }
 
 const CONFIDENCE_COLOR = {
@@ -15,18 +16,21 @@ const CONFIDENCE_COLOR = {
   manual: 'text-[#9a9680]',
 };
 
-export function MealCard({ meal }: MealCardProps) {
+export function MealCard({ meal, animationDelay = 0 }: MealCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  async function handleDelete() {
+  function handleDelete() {
     if (!meal.id) return;
     setDeleting(true);
-    await db.meals.delete(meal.id);
+    setTimeout(() => db.meals.delete(meal.id!), 280);
   }
 
   return (
-    <div className="rounded-2xl border border-[#3a3a2a] bg-[#242419] overflow-hidden">
+    <div
+      className={`rounded-2xl border border-[#3a3a2a] bg-[#242419] overflow-hidden card-hover animate-fade-in-up ${deleting ? 'animate-collapse' : ''}`}
+      style={{ animationDelay: `${animationDelay}ms` }}
+    >
       <button
         className="w-full flex items-center justify-between p-4 text-left active:bg-[#2e2e22]"
         onClick={() => setExpanded((e) => !e)}

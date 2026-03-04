@@ -19,6 +19,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Tightened rate-limit error detection to avoid false positives
 - Back button added to Settings screen
 - Improved fallback error message to surface raw API error text for easier debugging
+- Aesthetic polish: full animation system across all pages and components — page fade-in on navigation, MacroRing glow (green when near goal, amber when over), MacroBar staggered entrance with near-goal fill glow, BottomNav active indicator dot + icon scale, MealCard fade-in-up entrance with collapse animation on delete and desktop hover shimmer sweep, Dashboard FAB ping when no meals logged, meal card and macro bar staggered entrances, History sparkline bars animate from zero on mount with per-bar stagger, DaySummary cards stagger in
 
 ---
 

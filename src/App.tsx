@@ -15,7 +15,7 @@ function AppShell() {
 
   return (
     <div className="min-h-screen max-w-md mx-auto relative">
-      <main>
+      <main key={location.pathname} className="animate-fade-in">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/chat" element={<Chat />} />

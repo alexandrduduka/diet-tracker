@@ -57,9 +57,9 @@ export function Dashboard() {
 
       {/* Macro bars */}
       <div className="px-4 mt-4 space-y-3">
-        <MacroBar label={t.protein} value={totals.protein} goal={goals.protein} color="#7cb87a" />
-        <MacroBar label={t.carbs} value={totals.carbs} goal={goals.carbs} color="#d4a24c" />
-        <MacroBar label={t.fat} value={totals.fat} goal={goals.fat} color="#c17a5a" />
+        <MacroBar label={t.protein} value={totals.protein} goal={goals.protein} color="#7cb87a" animationDelay={80} />
+        <MacroBar label={t.carbs} value={totals.carbs} goal={goals.carbs} color="#d4a24c" animationDelay={160} />
+        <MacroBar label={t.fat} value={totals.fat} goal={goals.fat} color="#c17a5a" animationDelay={240} />
       </div>
 
       {/* Meals section */}
@@ -86,8 +86,8 @@ export function Dashboard() {
           </div>
         ) : (
           <div className="space-y-3">
-            {meals.map((meal) => (
-              <MealCard key={meal.id} meal={meal} />
+            {meals.map((meal, i) => (
+              <MealCard key={meal.id} meal={meal} animationDelay={i * 60} />
             ))}
           </div>
         )}
@@ -96,9 +96,12 @@ export function Dashboard() {
       {/* FAB */}
       <button
         onClick={() => navigate('/chat')}
-        className="fixed bottom-24 right-4 w-14 h-14 rounded-full bg-[#7cb87a] shadow-lg shadow-[#7cb87a]/20 flex items-center justify-center active:scale-95 transition-transform hover:bg-[#8fce8d]"
+        className="fixed bottom-24 right-4 w-14 h-14 rounded-full bg-[#7cb87a] shadow-lg shadow-[#7cb87a]/30 flex items-center justify-center active:scale-95 transition-transform hover:bg-[#8fce8d] relative"
       >
-        <Plus className="w-6 h-6 text-[#18180f]" />
+        {meals?.length === 0 && (
+          <span className="absolute inset-0 rounded-full bg-[#7cb87a]/40 animate-ping" />
+        )}
+        <Plus className="w-6 h-6 text-[#18180f] relative z-10" />
       </button>
     </div>
   );

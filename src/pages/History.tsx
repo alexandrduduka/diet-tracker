@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db';
@@ -9,7 +9,7 @@ import { useLang } from '../store/langContext';
 import type { MealEntry, MacroNutrients } from '../types';
 import type { Translations } from '../lib/i18n';
 
-function DaySummary({ dayKey, meals, goals, t }: { dayKey: string; meals: MealEntry[]; goals: MacroNutrients; t: Translations }) {
+function DaySummary({ dayKey, meals, goals, t, animationDelay = 0 }: { dayKey: string; meals: MealEntry[]; goals: MacroNutrients; t: Translations; animationDelay?: number }) {
   const [expanded, setExpanded] = useState(false);
   const isToday = dayKey === getTodayKey();
 
@@ -20,7 +20,10 @@ function DaySummary({ dayKey, meals, goals, t }: { dayKey: string; meals: MealEn
 
   if (meals.length === 0) {
     return (
-      <div className="rounded-2xl border border-[#3a3a2a] bg-[#242419] px-4 py-3 flex justify-between items-center opacity-40">
+      <div
+        className="rounded-2xl border border-[#3a3a2a] bg-[#242419] px-4 py-3 flex justify-between items-center opacity-40 animate-fade-in-up"
+        style={{ animationDelay: `${animationDelay}ms` }}
+      >
         <div>
           <p className="text-sm font-medium text-[#9a9680]">{formatDayLabel(dayKey)}{isToday ? ` (${t.today})` : ''}</p>
         </div>
@@ -32,7 +35,10 @@ function DaySummary({ dayKey, meals, goals, t }: { dayKey: string; meals: MealEn
   const caloriesPct = goals.calories > 0 ? Math.round((totals.calories / goals.calories) * 100) : 0;
 
   return (
-    <div className="rounded-2xl border border-[#3a3a2a] bg-[#242419] overflow-hidden">
+    <div
+      className="rounded-2xl border border-[#3a3a2a] bg-[#242419] overflow-hidden animate-fade-in-up"
+      style={{ animationDelay: `${animationDelay}ms` }}
+    >
       <button
         className="w-full flex items-center justify-between px-4 py-3 text-left active:bg-[#2e2e22]"
         onClick={() => setExpanded((e) => !e)}
@@ -76,6 +82,9 @@ function WeekSparkline({ dayKeys, mealsByDay, calorieGoal }: {
   mealsByDay: Record<string, MealEntry[]>;
   calorieGoal: number;
 }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { const t = requestAnimationFrame(() => setMounted(true)); return () => cancelAnimationFrame(t); }, []);
+
   const values = dayKeys.map((k) => {
     const meals = mealsByDay[k] ?? [];
     return meals.reduce((s, m) => s + m.totalMacros.calories, 0);
@@ -93,10 +102,11 @@ function WeekSparkline({ dayKeys, mealsByDay, calorieGoal }: {
           <div key={k} className="flex-1 flex flex-col items-center gap-1">
             <div className="w-full flex items-end" style={{ height: '48px' }}>
               <div
-                className={`w-full rounded-t transition-all ${isToday ? 'ring-1 ring-[#d4a24c]/60' : ''}`}
+                className={`w-full rounded-t ${isToday ? 'ring-1 ring-[#d4a24c]/60' : ''} ${isGoalMet && val > 0 ? 'glow-green' : ''}`}
                 style={{
-                  height: `${Math.max(pct, val > 0 ? 8 : 0)}%`,
+                  height: mounted ? `${Math.max(pct, val > 0 ? 8 : 0)}%` : '0%',
                   backgroundColor: val === 0 ? '#2e2e22' : isGoalMet ? '#7cb87a' : '#d4a24c',
+                  transition: `height 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${i * 40}ms`,
                 }}
               />
             </div>
@@ -165,13 +175,14 @@ export function History() {
         {weekKeys
           .slice()
           .reverse()
-          .map((dayKey) => (
+          .map((dayKey, i) => (
             <DaySummary
               key={dayKey}
               dayKey={dayKey}
               meals={mealsByDay[dayKey] ?? []}
               goals={goals}
               t={t}
+              animationDelay={i * 60}
             />
           ))}
       </div>
