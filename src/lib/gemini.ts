@@ -85,7 +85,7 @@ export async function parseMealDescription(userInput: string, lang: AppLanguage 
     generationConfig: {
       responseMimeType: 'application/json',
       temperature: context ? 0.4 : 0.1,
-      maxOutputTokens: 1024,
+      maxOutputTokens: 2048,
     },
     systemInstruction: buildSystemPrompt(lang, context),
   });
@@ -117,6 +117,7 @@ export async function parseMealDescription(userInput: string, lang: AppLanguage 
   try {
     parsed = JSON.parse(cleaned);
   } catch {
+    console.error('[Gemini] PARSE_ERROR — raw response:', text);
     throw new Error('PARSE_ERROR');
   }
 
