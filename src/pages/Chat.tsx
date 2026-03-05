@@ -281,8 +281,21 @@ export function Chat() {
       }
 
       if (intent === 'question') {
-        const answer = await askNutritionQuestion(userText, lang, nutritionCtx);
-        setMessages((m) => [...m, { role: 'answer', text: answer }]);
+        try {
+          const answer = await askNutritionQuestion(userText, lang, nutritionCtx);
+          setMessages((m) => [...m, { role: 'answer', text: answer }]);
+        } catch (err: any) {
+          const msg: string = err?.message ?? '';
+          if (msg === 'NO_API_KEY') {
+            setMessages((m) => [...m, { role: 'setup', retryText: userText }]);
+          } else if (msg === 'INVALID_API_KEY') {
+            setMessages((m) => [...m, { role: 'error', text: t.invalidApiKey }]);
+          } else if (msg === 'RATE_LIMIT') {
+            setMessages((m) => [...m, { role: 'error', text: t.rateLimit }]);
+          } else {
+            setMessages((m) => [...m, { role: 'error', text: t.chatAnswerError }]);
+          }
+        }
       } else {
         const parsed = await parseMealDescription(userText, lang, mealCtx, imageSnapshot ?? undefined);
         setPendingMeal(parsed);

@@ -214,7 +214,9 @@ export async function classifyIntent(
     generationConfig: {
       responseMimeType: 'application/json',
       temperature: 0.1,
-      maxOutputTokens: 64,
+      // gemini-2.5-flash uses thinking tokens internally; 64 is too few to
+      // leave room for the actual JSON output after thinking completes.
+      maxOutputTokens: 512,
     },
     systemInstruction: `Classify the user message as either a meal-logging request or a nutrition/health question.
 Return ONLY a JSON object: {"intent": "log"} or {"intent": "question"}.
