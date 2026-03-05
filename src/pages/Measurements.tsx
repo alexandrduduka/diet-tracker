@@ -3,6 +3,7 @@ import { Plus, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { db } from '../db';
 import { getTodayKey } from '../lib/date';
+import { trackMeasurementLogged } from '../lib/analytics';
 import { useLast30DaysMeasurements, useAllMeasurements } from '../hooks/useMeasurements';
 import { MeasurementChart } from '../components/MeasurementChart';
 import type { MeasurementKey } from '../types';
@@ -25,6 +26,7 @@ function LogDrawer({ onClose, t }: { onClose: () => void; t: Translations }) {
   async function handleSave() {
     const hasAny = Object.values(fields).some((v) => v.trim() !== '');
     if (!hasAny) return;
+    trackMeasurementLogged();
     setSaving(true);
     await db.measurements.add({
       timestamp: new Date(),

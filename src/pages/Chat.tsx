@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X, Pencil, Trash2, HelpCircle } from 'lucide-react';
 import { parseMealDescription, classifyIntent, askNutritionQuestion, type ParsedMeal, type MealContext, type NutritionContext, type ImageAttachment } from '../lib/gemini';
+import { trackMealLogStarted, trackMealSaved, trackMealDiscarded, trackMealEdited, trackNutritionQuestion, trackChatCleared, trackApiKeySaved } from '../lib/analytics';
 import { sumMacros, recalculateCalories } from '../lib/nutrition';
 import type { FoodItem } from '../types';
 import { db } from '../db';
@@ -219,6 +220,7 @@ export function Chat() {
       setIsListening(false);
     };
 
+    trackMealLogStarted('voice');
     recognitionRef.current = recognition;
     recognition.start();
     setIsListening(true);
@@ -248,6 +250,7 @@ export function Chat() {
   }
 
   function clearHistory() {
+    trackChatCleared();
     localStorage.removeItem(CHAT_HISTORY_KEY);
     setPendingMeal(null);
     setEditingResult(false);
@@ -282,6 +285,7 @@ export function Chat() {
       }
 
       if (intent === 'question') {
+        trackNutritionQuestion();
         try {
           const answer = await askNutritionQuestion(userText, lang, nutritionCtx);
           setMessages((m) => [...m, { role: 'answer', text: answer }]);
@@ -298,6 +302,7 @@ export function Chat() {
           }
         }
       } else {
+        trackMealLogStarted(imageSnapshot ? 'photo' : 'text');
         const parsed = await parseMealDescription(userText, lang, mealCtx, imageSnapshot ?? undefined);
         setPendingMeal(parsed);
         setMessages((m) => [...m, { role: 'result', parsed }]);
@@ -325,8 +330,10 @@ export function Chat() {
     }
   }
 
-  async function saveMeal(parsed: ParsedMeal) {
+  async function saveMeal(parsed: ParsedMeal, wasEdited = false) {
     const total = sumMacros(parsed.foods);
+    if (wasEdited) trackMealEdited();
+    trackMealSaved('ai', parsed.foods.length);
     await db.meals.add({
       timestamp: new Date(),
       dayKey: getTodayKey(),
@@ -347,6 +354,7 @@ export function Chat() {
   async function handleSetupSave(retryText: string) {
     const trimmed = setupKey.trim();
     if (!trimmed) return;
+    trackApiKeySaved();
     saveSettings({ geminiApiKey: trimmed });
     window.dispatchEvent(new Event('dtk:settings-changed'));
     setMessages((m) => m.filter((msg) => msg.role !== 'setup'));
@@ -384,6 +392,7 @@ export function Chat() {
       },
     };
     const rawInput = messages.filter((m) => m.role === 'user').slice(-1)[0]?.text ?? manualFields.name;
+    trackMealSaved('manual', 1);
     await db.meals.add({
       timestamp: new Date(),
       dayKey: getTodayKey(),
@@ -666,10 +675,10 @@ export function Chat() {
                     )}
                     {isPending && (
                       <div className="mt-4 flex gap-2">
-                        <Button size="sm" onClick={() => { const mealToSave = editingResult ? { ...msg.parsed, foods: editedFoods } : msg.parsed; setEditingResult(false); saveMeal(mealToSave); }} className="flex-1 gap-1.5">
+                        <Button size="sm" onClick={() => { const mealToSave = editingResult ? { ...msg.parsed, foods: editedFoods } : msg.parsed; setEditingResult(false); saveMeal(mealToSave, editingResult); }} className="flex-1 gap-1.5">
                           <CheckCircle className="w-4 h-4" /> {t.saveBtn}
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => { setPendingMeal(null); setEditingResult(false); }} className="flex-1 gap-1.5">
+                        <Button size="sm" variant="outline" onClick={() => { setPendingMeal(null); setEditingResult(false); trackMealDiscarded(); }} className="flex-1 gap-1.5">
                           <XCircle className="w-4 h-4" /> {t.discard}
                         </Button>
                       </div>

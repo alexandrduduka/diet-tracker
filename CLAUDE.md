@@ -234,6 +234,26 @@ npm test
 
 New test files go alongside source in `src/**/*.test.ts`.
 
+## Analytics
+
+### Google Analytics 4
+- Measurement ID: `G-CX3LDP2Y41`
+- Injected via `<script async src="…gtag/js?id=G-CX3LDP2Y41">` in `index.html`
+- `send_page_view: false` in config — manual page views fired via `trackPageView()` in `AppShell` `useEffect` on every `location.pathname` change (HashRouter-compatible)
+- All event helpers in `src/lib/analytics.ts` — typed, no-op if gtag blocked
+- Events tracked: `page_view`, `meal_saved`, `meal_discarded`, `meal_edited`, `meal_log_started` (method: text/photo/voice), `nutrition_question_asked`, `chat_history_cleared`, `api_key_saved`, `goals_updated`, `language_changed`, `data_exported`, `onboarding_completed`, `measurement_logged`, `article_opened`
+- `anonymize_ip: true` set in config; no PII ever passed to events
+
+### Microsoft Clarity
+- Project ID: `vr5878quce`
+- Injected via standard Clarity snippet in `index.html` (free heatmaps + session recordings)
+
+## Persistent Logo
+- A fixed `<header>` rendered in `AppShell` (above `<main>`) shows the icon PNG + "Diet Tracker" wordmark
+- `z-50`, `pointer-events-none`, opacity-muted so it never interferes with content
+- Visible on all routes including `/settings` and `/onboarding`
+- Height: 32px (`h-8`); pages with `pt-12` have enough top padding that content never clips behind it
+
 ## Known Decisions / History
 
 - HashRouter over BrowserRouter: Cloudflare Pages serves a single static file, no server routing

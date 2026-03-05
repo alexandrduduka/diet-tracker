@@ -9,6 +9,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Google Analytics 4** (G-CX3LDP2Y41): page-view tracking on every HashRouter navigation plus custom events — `meal_saved`, `meal_discarded`, `meal_edited`, `meal_log_started` (method: text/photo/voice), `nutrition_question_asked`, `chat_history_cleared`, `api_key_saved`, `goals_updated`, `language_changed`, `data_exported`, `onboarding_completed`, `measurement_logged`, `article_opened`. IP anonymization enabled; no PII sent.
+- **Microsoft Clarity** (project `vr5878quce`): free heatmap and session-recording tool injected via standard snippet in `index.html`.
+- **`src/lib/analytics.ts`**: typed analytics helper — all `gtag()` calls centralised here; no-ops gracefully if gtag is blocked.
+- **Persistent logo strip**: a fixed `<header>` at the top of the app shell shows the Diet Tracker icon and wordmark on every screen (opacity-muted, non-interactive, `z-50`).
+
+
 - **First-time onboarding flow** (`/onboarding`): 6-step wizard — Welcome (with language picker), Nutrition Primer (protein/fat/carbs explained with macro split visual + link to articles), Body Stats (sex/age/weight/height, metric with conversion hints), Activity & Goal, Results with connected macro sliders, and Done screen. Calculates personalised calorie and macro targets using Mifflin-St Jeor BMR × activity TDEE.
 - **Macro distribution insights**: live contextual note on the onboarding slider screen explains how the current protein/fat/carbs split will affect lifestyle — warns about muscle loss for low protein (<1.2g/kg), hormone issues for very low fat (<20%), keto territory for high fat (>40%) or low carbs (<80g), and shows positive feedback for balanced distributions.
 - **Connected macro sliders**: protein and fat sliders update carbs automatically within calorie budget; slider bounds enforce healthy minimums (≥20% of calories from fat, ≥20g carbs). Protein defaults to 1.8–2.0g/kg depending on goal.

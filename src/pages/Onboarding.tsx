@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import { useLang } from '../store/langContext';
 import { saveSettings } from '../store/settings';
+import { trackOnboardingCompleted } from '../lib/analytics';
 import { db } from '../db';
 import { getTodayKey } from '../lib/date';
 import { LANGUAGE_LABELS } from '../lib/i18n';
@@ -74,6 +75,7 @@ export function Onboarding() {
     const profile = buildProfile();
     const calories = calculateCalorieTarget(profile);
     const carbs = derivedCarbs(calories, protein, fat);
+    trackOnboardingCompleted();
     saveSettings({
       goals: { calories, protein, fat, carbs },
       onboardingComplete: true,

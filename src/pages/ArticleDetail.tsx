@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getLocalizedArticle, type ArticleSection } from '../lib/articles';
 import { useLang } from '../store/langContext';
+import { trackArticleOpened } from '../lib/analytics';
 
 function renderSection(section: ArticleSection, i: number) {
   switch (section.type) {
@@ -118,11 +119,12 @@ export function ArticleDetail() {
   useEffect(() => {
     if (article) {
       document.title = `${article.title} — Diet Tracker`;
+      if (slug) trackArticleOpened(slug);
     }
     return () => {
       document.title = 'Diet Tracker — AI-Powered Nutrition & Calorie Tracker';
     };
-  }, [article]);
+  }, [article, slug]);
 
   if (!article) {
     return (

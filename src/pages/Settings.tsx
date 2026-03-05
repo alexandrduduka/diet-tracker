@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Eye, EyeOff, ExternalLink, Check, HelpCircle, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getSettings, saveSettings } from '../store/settings';
+import { trackApiKeySaved, trackGoalsUpdated, trackLanguageChanged, trackDataExported } from '../lib/analytics';
 import { db } from '../db';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -85,6 +86,8 @@ export function Settings() {
       carbs: Number(goalStrings.carbs) || 0,
       fat: Number(goalStrings.fat) || 0,
     };
+    if (settings.geminiApiKey) trackApiKeySaved();
+    trackGoalsUpdated();
     saveSettings({ ...settings, goals, language: lang });
     window.dispatchEvent(new Event('dtk:settings-changed'));
     setSaved(true);
@@ -92,6 +95,7 @@ export function Settings() {
   }
 
   function handleLangChange(l: AppLanguage) {
+    trackLanguageChanged(l);
     setLang(l);
     // Immediately persist language choice
     saveSettings({ language: l });
@@ -99,6 +103,7 @@ export function Settings() {
   }
 
   async function handleExport() {
+    trackDataExported();
     const meals = await db.meals.toArray();
     const measurements = await db.measurements.toArray();
     const blob = new Blob([JSON.stringify({ meals, measurements, exportedAt: new Date().toISOString() }, null, 2)], {
