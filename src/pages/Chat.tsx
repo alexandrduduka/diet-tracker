@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X } from 'lucide-react';
+import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X, Pencil } from 'lucide-react';
 import { parseMealDescription, type ParsedMeal, type MealContext, type ImageAttachment } from '../lib/gemini';
 import { sumMacros } from '../lib/nutrition';
+import type { FoodItem } from '../types';
 import { db } from '../db';
 import { getTodayKey } from '../lib/date';
 import { useOnlineStatus } from '../components/OfflineBanner';
-import type { FoodItem } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -38,6 +38,8 @@ export function Chat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [pendingMeal, setPendingMeal] = useState<ParsedMeal | null>(null);
+  const [editingResult, setEditingResult] = useState(false);
+  const [editedFoods, setEditedFoods] = useState<FoodItem[]>([]);
   const [showManual, setShowManual] = useState(false);
   const [manualFields, setManualFields] = useState({ name: '', calories: '', protein: '', fat: '', carbs: '' });
   const [setupKey, setSetupKey] = useState('');
@@ -367,27 +369,77 @@ export function Chat() {
             );
           }
           if (msg.role === 'result') {
-            const total = sumMacros(msg.parsed.foods);
+            const isPending = pendingMeal && i === messages.length - 1;
+            const displayFoods = (isPending && editingResult) ? editedFoods : msg.parsed.foods;
+            const total = sumMacros(displayFoods);
             return (
               <div key={i} className="space-y-3">
                 <div className="flex gap-2">
                   <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
                   <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[95%] text-sm w-full">
-                    <p className="text-[#9a9680] mb-3">{t.gotIt}</p>
-                    <div className="space-y-2">
-                      {msg.parsed.foods.map((food, fi) => (
-                        <div key={fi} className="flex justify-between items-start">
-                          <div>
-                            <p className="text-[#f0ede4] font-medium">{food.name}</p>
-                            <p className="text-xs text-[#5a5a44]">{food.quantity}</p>
-                          </div>
-                          <div className="text-right text-xs text-[#9a9680] shrink-0 ml-4">
-                            <p className="text-[#d4a24c] font-medium">{food.macros.calories} kcal</p>
-                            <p>P:{food.macros.protein}g C:{food.macros.carbs}g F:{food.macros.fat}g</p>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-[#9a9680]">{t.gotIt}</p>
+                      {isPending && !editingResult && (
+                        <button
+                          onClick={() => { setEditedFoods(msg.parsed.foods.map(f => ({ ...f, macros: { ...f.macros } }))); setEditingResult(true); }}
+                          className="flex items-center gap-1 text-xs text-[#9a9680] hover:text-[#f0ede4] px-2 py-1 rounded-lg hover:bg-[#3a3a2a]"
+                        >
+                          <Pencil className="w-3 h-3" /> {t.editSuggestion}
+                        </button>
+                      )}
                     </div>
+
+                    {editingResult && isPending ? (
+                      <div className="space-y-3">
+                        {editedFoods.map((food, fi) => (
+                          <div key={fi} className="space-y-2 pb-3 border-b border-[#3a3a2a] last:border-0">
+                            <div className="grid grid-cols-2 gap-1.5">
+                              <input
+                                className="col-span-2 bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-sm text-[#f0ede4] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
+                                value={food.name}
+                                onChange={(e) => setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, name: e.target.value } : f))}
+                                placeholder="Food name"
+                              />
+                              <input
+                                className="col-span-2 bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-xs text-[#9a9680] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
+                                value={food.quantity}
+                                onChange={(e) => setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, quantity: e.target.value } : f))}
+                                placeholder="Quantity"
+                              />
+                            </div>
+                            <div className="grid grid-cols-4 gap-1.5">
+                              {(['calories', 'protein', 'carbs', 'fat'] as const).map((key) => (
+                                <div key={key} className="space-y-0.5">
+                                  <label className="text-[9px] text-[#5a5a44] uppercase tracking-wide block">{key === 'calories' ? 'kcal' : key[0].toUpperCase()}</label>
+                                  <input
+                                    type="number"
+                                    className="w-full bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-xs text-[#f0ede4] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
+                                    value={food.macros[key]}
+                                    onChange={(e) => setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, macros: { ...f.macros, [key]: Number(e.target.value) || 0 } } : f))}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {displayFoods.map((food, fi) => (
+                          <div key={fi} className="flex justify-between items-start">
+                            <div>
+                              <p className="text-[#f0ede4] font-medium">{food.name}</p>
+                              <p className="text-xs text-[#5a5a44]">{food.quantity}</p>
+                            </div>
+                            <div className="text-right text-xs text-[#9a9680] shrink-0 ml-4">
+                              <p className="text-[#d4a24c] font-medium">{food.macros.calories} kcal</p>
+                              <p>P:{food.macros.protein}g C:{food.macros.carbs}g F:{food.macros.fat}g</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                     <div className="mt-3 pt-3 border-t border-[#3a3a2a] flex justify-between text-sm">
                       <span className="text-[#9a9680]">{t.total}</span>
                       <div className="text-right">
@@ -395,15 +447,15 @@ export function Chat() {
                         <p className="text-xs text-[#5a5a44]">P:{total.protein}g F:{total.fat}g C:{total.carbs}g</p>
                       </div>
                     </div>
-                    {msg.parsed.notes && (
+                    {msg.parsed.notes && !editingResult && (
                       <p className="mt-2 text-xs text-[#9a9680] italic">{msg.parsed.notes}</p>
                     )}
-                    {pendingMeal && i === messages.length - 1 && (
+                    {isPending && (
                       <div className="mt-4 flex gap-2">
-                        <Button size="sm" onClick={() => saveMeal(msg.parsed)} className="flex-1 gap-1.5">
+                        <Button size="sm" onClick={() => { const mealToSave = editingResult ? { ...msg.parsed, foods: editedFoods } : msg.parsed; setEditingResult(false); saveMeal(mealToSave); }} className="flex-1 gap-1.5">
                           <CheckCircle className="w-4 h-4" /> {t.saveBtn}
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => { setPendingMeal(null); setMessages([{ role: 'assistant', text: t.chatWelcome }]); }} className="flex-1 gap-1.5">
+                        <Button size="sm" variant="outline" onClick={() => { setPendingMeal(null); setEditingResult(false); setMessages([{ role: 'assistant', text: t.chatWelcome }]); }} className="flex-1 gap-1.5">
                           <XCircle className="w-4 h-4" /> {t.discard}
                         </Button>
                       </div>

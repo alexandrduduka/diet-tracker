@@ -63,6 +63,8 @@ export interface Translations {
   saving: string;
   editMeal: string;
   mealDescription: string;
+  nutrients: string;
+  editSuggestion: string;
 
   // Measurement labels
   weight: string;
@@ -197,6 +199,8 @@ const en: Translations = {
   saving: 'Saving...',
   editMeal: 'Edit Meal',
   mealDescription: 'Meal description',
+  nutrients: 'Nutrients',
+  editSuggestion: 'Edit',
 
   weight: 'Weight',
   waist: 'Waist',
@@ -318,6 +322,8 @@ const ru: Translations = {
   saving: 'Сохраняю...',
   editMeal: 'Редактировать приём',
   mealDescription: 'Описание приёма',
+  nutrients: 'Нутриенты',
+  editSuggestion: 'Изменить',
 
   weight: 'Вес',
   waist: 'Талия',
@@ -439,6 +445,8 @@ const cs: Translations = {
   saving: 'Ukládám...',
   editMeal: 'Upravit jídlo',
   mealDescription: 'Popis jídla',
+  nutrients: 'Živiny',
+  editSuggestion: 'Upravit',
 
   weight: 'Hmotnost',
   waist: 'Pas',
@@ -560,6 +568,8 @@ const de: Translations = {
   saving: 'Speichern...',
   editMeal: 'Mahlzeit bearbeiten',
   mealDescription: 'Mahlzeitbeschreibung',
+  nutrients: 'Nährstoffe',
+  editSuggestion: 'Bearbeiten',
 
   weight: 'Gewicht',
   waist: 'Taille',
@@ -681,6 +691,8 @@ const fr: Translations = {
   saving: 'Enregistrement...',
   editMeal: 'Modifier le repas',
   mealDescription: 'Description du repas',
+  nutrients: 'Nutriments',
+  editSuggestion: 'Modifier',
 
   weight: 'Poids',
   waist: 'Taille',
@@ -802,6 +814,8 @@ const es: Translations = {
   saving: 'Guardando...',
   editMeal: 'Editar comida',
   mealDescription: 'Descripción de la comida',
+  nutrients: 'Nutrientes',
+  editSuggestion: 'Editar',
 
   weight: 'Peso',
   waist: 'Cintura',
@@ -923,6 +937,8 @@ const uk: Translations = {
   saving: 'Зберігаю...',
   editMeal: 'Редагувати прийом',
   mealDescription: 'Опис прийому',
+  nutrients: 'Нутрієнти',
+  editSuggestion: 'Змінити',
 
   weight: 'Вага',
   waist: 'Талія',
