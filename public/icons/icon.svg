@@ -4,49 +4,20 @@
       <stop offset='0%' stop-color='#1e1e12'/>
       <stop offset='100%' stop-color='#111109'/>
     </linearGradient>
-    <!-- Liquid fill: deep green at bottom, bright green mid, lighter at surface -->
     <linearGradient id='fillGrad' x1='0' y1='1' x2='0' y2='0'>
       <stop offset='0%' stop-color='#2e7a2c'/>
       <stop offset='60%' stop-color='#7cb87a'/>
       <stop offset='100%' stop-color='#a8d8a6'/>
     </linearGradient>
-    <!-- Cup body gradient: subtle left-to-right sheen -->
     <linearGradient id='cupGrad' x1='0' y1='0' x2='1' y2='0'>
       <stop offset='0%' stop-color='#3a3a28'/>
       <stop offset='50%' stop-color='#4a4a34'/>
       <stop offset='100%' stop-color='#363626'/>
     </linearGradient>
-    <!-- Leaf gradient -->
-    <linearGradient id='leafGrad' x1='0' y1='0' x2='1' y2='1'>
-      <stop offset='0%' stop-color='#8fce8d'/>
-      <stop offset='100%' stop-color='#4a9e48'/>
-    </linearGradient>
-    <!-- Clip path: interior of the cup (slightly inset from cup walls) -->
     <clipPath id='cupInterior'>
-      <!--
-        Cup interior trapezoid:
-        Cup outer shape (explained below):
-          Bottom: flat, from (176,388) to (336,388), width=160
-          Top-left: (148,148)
-          Top-right: (364,148)
-          Top width = 216, bottom width = 160, height = 240
-          Sides taper inward going down
-
-        Interior inset ~8px from walls:
-          Bottom: (184,380) to (328,380)
-          Top-left interior: (156,156)
-          Top-right interior: (356,156)
-      -->
       <path d='M 156 156 L 356 156 L 328 380 L 184 380 Z'/>
     </clipPath>
     <filter id='fillGlow' x='-10%' y='-10%' width='120%' height='120%'>
-      <feGaussianBlur in='SourceGraphic' stdDeviation='4' result='blur'/>
-      <feMerge>
-        <feMergeNode in='blur'/>
-        <feMergeNode in='SourceGraphic'/>
-      </feMerge>
-    </filter>
-    <filter id='leafGlow' x='-40%' y='-40%' width='180%' height='180%'>
       <feGaussianBlur in='SourceGraphic' stdDeviation='4' result='blur'/>
       <feMerge>
         <feMergeNode in='blur'/>
@@ -62,147 +33,93 @@
   <!-- Ambient green glow behind cup -->
   <ellipse cx='256' cy='290' rx='140' ry='110' fill='#7cb87a' opacity='0.07'/>
 
-  <!--
-    MEASURING CUP DESIGN
-    ====================
-    Centred horizontally at x=256. The cup sits roughly in the middle of the icon.
-
-    Cup outer silhouette (filled with cup body colour):
-      Trapezoid body:
-        Top-left:  (148, 148)
-        Top-right: (364, 148)
-        Bottom-right: (336, 388)
-        Bottom-left:  (176, 388)
-
-      Pour spout (extends right from top-right, angled up):
-        From (364,148) → arc/line to (400,120) → (412,128) → (378,156) back to cup
-
-      Flat base rectangle below trapezoid:
-        (168,388) to (344,388) to (344,400) to (168,400) — slightly wider for stability
-
-    Handle (left side, a D-shape bracket):
-        Outer: curve from (176,220) → (110,240) → (110,300) → (176,320)
-        Inner: curve from (176,240) → (130,255) → (130,285) → (176,300)
-  -->
-
   <!-- Cup base (flat foot) -->
   <rect x='168' y='388' width='176' height='18' rx='9' fill='url(#cupGrad)'/>
 
-  <!-- Cup body fill (background of cup walls) -->
-  <path
-    d='M 148 148 L 364 148 L 336 388 L 176 388 Z'
-    fill='url(#cupGrad)'
-  />
+  <!-- Cup body fill -->
+  <path d='M 148 148 L 364 148 L 336 388 L 176 388 Z' fill='url(#cupGrad)'/>
 
-  <!--
-    Green liquid fill — clipped to cup interior.
-    Fill level: ~62% from bottom.
-    Interior height = 380-156 = 224px. 62% up from bottom = 156 + 224*(1-0.62) = 156 + 85 = 241.
-    Liquid surface y = 241. Liquid fills from 241 down to 380.
-    At y=241 in the trapezoid (going from top-left 156,156 to bottom-left 184,380):
-      left x at y=241: 156 + (184-156)*(241-156)/(380-156) = 156 + 28*85/224 = 156 + 10.6 = 167
-      right x at y=241: 356 + (328-356)*(241-156)/(380-156) = 356 + (-28)*85/224 = 356 - 10.6 = 345
-  -->
+  <!-- Green liquid fill -->
   <g clip-path='url(#cupInterior)' filter='url(#fillGlow)'>
-    <!-- Liquid fill rectangle (clips to cup interior trapezoid) -->
     <rect x='140' y='241' width='232' height='145' fill='url(#fillGrad)'/>
-    <!-- Subtle liquid surface shimmer line -->
-    <path
-      d='M 167 241 Q 256 234 345 241'
-      stroke='#c8f0c6'
-      stroke-width='3'
-      fill='none'
-      opacity='0.5'
-    />
-    <!-- Liquid interior highlight: vertical shimmer -->
+    <path d='M 167 241 Q 256 234 345 241' stroke='#c8f0c6' stroke-width='3' fill='none' opacity='0.5'/>
     <rect x='192' y='255' width='14' height='100' rx='7' fill='#ffffff' opacity='0.07'/>
   </g>
 
-  <!-- Cup wall outline (drawn on top of fill) -->
-  <path
-    d='M 148 148 L 364 148 L 336 388 L 176 388 Z'
-    fill='none'
-    stroke='#6a6a50'
-    stroke-width='8'
-    stroke-linejoin='round'
-  />
+  <!-- Cup wall outline -->
+  <path d='M 148 148 L 364 148 L 336 388 L 176 388 Z' fill='none' stroke='#6a6a50' stroke-width='8' stroke-linejoin='round'/>
 
-  <!-- Top rim of cup (horizontal bar) -->
-  <path
-    d='M 144 148 L 368 148'
-    stroke='#7a7a5a'
-    stroke-width='10'
-    stroke-linecap='round'
-  />
+  <!-- Top rim -->
+  <path d='M 144 148 L 368 148' stroke='#7a7a5a' stroke-width='10' stroke-linecap='round'/>
 
-  <!-- Pour spout (right side, angled lip extending from top-right) -->
-  <!--
-    Spout: a triangular notch/lip at the top-right of the rim
-    From top-right corner (364,148), extends to a point at (410,118),
-    comes back down to (390,148).
-    Filled with same cup color, outlined.
-  -->
-  <path
-    d='M 364 152 L 408 116 L 418 128 L 390 152 Z'
-    fill='url(#cupGrad)'
-    stroke='#6a6a50'
-    stroke-width='7'
-    stroke-linejoin='round'
-  />
+  <!-- Pour spout -->
+  <path d='M 364 152 L 408 116 L 418 128 L 390 152 Z' fill='url(#cupGrad)' stroke='#6a6a50' stroke-width='7' stroke-linejoin='round'/>
 
-  <!-- Handle (left side D-bracket) -->
-  <!--
-    Outer handle path: from cup wall at (176,220), curves left to (110,260), back to (176,330)
-    Inner cutout: from (176,248), curves to (136,265), back to (176,302)
-    Net shape = C-shaped bracket
-  -->
+  <!-- Handle -->
   <path
     d='M 177 224 C 160 224 110 244 110 272 C 110 300 160 322 177 322
        L 177 302 C 164 302 132 288 132 272 C 132 256 164 244 177 244 Z'
-    fill='url(#cupGrad)'
-    stroke='#6a6a50'
-    stroke-width='5'
-    stroke-linejoin='round'
+    fill='url(#cupGrad)' stroke='#6a6a50' stroke-width='5' stroke-linejoin='round'
   />
 
-  <!-- Graduation marks (measurement lines on right side of cup) -->
-  <!-- 3 horizontal tick marks at 25%, 50%, 75% fill levels -->
-  <!-- Interior right wall at each level: -->
-  <!-- At 75% fill (y = 156 + 224*0.25 = 212): right x ≈ 356 - 28*0.25 = 349 -->
-  <!-- At 50% fill (y = 156 + 224*0.50 = 268): right x ≈ 356 - 28*0.50 = 342 -->
-  <!-- At 25% fill (y = 156 + 224*0.75 = 324): right x ≈ 356 - 28*0.75 = 335 -->
+  <!-- Graduation marks -->
   <g stroke='#5a5a3e' stroke-width='4' stroke-linecap='round' opacity='0.7'>
-    <!-- 75% mark -->
     <line x1='296' y1='212' x2='318' y2='212'/>
-    <!-- 50% mark (the fill level — slightly emphasized) -->
     <line x1='290' y1='268' x2='318' y2='268'/>
-    <!-- 25% mark -->
     <line x1='283' y1='324' x2='312' y2='324'/>
   </g>
-  <!-- Liquid surface aligns with 62% mark — draw a slightly brighter tick here -->
-  <!-- 62% fill: y = 156 + 224*(1-0.62) = 156 + 85 = 241, right x ≈ 356 - 28*0.38 = 345 -->
   <line x1='293' y1='241' x2='322' y2='241' stroke='#8fce8d' stroke-width='5' stroke-linecap='round' opacity='0.8'/>
 
   <!--
-    LEAF MOTIF
-    Small leaf shape on the cup body, upper-left area of the cup
-    Centred at approximately (218, 210)
-    Leaf: teardrop pointing upper-right, with midrib
+    WHITE LABEL on cup body, upper-left area
+    Rounded rectangle, slightly rotated, like a paper sticker
+    Centred around (218, 213), width=72, height=84
   -->
-  <g filter='url(#leafGlow)'>
-    <path
-      d='M 218 238 C 204 222 202 198 218 188 C 234 198 236 222 218 238 Z'
-      fill='url(#leafGrad)'
-    />
-    <!-- Leaf midrib -->
-    <path
-      d='M 218 238 C 217 222 218 200 218 188'
-      stroke='#c8f0c6'
-      stroke-width='2.5'
-      stroke-linecap='round'
-      fill='none'
-      opacity='0.6'
-    />
+  <g transform='translate(218,213) rotate(-6)'>
+    <!-- Label shadow -->
+    <rect x='-37' y='-43' width='74' height='86' rx='10' fill='#000000' opacity='0.18' transform='translate(2,3)'/>
+    <!-- Label body -->
+    <rect x='-37' y='-43' width='74' height='86' rx='10' fill='#f5f0e8'/>
+    <!-- Label inner border (subtle) -->
+    <rect x='-33' y='-39' width='66' height='78' rx='8' fill='none' stroke='#d4c9a8' stroke-width='1.5' opacity='0.6'/>
+
+    <!--
+      WHEAT EAR (колосок) - dark amber/golden, centred on label
+      Stem: vertical line from bottom
+      Grains: pairs of small ellipses on alternating sides, going up
+    -->
+    <g fill='#c8860a' stroke='#a06508' stroke-width='1'>
+      <!-- Stem -->
+      <line x1='0' y1='32' x2='0' y2='-6' stroke='#c8860a' stroke-width='3' stroke-linecap='round'/>
+
+      <!-- Bottom pair of grains (widest) -->
+      <ellipse cx='-9' cy='16' rx='9' ry='6' transform='rotate(-35,-9,16)'/>
+      <ellipse cx='9' cy='13' rx='9' ry='6' transform='rotate(35,9,13)'/>
+
+      <!-- Middle pair -->
+      <ellipse cx='-9' cy='2' rx='9' ry='6' transform='rotate(-35,-9,2)'/>
+      <ellipse cx='9' cy='-1' rx='9' ry='6' transform='rotate(35,9,-1)'/>
+
+      <!-- Upper pair -->
+      <ellipse cx='-8' cy='-13' rx='8' ry='5.5' transform='rotate(-35,-8,-13)'/>
+      <ellipse cx='8' cy='-16' rx='8' ry='5.5' transform='rotate(35,8,-16)'/>
+
+      <!-- Top single grain (tip) -->
+      <ellipse cx='0' cy='-28' rx='6' ry='8'/>
+
+      <!-- Awns (усики) at the top -->
+      <line x1='0' y1='-36' x2='-6' y2='-52' stroke='#c8860a' stroke-width='2' stroke-linecap='round'/>
+      <line x1='0' y1='-36' x2='0' y2='-54' stroke='#c8860a' stroke-width='2' stroke-linecap='round'/>
+      <line x1='0' y1='-36' x2='6' y2='-52' stroke='#c8860a' stroke-width='2' stroke-linecap='round'/>
+
+      <!-- Highlight sheen on grains -->
+      <ellipse cx='-9' cy='14' rx='3.5' ry='2' transform='rotate(-35,-9,14)' fill='#f5c842' stroke='none' opacity='0.5'/>
+      <ellipse cx='9' cy='11' rx='3.5' ry='2' transform='rotate(35,9,11)' fill='#f5c842' stroke='none' opacity='0.5'/>
+      <ellipse cx='-9' cy='0' rx='3.5' ry='2' transform='rotate(-35,-9,0)' fill='#f5c842' stroke='none' opacity='0.5'/>
+      <ellipse cx='9' cy='-3' rx='3.5' ry='2' transform='rotate(35,9,-3)' fill='#f5c842' stroke='none' opacity='0.5'/>
+      <ellipse cx='-8' cy='-15' rx='3' ry='2' transform='rotate(-35,-8,-15)' fill='#f5c842' stroke='none' opacity='0.5'/>
+      <ellipse cx='8' cy='-18' rx='3' ry='2' transform='rotate(35,8,-18)' fill='#f5c842' stroke='none' opacity='0.5'/>
+    </g>
   </g>
 
 </svg>
