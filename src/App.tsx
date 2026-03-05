@@ -13,7 +13,7 @@ import { BottomNav } from './components/BottomNav';
 import { getSettings } from './store/settings';
 import { trackPageView } from './lib/analytics';
 
-const HIDE_NAV_ROUTES = ['/settings', '/onboarding'];
+const HIDE_NAV_ROUTES = ['/onboarding'];
 
 function AppShell() {
   const location = useLocation();

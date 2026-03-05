@@ -59,7 +59,7 @@ Alternatively, you can set it up in advance:
 
 ### Configure the app
 
-1. Open **Settings** (gear icon on Dashboard or Settings tab)
+1. Open **Settings** (Settings tab in the bottom nav)
 2. Set your daily nutrition goals (calories, protein, fat, carbs) — defaults are 2000 kcal / 150g protein / 65g fat / 250g carbs
 3. Choose your preferred language
 
@@ -84,11 +84,15 @@ The main screen shows your nutrition progress for today.
 
 **Log Meal button** — taps through to the Chat page.
 
+**Body measurement nudge** — if you haven't logged a body measurement in more than 14 days (or never), an amber banner appears at the top of the Dashboard with a quick link to the Measurements screen. Tap the × to dismiss it for the rest of the session.
+
 ---
 
-### Chat (Nutrition Assistant)
+### Chat (Log & Ask)
 
 The intelligent chat screen. You can both **log meals** and **ask nutrition questions** — the app automatically detects which one you mean and responds accordingly. Your full conversation history is preserved across sessions.
+
+**Suggestion chips** — on a fresh chat (first open or after clearing history), a horizontal row of quick-start prompts appears above the input bar: *"2 eggs and toast 🍳"*, *"How am I doing today? 📊"*, *"Is my protein high enough?"*, and *"Summarise this week"*. Tapping any chip prefills the text input; you can edit before sending. Chips disappear once the conversation starts.
 
 **Input methods:**
 
@@ -131,7 +135,7 @@ Answers appear as a distinct bubble (slightly darker background) and stay in the
 
 **Coaching** — the AI knows your daily goals and what you've already eaten today. After each meal it tells you how many calories remain, whether you're on track for protein, and gives encouragement or a gentle warning if you're approaching a limit.
 
-**No API key** — if you haven't set up a key yet, a guided setup card appears instead of an error. It walks you through getting a free key from Google AI Studio and lets you paste it inline without leaving the Chat screen. A **"Uff, what is an API key?"** hint link opens a plain-language explainer modal with numbered steps and a direct link to AI Studio. The same hint is available in Settings next to the API key field.
+**No API key** — if you haven't set up a key yet, a guided setup card appears instead of an error. It walks you through getting a free key from Google AI Studio and lets you paste it inline without leaving the Chat screen. A **"Uff, what is an API key?"** hint link opens an explainer modal with a visual mockup of Google AI Studio, a note on the free quota (1,500 requests/day — far more than personal daily use requires), and a link to view your usage in AI Studio. The same hint is available in Settings next to the API key field.
 
 **Manual fallback** — if the AI call fails (no internet, rate limit), a manual entry form appears where you can type in macros directly.
 
@@ -160,8 +164,9 @@ Charts for longer-term nutrition and body trends.
 **Tabs:**
 - **Nutrition** — calorie and macro trends
 - **Body** — weight and measurement trends
+- **History** — the same week-by-week meal log that was previously a separate page
 
-**Period toggle:**
+**Period toggle** (Nutrition and Body tabs only):
 - **Daily** — last 30 days
 - **Monthly** — last 12 months (averages per month)
 

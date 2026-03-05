@@ -9,12 +9,23 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Nav rework — 5-tab bottom nav**: Today / Log & Ask / Charts / Learn / Settings. Removed dedicated Body and History tabs; Settings is now a first-class nav item.
+- **History tab inside Charts (Analytics)**: History week view is now accessible as a third tab inside the Analytics screen alongside Nutrition and Body. The `/history` route still works as a standalone page.
+- **Body measurement nudge on Dashboard**: amber dismissable banner appears when the last logged body measurement is more than 14 days ago (or never). Links to `/measurements`. Dismissed state persists for the session (sessionStorage).
+- **Suggestion chips in Chat**: when the chat is fresh (first open or after clearing history), a horizontal scrollable row of 4 tappable chips appears above the input bar — *"2 eggs and toast 🍳"*, *"How am I doing today? 📊"*, *"Is my protein high enough?"*, *"Summarise this week"*. Tapping a chip prefills the text input without auto-sending.
+- **API key explainer modal redesign**: replaced numbered text steps with a JSX mockup of the Google AI Studio UI (browser chrome + API keys page + copy action) plus a quota info card showing the free-tier limit (1,500 req/day) with a link to view usage in AI Studio.
+- **Onboarding Done screen polish** (step 6): full-width layout with side-by-side hero icon+title, daily target card with macro split pill bar, 3-column macro grid cards, and an encouragement note.
+- **Onboarding default activity**: default activity multiplier changed from Moderate (1.55) to Lightly active (1.375) — closer to the average sedentary/office worker.
+- **`navSettings` i18n key** added to all 7 languages; `navLog` updated across all languages to convey "Log & Ask"; `chatWelcome` updated to highlight both meal logging and Q&A in one sentence; 4 `chatSuggestion*` chip strings added; `bodyNudgeText`/`bodyNudgeAction`/`apiKeyQuotaNote`/`apiKeyViewUsage` added.
+
+### Changed
+- Settings page now shows the bottom nav bar (was hidden before — now it's a main nav tab).
+- `HIDE_NAV_ROUTES` reduced to `['/onboarding']` only.
+
 - **Google Analytics 4** (G-CX3LDP2Y41): page-view tracking on every HashRouter navigation plus custom events — `meal_saved`, `meal_discarded`, `meal_edited`, `meal_log_started` (method: text/photo/voice), `nutrition_question_asked`, `chat_history_cleared`, `api_key_saved`, `goals_updated`, `language_changed`, `data_exported`, `onboarding_completed`, `measurement_logged`, `article_opened`. IP anonymization enabled; no PII sent.
 - **Microsoft Clarity** (project `vr5878quce`): free heatmap and session-recording tool injected via standard snippet in `index.html`.
 - **`src/lib/analytics.ts`**: typed analytics helper — all `gtag()` calls centralised here; no-ops gracefully if gtag is blocked.
 - **Persistent logo strip**: a fixed `<header>` at the top of the app shell shows the Diet Tracker icon and wordmark on every screen (opacity-muted, non-interactive, `z-50`).
-
-
 - **First-time onboarding flow** (`/onboarding`): 6-step wizard — Welcome (with language picker), Nutrition Primer (protein/fat/carbs explained with macro split visual + link to articles), Body Stats (sex/age/weight/height, metric with conversion hints), Activity & Goal, Results with connected macro sliders, and Done screen. Calculates personalised calorie and macro targets using Mifflin-St Jeor BMR × activity TDEE.
 - **Macro distribution insights**: live contextual note on the onboarding slider screen explains how the current protein/fat/carbs split will affect lifestyle — warns about muscle loss for low protein (<1.2g/kg), hormone issues for very low fat (<20%), keto territory for high fat (>40%) or low carbs (<80g), and shows positive feedback for balanced distributions.
 - **Connected macro sliders**: protein and fat sliders update carbs automatically within calorie budget; slider bounds enforce healthy minimums (≥20% of calories from fat, ≥20g carbs). Protein defaults to 1.8–2.0g/kg depending on goal.

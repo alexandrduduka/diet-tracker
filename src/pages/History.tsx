@@ -175,7 +175,7 @@ function WeekSparkline({ dayKeys, mealsByDay, calorieGoal }: {
   );
 }
 
-export function History() {
+export function HistoryContent() {
   const { t } = useLang();
   const [weekOffset, setWeekOffset] = useState(0);
   const goals = useGoals();
@@ -194,12 +194,7 @@ export function History() {
   }, [meals, weekKeys]);
 
   return (
-    <div className="flex flex-col min-h-full pb-24">
-      {/* Header */}
-      <div className="px-4 pt-12 pb-4">
-        <h1 className="text-xl font-bold text-[#f0ede4]">{t.history}</h1>
-      </div>
-
+    <div className="flex flex-col pb-4">
       {/* Week selector */}
       <div className="flex items-center justify-between px-4 mb-4">
         <button
@@ -243,6 +238,19 @@ export function History() {
             />
           ))}
       </div>
+    </div>
+  );
+}
+
+export function History() {
+  const { t } = useLang();
+  return (
+    <div className="flex flex-col min-h-full pb-24">
+      {/* Header */}
+      <div className="px-4 pt-12 pb-4">
+        <h1 className="text-xl font-bold text-[#f0ede4]">{t.history}</h1>
+      </div>
+      <HistoryContent />
     </div>
   );
 }

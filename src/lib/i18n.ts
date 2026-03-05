@@ -13,8 +13,11 @@ export interface Translations {
   navHistory: string;
   navBody: string;
   navCharts: string;
+  navSettings: string;
 
   // Dashboard
+  bodyNudgeText: string;
+  bodyNudgeAction: string;
   today: string;
   mealsToday: string;
   noMealsYet: string;
@@ -27,6 +30,10 @@ export interface Translations {
   // Chat
   logMeal: string;
   chatWelcome: string;
+  chatSuggestionLogMeal: string;
+  chatSuggestionHowAmIDoing: string;
+  chatSuggestionProtein: string;
+  chatSuggestionSummary: string;
   describeWhatYouAte: string;
   analyzing: string;
   gotIt: string;
@@ -208,6 +215,8 @@ export interface Translations {
   apiKeyExplainStep2: string;
   apiKeyExplainStep3: string;
   apiKeyExplainGotIt: string;
+  apiKeyQuotaNote: string;
+  apiKeyViewUsage: string;
 
   // Clear data archive
   clearAllDataArchiveDesc: string;
@@ -221,10 +230,14 @@ const en: Translations = {
   noData: 'No data',
 
   navToday: 'Today',
-  navLog: 'Log',
+  navLog: 'Log & Ask',
   navHistory: 'History',
   navBody: 'Body',
   navCharts: 'Charts',
+  navSettings: 'Settings',
+
+  bodyNudgeText: 'No body measurements in the last 2 weeks. Log to track your progress.',
+  bodyNudgeAction: 'Log now',
 
   today: 'Today',
   mealsToday: 'Meals today',
@@ -236,7 +249,11 @@ const en: Translations = {
   fat: 'Fat',
 
   logMeal: 'Log a Meal',
-  chatWelcome: 'What did you eat? Describe it naturally — amounts, brand names, rough estimates, all fine. E.g. "had a banana, coffee with a splash of milk, and two eggs scrambled".',
+  chatWelcome: 'Describe what you ate and I\'ll calculate the macros — or ask me anything about your nutrition.',
+  chatSuggestionLogMeal: '2 eggs and toast 🍳',
+  chatSuggestionHowAmIDoing: 'How am I doing today? 📊',
+  chatSuggestionProtein: 'Is my protein high enough?',
+  chatSuggestionSummary: 'Summarise this week',
   describeWhatYouAte: 'Describe what you ate...',
   analyzing: 'Analyzing...',
   gotIt: 'Got it! Here\'s what I found:',
@@ -406,6 +423,8 @@ const en: Translations = {
   apiKeyExplainStep2: 'Click "Create API key" and copy the key (starts with AIza...)',
   apiKeyExplainStep3: 'Paste the key here and tap Save',
   apiKeyExplainGotIt: 'Got it',
+  apiKeyQuotaNote: 'Free tier: 1,500 requests/day. Normal personal use (3–10 meals/day) stays well under 100.',
+  apiKeyViewUsage: 'View your usage in AI Studio',
 
   clearAllDataArchiveDesc: 'Your data will be archived (not permanently deleted) and you will be returned to the setup screen. You can contact support to recover archived data.',
   archiveEverything: 'Archive & reset',
@@ -422,6 +441,10 @@ const ru: Translations = {
   navHistory: 'История',
   navBody: 'Тело',
   navCharts: 'Графики',
+  navSettings: 'Настройки',
+
+  bodyNudgeText: 'Нет измерений тела за последние 2 недели. Запишите, чтобы отслеживать прогресс.',
+  bodyNudgeAction: 'Записать',
 
   today: 'Сегодня',
   mealsToday: 'Приёмы пищи',
@@ -433,7 +456,11 @@ const ru: Translations = {
   fat: 'Жиры',
 
   logMeal: 'Записать приём пищи',
-  chatWelcome: 'Что вы ели? Опишите в свободной форме — количество, бренды, примерные оценки. Например: «банан, кофе с молоком и два яйца-скрамбл».',
+  chatWelcome: 'Опишите, что вы ели — я посчитаю макросы. Или задайте любой вопрос о питании.',
+  chatSuggestionLogMeal: '2 яйца и тост 🍳',
+  chatSuggestionHowAmIDoing: 'Как я питаюсь сегодня? 📊',
+  chatSuggestionProtein: 'Достаточно ли у меня белка?',
+  chatSuggestionSummary: 'Итоги недели',
   describeWhatYouAte: 'Опишите, что вы ели...',
   analyzing: 'Анализирую...',
   gotIt: 'Понял! Вот что нашёл:',
@@ -603,6 +630,8 @@ const ru: Translations = {
   apiKeyExplainStep2: 'Нажмите «Create API key» и скопируйте ключ (начинается с AIza...)',
   apiKeyExplainStep3: 'Вставьте ключ здесь и нажмите «Сохранить»',
   apiKeyExplainGotIt: 'Понятно',
+  apiKeyQuotaNote: 'Бесплатный лимит: 1 500 запросов в день. Для личного использования (3–10 приёмов пищи) хватит с запасом.',
+  apiKeyViewUsage: 'Посмотреть расход в AI Studio',
 
   clearAllDataArchiveDesc: 'Данные будут заархивированы (не удалены навсегда), и вы вернётесь к экрану настройки. Архивные данные можно восстановить.',
   archiveEverything: 'Архивировать и сбросить',
@@ -619,6 +648,10 @@ const cs: Translations = {
   navHistory: 'Historie',
   navBody: 'Tělo',
   navCharts: 'Grafy',
+  navSettings: 'Nastavení',
+
+  bodyNudgeText: 'Žádná tělesná měření za poslední 2 týdny. Zaznamenejte pro sledování pokroku.',
+  bodyNudgeAction: 'Zaznamenat',
 
   today: 'Dnes',
   mealsToday: 'Jídla dnes',
@@ -630,7 +663,11 @@ const cs: Translations = {
   fat: 'Tuky',
 
   logMeal: 'Zaznamenat jídlo',
-  chatWelcome: 'Co jste jedli? Popište volně — množství, značky, odhady jsou v pořádku. Např. "banán, káva s trochou mléka a dvě míchaná vejce".',
+  chatWelcome: 'Popište, co jste jedli, a já spočítám makra — nebo se mě zeptejte na cokoliv o výživě.',
+  chatSuggestionLogMeal: '2 vejce a toast 🍳',
+  chatSuggestionHowAmIDoing: 'Jak se dnes stravuji? 📊',
+  chatSuggestionProtein: 'Mám dostatek bílkovin?',
+  chatSuggestionSummary: 'Shrnutí tohoto týdne',
   describeWhatYouAte: 'Popište, co jste jedli...',
   analyzing: 'Analyzuji...',
   gotIt: 'Rozumím! Tady je, co jsem našel:',
@@ -800,6 +837,8 @@ const cs: Translations = {
   apiKeyExplainStep2: 'Klikněte na „Create API key" a zkopírujte klíč (začíná AIza...)',
   apiKeyExplainStep3: 'Vložte klíč zde a klepněte na Uložit',
   apiKeyExplainGotIt: 'Rozumím',
+  apiKeyQuotaNote: 'Bezplatný limit: 1 500 požadavků/den. Běžné osobní použití (3–10 jídel/den) je hluboko pod 100.',
+  apiKeyViewUsage: 'Zobrazit využití v AI Studio',
 
   clearAllDataArchiveDesc: 'Vaše data budou archivována (ne trvale smazána) a vrátíte se na obrazovku nastavení.',
   archiveEverything: 'Archivovat a resetovat',
@@ -812,10 +851,14 @@ const de: Translations = {
   noData: 'Keine Daten',
 
   navToday: 'Heute',
-  navLog: 'Eintrag',
+  navLog: 'Erfassen',
   navHistory: 'Verlauf',
   navBody: 'Körper',
   navCharts: 'Charts',
+  navSettings: 'Einstellungen',
+
+  bodyNudgeText: 'Keine Körpermessungen in den letzten 2 Wochen. Erfassen Sie jetzt, um Fortschritte zu verfolgen.',
+  bodyNudgeAction: 'Jetzt erfassen',
 
   today: 'Heute',
   mealsToday: 'Heutige Mahlzeiten',
@@ -827,7 +870,11 @@ const de: Translations = {
   fat: 'Fett',
 
   logMeal: 'Mahlzeit erfassen',
-  chatWelcome: 'Was haben Sie gegessen? Beschreiben Sie es frei — Mengen, Marken, grobe Schätzungen sind in Ordnung.',
+  chatWelcome: 'Beschreiben Sie, was Sie gegessen haben — ich berechne die Makros. Oder stellen Sie mir Fragen zur Ernährung.',
+  chatSuggestionLogMeal: '2 Eier und Toast 🍳',
+  chatSuggestionHowAmIDoing: 'Wie läuft es heute? 📊',
+  chatSuggestionProtein: 'Nehme ich genug Protein zu mir?',
+  chatSuggestionSummary: 'Zusammenfassung dieser Woche',
   describeWhatYouAte: 'Beschreiben Sie, was Sie gegessen haben...',
   analyzing: 'Analysiere...',
   gotIt: 'Verstanden! Hier ist, was ich gefunden habe:',
@@ -997,6 +1044,8 @@ const de: Translations = {
   apiKeyExplainStep2: 'Klicken Sie auf „Create API key" und kopieren Sie den Schlüssel (beginnt mit AIza...)',
   apiKeyExplainStep3: 'Fügen Sie den Schlüssel hier ein und tippen Sie auf Speichern',
   apiKeyExplainGotIt: 'Verstanden',
+  apiKeyQuotaNote: 'Kostenloses Kontingent: 1.500 Anfragen/Tag. Normaler persönlicher Gebrauch (3–10 Mahlzeiten/Tag) bleibt weit unter 100.',
+  apiKeyViewUsage: 'Nutzung in AI Studio ansehen',
 
   clearAllDataArchiveDesc: 'Ihre Daten werden archiviert (nicht dauerhaft gelöscht) und Sie kehren zum Einrichtungsbildschirm zurück.',
   archiveEverything: 'Archivieren & zurücksetzen',
@@ -1013,6 +1062,10 @@ const fr: Translations = {
   navHistory: 'Historique',
   navBody: 'Corps',
   navCharts: 'Graphiques',
+  navSettings: 'Paramètres',
+
+  bodyNudgeText: 'Aucune mesure corporelle depuis 2 semaines. Enregistrez pour suivre vos progrès.',
+  bodyNudgeAction: 'Enregistrer',
 
   today: 'Aujourd\'hui',
   mealsToday: 'Repas aujourd\'hui',
@@ -1024,7 +1077,11 @@ const fr: Translations = {
   fat: 'Lipides',
 
   logMeal: 'Saisir un repas',
-  chatWelcome: 'Qu\'avez-vous mangé ? Décrivez librement — quantités, marques, estimations sont OK.',
+  chatWelcome: 'Décrivez ce que vous avez mangé et je calculerai les macros — ou posez-moi n\'importe quelle question sur votre nutrition.',
+  chatSuggestionLogMeal: '2 œufs et toast 🍳',
+  chatSuggestionHowAmIDoing: 'Comment je m\'en sors aujourd\'hui ? 📊',
+  chatSuggestionProtein: 'Mon apport en protéines est-il suffisant ?',
+  chatSuggestionSummary: 'Résumé de cette semaine',
   describeWhatYouAte: 'Décrivez ce que vous avez mangé...',
   analyzing: 'Analyse en cours...',
   gotIt: 'Compris ! Voici ce que j\'ai trouvé :',
@@ -1194,6 +1251,8 @@ const fr: Translations = {
   apiKeyExplainStep2: 'Cliquez sur « Create API key » et copiez la clé (commence par AIza...)',
   apiKeyExplainStep3: 'Collez la clé ici et appuyez sur Enregistrer',
   apiKeyExplainGotIt: 'Compris',
+  apiKeyQuotaNote: 'Quota gratuit : 1 500 requêtes/jour. Une utilisation personnelle normale (3–10 repas/jour) reste bien en dessous de 100.',
+  apiKeyViewUsage: 'Voir l\'utilisation dans AI Studio',
 
   clearAllDataArchiveDesc: 'Vos données seront archivées (pas définitivement supprimées) et vous reviendrez à l\'écran de configuration.',
   archiveEverything: 'Archiver et réinitialiser',
@@ -1210,6 +1269,10 @@ const es: Translations = {
   navHistory: 'Historial',
   navBody: 'Cuerpo',
   navCharts: 'Gráficos',
+  navSettings: 'Ajustes',
+
+  bodyNudgeText: 'Sin medidas corporales en las últimas 2 semanas. Regístralas para seguir tu progreso.',
+  bodyNudgeAction: 'Registrar ahora',
 
   today: 'Hoy',
   mealsToday: 'Comidas de hoy',
@@ -1221,7 +1284,11 @@ const es: Translations = {
   fat: 'Grasa',
 
   logMeal: 'Registrar comida',
-  chatWelcome: '¿Qué comiste? Descríbelo libremente — cantidades, marcas, estimaciones son válidas.',
+  chatWelcome: 'Describe lo que comiste y calcularé los macros — o hazme cualquier pregunta sobre tu nutrición.',
+  chatSuggestionLogMeal: '2 huevos y tostada 🍳',
+  chatSuggestionHowAmIDoing: '¿Cómo voy hoy? 📊',
+  chatSuggestionProtein: '¿Tomo suficiente proteína?',
+  chatSuggestionSummary: 'Resumen de esta semana',
   describeWhatYouAte: 'Describe lo que comiste...',
   analyzing: 'Analizando...',
   gotIt: '¡Entendido! Esto es lo que encontré:',
@@ -1391,6 +1458,8 @@ const es: Translations = {
   apiKeyExplainStep2: 'Haz clic en "Create API key" y copia la clave (empieza con AIza...)',
   apiKeyExplainStep3: 'Pega la clave aquí y toca Guardar',
   apiKeyExplainGotIt: 'Entendido',
+  apiKeyQuotaNote: 'Cuota gratuita: 1.500 solicitudes/día. El uso personal normal (3–10 comidas/día) queda muy por debajo de 100.',
+  apiKeyViewUsage: 'Ver uso en AI Studio',
 
   clearAllDataArchiveDesc: 'Tus datos serán archivados (no eliminados permanentemente) y volverás a la pantalla de configuración.',
   archiveEverything: 'Archivar y restablecer',
@@ -1407,6 +1476,10 @@ const uk: Translations = {
   navHistory: 'Історія',
   navBody: 'Тіло',
   navCharts: 'Графіки',
+  navSettings: 'Налаштування',
+
+  bodyNudgeText: 'Немає вимірювань тіла за останні 2 тижні. Запишіть, щоб відстежувати прогрес.',
+  bodyNudgeAction: 'Записати',
 
   today: 'Сьогодні',
   mealsToday: 'Прийоми їжі',
@@ -1418,7 +1491,11 @@ const uk: Translations = {
   fat: 'Жири',
 
   logMeal: 'Записати прийом їжі',
-  chatWelcome: 'Що ви їли? Опишіть довільно — кількість, бренди, приблизні оцінки. Наприклад: «банан, кава з молоком і два яйця-скрамбл».',
+  chatWelcome: 'Опишіть, що ви їли — я порахую макроси. Або поставте будь-яке питання про своє харчування.',
+  chatSuggestionLogMeal: '2 яйця та тост 🍳',
+  chatSuggestionHowAmIDoing: 'Як я харчуюся сьогодні? 📊',
+  chatSuggestionProtein: 'Чи достатньо у мене білка?',
+  chatSuggestionSummary: 'Підсумок тижня',
   describeWhatYouAte: 'Опишіть, що ви їли...',
   analyzing: 'Аналізую...',
   gotIt: 'Зрозумів! Ось що знайшов:',
@@ -1588,6 +1665,8 @@ const uk: Translations = {
   apiKeyExplainStep2: 'Натисніть «Create API key» та скопіюйте ключ (починається з AIza...)',
   apiKeyExplainStep3: 'Вставте ключ тут і натисніть «Зберегти»',
   apiKeyExplainGotIt: 'Зрозуміло',
+  apiKeyQuotaNote: 'Безкоштовний ліміт: 1 500 запитів на день. Звичайне особисте використання (3–10 прийомів їжі) займає менше 100.',
+  apiKeyViewUsage: 'Переглянути використання в AI Studio',
 
   clearAllDataArchiveDesc: 'Ваші дані будуть заархівовані (не видалені назавжди), і ви повернетеся до екрана налаштування.',
   archiveEverything: 'Архівувати та скинути',

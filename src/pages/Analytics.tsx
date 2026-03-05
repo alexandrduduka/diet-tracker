@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { HistoryContent } from './History';
 import {
   AreaChart,
   Area,
@@ -21,7 +22,7 @@ import type { MeasurementKey } from '../types';
 import { MEASUREMENT_LABELS } from '../types';
 import { useLang } from '../store/langContext';
 
-type Tab = 'nutrition' | 'body';
+type Tab = 'nutrition' | 'body' | 'history';
 type Period = 'daily' | 'monthly';
 
 const METRICS: MeasurementKey[] = ['weight', 'waist', 'chest', 'hips', 'arm', 'thigh'];
@@ -451,7 +452,7 @@ export function Analytics() {
 
       {/* Tab selector */}
       <div className="flex gap-2 px-4 pt-4 pb-2">
-        {(['nutrition', 'body'] as Tab[]).map((tabKey) => (
+        {(['nutrition', 'body', 'history'] as Tab[]).map((tabKey) => (
           <button
             key={tabKey}
             onClick={() => setTab(tabKey)}
@@ -461,27 +462,29 @@ export function Analytics() {
                 : 'bg-[#2e2e22] text-[#9a9680] hover:text-[#c8c4b0]'
             }`}
           >
-            {tabKey === 'nutrition' ? t.nutrition : t.body}
+            {tabKey === 'nutrition' ? t.nutrition : tabKey === 'body' ? t.body : t.history}
           </button>
         ))}
       </div>
 
-      {/* Period toggle */}
-      <div className="flex gap-2 px-4 pb-4">
-        {(['daily', 'monthly'] as Period[]).map((p) => (
-          <button
-            key={p}
-            onClick={() => setPeriod(p)}
-            className={`px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
-              period === p
-                ? 'bg-[#3a3a2a] text-[#f0ede4]'
-                : 'text-[#5a5a44] hover:text-[#9a9680]'
-            }`}
-          >
-            {p === 'daily' ? t.daily30d : t.monthly12m}
-          </button>
-        ))}
-      </div>
+      {/* Period toggle (hidden on history tab) */}
+      {tab !== 'history' && (
+        <div className="flex gap-2 px-4 pb-4">
+          {(['daily', 'monthly'] as Period[]).map((p) => (
+            <button
+              key={p}
+              onClick={() => setPeriod(p)}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                period === p
+                  ? 'bg-[#3a3a2a] text-[#f0ede4]'
+                  : 'text-[#5a5a44] hover:text-[#9a9680]'
+              }`}
+            >
+              {p === 'daily' ? t.daily30d : t.monthly12m}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Body metric selector (only when on body tab) */}
       {tab === 'body' && (
@@ -502,12 +505,13 @@ export function Analytics() {
         </div>
       )}
 
-      {/* Charts */}
+      {/* Charts / History */}
       <div className="space-y-4">
         {tab === 'nutrition' && period === 'daily' && <NutritionDaily goals={goals} t={t} />}
         {tab === 'nutrition' && period === 'monthly' && <NutritionMonthly goals={goals} t={t} />}
         {tab === 'body' && period === 'daily' && <BodyDaily metric={bodyMetric} t={t} />}
         {tab === 'body' && period === 'monthly' && <BodyMonthly metric={bodyMetric} t={t} />}
+        {tab === 'history' && <HistoryContent />}
       </div>
     </div>
   );

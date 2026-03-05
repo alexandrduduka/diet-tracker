@@ -48,7 +48,7 @@ diet-tracker/
 │   ├── TECHNICAL.md        ← Architecture, data models, API details
 │   └── PRODUCT.md          ← Feature guide, user-facing docs
 └── src/
-    ├── App.tsx              ← HashRouter, 6 routes, AppShell with BottomNav logic
+    ├── App.tsx              ← HashRouter, routes, AppShell with BottomNav logic (HIDE_NAV_ROUTES = ['/onboarding'])
     ├── main.tsx
     ├── index.css
     ├── db/index.ts          ← Dexie DB (meals, measurements tables)
@@ -70,7 +70,7 @@ diet-tracker/
     │   ├── useMeasurements.ts      ← useLiveQuery for measurements
     │   └── useNutritionHistory.ts  ← daily/monthly nutrition aggregation
     ├── components/
-    │   ├── BottomNav.tsx    ← 5-tab nav (Today/Log/History/Body/Charts)
+    │   ├── BottomNav.tsx    ← 5-tab nav (Today / Log & Ask / Charts / Learn / Settings)
     │   ├── MacroRing.tsx    ← SVG donut for calories
     │   ├── MacroBar.tsx     ← progress bar per macro vs goal
     │   ├── MealCard.tsx     ← single meal display + delete
@@ -78,10 +78,10 @@ diet-tracker/
     │   ├── OfflineBanner.tsx + useOnlineStatus hook
     │   └── ui/             ← shadcn/ui primitives (button, card, dialog, input)
     └── pages/
-        ├── Dashboard.tsx   ← MacroRing + MacroBar + meal list + FAB
-        ├── Chat.tsx        ← LLM meal logging + manual fallback
-        ├── History.tsx     ← Week selector + daily breakdown
-        ├── Analytics.tsx   ← Nutrition/Body tabs, Daily/Monthly toggle, Recharts
+        ├── Dashboard.tsx   ← MacroRing + MacroBar + meal list + FAB + body nudge banner
+        ├── Chat.tsx        ← LLM meal logging + Q&A + suggestion chips + manual fallback
+        ├── History.tsx     ← exports HistoryContent (used in Analytics); History page wraps it
+        ├── Analytics.tsx   ← Nutrition/Body/History tabs, Daily/Monthly toggle, Recharts
         ├── Measurements.tsx ← Log drawer + Recharts chart + entries list
         ├── Settings.tsx    ← API key + goals form + language + export + clear
         └── Onboarding.tsx  ← 6-step first-time wizard (welcome, nutrition, stats, activity/goal, results+sliders, done)
@@ -94,14 +94,14 @@ diet-tracker/
 | Path | Page | Nav visible |
 |---|---|---|
 | `/` | Dashboard | yes |
-| `/chat` | Chat | no |
+| `/chat` | Chat (Log & Ask) | yes |
 | `/history` | History | yes |
 | `/measurements` | Measurements | yes |
 | `/analytics` | Analytics | yes |
-| `/settings` | Settings | no |
+| `/settings` | Settings | yes |
 | `/onboarding` | Onboarding | no |
 
-`HIDE_NAV_ROUTES = ['/settings', '/onboarding']` in `App.tsx`.
+`HIDE_NAV_ROUTES = ['/onboarding']` in `App.tsx`. Settings is now a main nav tab.
 
 First-time users are redirected to `/onboarding` by a guard in `AppShell` that checks `getSettings().onboardingComplete`. Existing users are silently migrated by `migrateSettings()` called in `main.tsx` before the React render.
 
@@ -146,7 +146,7 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 
 ## Chat Page — Key Behaviours
 
-- **No API key**: shows inline setup wizard card instead of error. Card opens `aistudio.google.com/app/apikey`, accepts key inline, and retries the original message automatically.
+- **No API key**: shows inline setup wizard card instead of error. Card opens `aistudio.google.com/app/apikey`, accepts key inline, and retries the original message automatically. The "Uff, what is an API key?" link opens a modal with a JSX visual mockup of AI Studio, a quota note (1,500 req/day free), and a link to view usage.
 - **After save**: if `parsed.message` is present, appends a `'coach'` bubble and keeps the input open (no navigation). If no message, navigates to `/`.
 - **ChatMessage roles**: `'assistant' | 'user' | 'result' | 'error' | 'setup' | 'coach' | 'answer'`
 - `'assistant'` and `'coach'` render identically (green avatar bubble, `bg-[#2e2e22]`).
@@ -156,6 +156,8 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 - **Chat history persistence**: messages persist to `localStorage` key `dtk_chat_history` on every change. Restored on load. Max 100 messages; `'setup'` messages are never persisted. Trash icon in header opens a clear-history confirmation dialog.
 - **Mic button**: uses Web Speech API (`window.SpeechRecognition || window.webkitSpeechRecognition`). Hidden when not supported. Recognition language matches the app language. Transcript is appended to the text input. Tap again or it ends automatically to stop listening.
 - **Camera / photo button**: `<input type="file" accept="image/*" capture="environment">` — opens camera on mobile, file picker on desktop. Image is read as DataURL, split into base64 + mimeType, stored in `attachedImage` state, and sent to Gemini as `ImageAttachment`. Thumbnail preview shown above input bar with a remove button. Can be sent with or without accompanying text.
+- **Suggestion chips**: shown above the input bar when `messages.length === 1 && messages[0].role === 'assistant'` (fresh/cleared chat only). 4 chips sourced from `t.chatSuggestion*` keys. Tapping sets `input` state without auto-sending. Chips disappear naturally once any message is sent.
+- **Body nudge**: Dashboard shows dismissable amber banner (sessionStorage key `dtk_body_nudge_dismissed`) when `useAllMeasurements()[0]` is older than 14 days or measurements array is empty.
 
 ## Internationalization
 

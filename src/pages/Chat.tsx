@@ -452,17 +452,43 @@ export function Chat() {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-sm text-[#c8c4b0] mb-4 leading-relaxed">{t.apiKeyExplainBody}</p>
-            <div className="space-y-3 mb-5">
-              {([t.apiKeyExplainStep1, t.apiKeyExplainStep2, t.apiKeyExplainStep3] as string[]).map((step, si) => (
-                <div key={si} className="flex gap-3 items-start">
-                  <span className="w-6 h-6 rounded-full bg-[#7cb87a]/20 border border-[#7cb87a]/40 text-[#7cb87a] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
-                    {si + 1}
-                  </span>
-                  <p className="text-sm text-[#9a9680] leading-relaxed">{step}</p>
+            {/* Visual mockup of AI Studio */}
+            <div className="rounded-xl border border-[#3a3a2a] bg-[#1a1a12] overflow-hidden mb-4">
+              <div className="bg-[#2e2e22] px-3 py-2 flex items-center gap-2 border-b border-[#3a3a2a]">
+                <div className="flex gap-1">
+                  <div className="w-2 h-2 rounded-full bg-[#5a5a44]" />
+                  <div className="w-2 h-2 rounded-full bg-[#5a5a44]" />
+                  <div className="w-2 h-2 rounded-full bg-[#5a5a44]" />
                 </div>
-              ))}
+                <div className="flex-1 bg-[#3a3a2a] rounded px-2 py-1 text-[10px] text-[#5a5a44] font-mono">
+                  aistudio.google.com/app/apikey
+                </div>
+              </div>
+              <div className="p-4 space-y-3">
+                <p className="text-xs font-semibold text-[#f0ede4]">🔑 API keys</p>
+                <div className="h-8 bg-[#2e2e22] border border-[#7cb87a] rounded-lg px-3 flex items-center">
+                  <span className="text-[10px] font-mono text-[#7cb87a]">+ Create API key</span>
+                </div>
+                <div className="flex items-center gap-2 bg-[#2e2e22] border border-[#3a3a2a] rounded-lg px-3 py-2">
+                  <span className="text-[10px] font-mono text-[#9a9680] flex-1">AIzaSy••••••••••••</span>
+                  <span className="text-[10px] text-[#7cb87a]">Copy ✓</span>
+                </div>
+              </div>
             </div>
+
+            {/* Quota note */}
+            <div className="rounded-xl bg-[#2a2a1a] border border-[#4a4a28] px-3 py-2.5 mb-4">
+              <p className="text-xs text-[#c8c4b0] leading-relaxed">{t.apiKeyQuotaNote}</p>
+              <a
+                href="https://aistudio.google.com/app/apikey"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-[#d4a24c] hover:underline mt-1 inline-block"
+              >
+                {t.apiKeyViewUsage} →
+              </a>
+            </div>
+
             <a
               href="https://aistudio.google.com/app/apikey"
               target="_blank"
@@ -730,6 +756,21 @@ export function Chat() {
             </div>
           ) : (
             <div className="space-y-2">
+              {/* Suggestion chips — shown only on a fresh chat */}
+              {messages.length === 1 && messages[0].role === 'assistant' && (
+                <div className="flex gap-2 pb-1 overflow-x-auto no-scrollbar">
+                  {([t.chatSuggestionLogMeal, t.chatSuggestionHowAmIDoing, t.chatSuggestionProtein, t.chatSuggestionSummary] as string[]).map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setInput(s)}
+                      className="shrink-0 px-3 py-1.5 rounded-full bg-[#2e2e22] border border-[#3a3a2a] text-xs text-[#c8c4b0] hover:border-[#7cb87a] hover:text-[#f0ede4] transition-colors whitespace-nowrap"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {/* Photo preview */}
               {imagePreview && (
                 <div className="flex items-center gap-2 px-1">

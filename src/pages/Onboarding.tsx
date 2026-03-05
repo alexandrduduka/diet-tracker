@@ -35,7 +35,7 @@ export function Onboarding() {
   const [age, setAge] = useState('');
   const [weightKg, setWeightKg] = useState('');
   const [heightCm, setHeightCm] = useState('');
-  const [activityMultiplier, setActivityMultiplier] = useState<OnboardingProfile['activityMultiplier']>(1.55);
+  const [activityMultiplier, setActivityMultiplier] = useState<OnboardingProfile['activityMultiplier']>(1.375);
   const [goal, setGoal] = useState<'lose' | 'maintain' | 'gain'>('maintain');
 
   // Macro slider state
@@ -496,26 +496,57 @@ export function Onboarding() {
 
         {/* Step 5 — Done */}
         {step === 5 && (
-          <div className="flex flex-col items-center text-center gap-5">
-            <div className="w-20 h-20 rounded-full bg-[#7cb87a]/20 border border-[#7cb87a]/40 flex items-center justify-center">
-              <Check className="w-10 h-10 text-[#7cb87a]" />
+          <div className="space-y-5">
+            {/* Hero */}
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-[#7cb87a]/20 border border-[#7cb87a]/40 flex items-center justify-center shrink-0">
+                <Check className="w-8 h-8 text-[#7cb87a]" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-[#f0ede4]">{t.onboardingDoneTitle}</h1>
+                <p className="text-sm text-[#9a9680] mt-0.5">{t.onboardingDoneSummary}</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-[#f0ede4] mb-2">{t.onboardingDoneTitle}</h1>
-              <p className="text-sm text-[#9a9680] mb-4">{t.onboardingDoneSummary}</p>
-              <div className="rounded-2xl border border-[#3a3a2a] bg-[#242419] p-4 text-left space-y-2">
+
+            {/* Calorie goal hero */}
+            <div className="rounded-2xl border border-[#3a3a2a] bg-[#242419] p-5">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs font-semibold text-[#9a9680] uppercase tracking-wide">Daily target</p>
+                <p className="text-3xl font-bold text-[#d4a24c]">{calories} <span className="text-base font-normal text-[#9a9680]">kcal</span></p>
+              </div>
+
+              {/* Macro split bar */}
+              <div className="flex h-3 rounded-full overflow-hidden mb-2">
+                <div className="bg-[#7cb87a] transition-all" style={{ width: `${proteinPct}%` }} />
+                <div className="bg-[#c17a5a] transition-all" style={{ width: `${fatPct}%` }} />
+                <div className="bg-[#d4a24c] transition-all" style={{ width: `${carbsPct}%` }} />
+              </div>
+              <div className="flex gap-4 text-xs text-[#9a9680] mb-4">
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#7cb87a] inline-block" />{t.protein} {proteinPct}%</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#c17a5a] inline-block" />{t.fat} {fatPct}%</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#d4a24c] inline-block" />{t.carbs} {carbsPct}%</span>
+              </div>
+
+              {/* Macro values */}
+              <div className="grid grid-cols-3 gap-2">
                 {[
-                  { label: t.calories, value: `${calories} kcal`, color: '#d4a24c' },
                   { label: t.protein, value: `${protein}g`, color: '#7cb87a' },
                   { label: t.fat, value: `${fat}g`, color: '#c17a5a' },
                   { label: t.carbs, value: `${carbs}g`, color: '#d4a24c' },
                 ].map((m) => (
-                  <div key={m.label} className="flex justify-between items-center">
-                    <span className="text-sm text-[#9a9680]">{m.label}</span>
-                    <span className="text-sm font-semibold" style={{ color: m.color }}>{m.value}</span>
+                  <div key={m.label} className="bg-[#2e2e22] rounded-xl p-3 text-center">
+                    <p className="text-xs text-[#5a5a44] mb-1">{m.label}</p>
+                    <p className="text-lg font-bold" style={{ color: m.color }}>{m.value}</p>
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* Encouragement note */}
+            <div className="rounded-xl bg-[#1a2a1a] border border-[#2a4a2a] px-4 py-3">
+              <p className="text-sm text-[#8fce8d] leading-relaxed">
+                Consistency beats perfection. Log what you eat — even rough estimates — and you'll gain real insight into your nutrition within a week.
+              </p>
             </div>
           </div>
         )}
