@@ -110,6 +110,13 @@ export interface Translations {
   photoRemove: string;
   takePhotoOrChoose: string;
 
+  // Chat history & Q&A
+  chatTitle: string;
+  chatInputPlaceholder: string;
+  chatClearHistory: string;
+  chatClearHistoryConfirm: string;
+  chatAnswerError: string;
+
   // Articles
   navArticles: string;
   articlesTitle: string;
@@ -133,6 +140,57 @@ export interface Translations {
   chartPlaceholderSub: string;
   last30Days: string;
   last12Months: string;
+
+  // Onboarding
+  onboardingWelcomeTitle: string;
+  onboardingWelcomeSubtitle: string;
+  onboardingGetStarted: string;
+  onboardingSkip: string;
+  onboardingNutritionTitle: string;
+  onboardingNutritionSubtitle: string;
+  onboardingProteinDesc: string;
+  onboardingFatDesc: string;
+  onboardingCarbsDesc: string;
+  onboardingReadFullGuide: string;
+  onboardingBodyStatsTitle: string;
+  onboardingMale: string;
+  onboardingFemale: string;
+  onboardingAge: string;
+  onboardingWeight: string;
+  onboardingWeightHint: string;
+  onboardingHeight: string;
+  onboardingHeightHint: string;
+  onboardingActivityTitle: string;
+  onboardingActivitySedentary: string;
+  onboardingActivitySedentaryDesc: string;
+  onboardingActivityLight: string;
+  onboardingActivityLightDesc: string;
+  onboardingActivityModerate: string;
+  onboardingActivityModerateDesc: string;
+  onboardingActivityActive: string;
+  onboardingActivityActiveDesc: string;
+  onboardingActivityVeryActive: string;
+  onboardingActivityVeryActiveDesc: string;
+  onboardingGoalTitle: string;
+  onboardingGoalLose: string;
+  onboardingGoalLoseDesc: string;
+  onboardingGoalMaintain: string;
+  onboardingGoalMaintainDesc: string;
+  onboardingGoalGain: string;
+  onboardingGoalGainDesc: string;
+  onboardingResultsTitle: string;
+  onboardingTdeeLabel: string;
+  onboardingAdjustMacros: string;
+  onboardingCarbsDerived: string;
+  onboardingLowCarbsWarning: string;
+  onboardingDoneTitle: string;
+  onboardingDoneSummary: string;
+  onboardingStartTracking: string;
+  onboardingNext: string;
+  onboardingBack: string;
+  onboardingValidationAge: string;
+  onboardingValidationWeight: string;
+  onboardingValidationHeight: string;
 }
 
 const en: Translations = {
@@ -180,6 +238,12 @@ const en: Translations = {
   photoAttached: 'Photo attached',
   photoRemove: 'Remove',
   takePhotoOrChoose: 'Take a photo or choose from library',
+
+  chatTitle: 'Nutrition Assistant',
+  chatInputPlaceholder: 'Log a meal or ask a question...',
+  chatClearHistory: 'Clear chat',
+  chatClearHistoryConfirm: 'Clear chat history?',
+  chatAnswerError: 'Could not get an answer. Try again or check your API key.',
 
   history: 'History',
   thisWeek: 'This week',
@@ -256,6 +320,56 @@ const en: Translations = {
   chartPlaceholderSub: 'Log at least 2 meals to see your nutrition trends',
   last30Days: 'last 30 days',
   last12Months: 'last 12 months',
+
+  onboardingWelcomeTitle: 'Welcome to Diet Tracker',
+  onboardingWelcomeSubtitle: 'Track your nutrition effortlessly. Describe meals in plain text and AI calculates your calories and macros — or log manually. Everything stays on your device.',
+  onboardingGetStarted: 'Get started →',
+  onboardingSkip: 'Skip setup',
+  onboardingNutritionTitle: 'How nutrition works',
+  onboardingNutritionSubtitle: 'Food gives you energy through three macronutrients. Each plays a unique role:',
+  onboardingProteinDesc: 'Builds and repairs muscle. Essential for feeling full. The most important macro to hit.',
+  onboardingFatDesc: 'Supports hormones and absorbs vitamins. Keeps you satisfied between meals.',
+  onboardingCarbsDesc: 'Your body\'s preferred fuel source. Powers your brain and workouts.',
+  onboardingReadFullGuide: '→ Read the full nutrition guide',
+  onboardingBodyStatsTitle: 'Tell us about you',
+  onboardingMale: 'Male',
+  onboardingFemale: 'Female',
+  onboardingAge: 'Age (years)',
+  onboardingWeight: 'Weight (kg)',
+  onboardingWeightHint: 'To convert from lbs: divide by 2.2',
+  onboardingHeight: 'Height (cm)',
+  onboardingHeightHint: 'To convert from ft/in: feet × 30.5 + inches × 2.54',
+  onboardingActivityTitle: 'How active are you?',
+  onboardingActivitySedentary: 'Sedentary',
+  onboardingActivitySedentaryDesc: 'Desk job, little or no exercise',
+  onboardingActivityLight: 'Lightly active',
+  onboardingActivityLightDesc: 'Light exercise 1–3 days/week',
+  onboardingActivityModerate: 'Moderately active',
+  onboardingActivityModerateDesc: 'Moderate exercise 3–5 days/week',
+  onboardingActivityActive: 'Active',
+  onboardingActivityActiveDesc: 'Hard exercise 6–7 days/week',
+  onboardingActivityVeryActive: 'Very active',
+  onboardingActivityVeryActiveDesc: 'Physical job or 2× daily training',
+  onboardingGoalTitle: 'What\'s your goal?',
+  onboardingGoalLose: 'Lose weight',
+  onboardingGoalLoseDesc: 'Eat ~400 kcal less than you burn',
+  onboardingGoalMaintain: 'Maintain weight',
+  onboardingGoalMaintainDesc: 'Eat roughly what you burn',
+  onboardingGoalGain: 'Gain muscle',
+  onboardingGoalGainDesc: 'Eat ~250 kcal more than you burn',
+  onboardingResultsTitle: 'Your daily targets',
+  onboardingTdeeLabel: 'Your maintenance calories (TDEE):',
+  onboardingAdjustMacros: 'Fine-tune your macros',
+  onboardingCarbsDerived: 'Carbs (auto-calculated)',
+  onboardingLowCarbsWarning: 'Carbs are very low. Consider reducing protein or fat slightly.',
+  onboardingDoneTitle: 'You\'re all set!',
+  onboardingDoneSummary: 'Your daily goal:',
+  onboardingStartTracking: 'Start tracking →',
+  onboardingNext: 'Next →',
+  onboardingBack: '← Back',
+  onboardingValidationAge: 'Please enter a valid age (10–99)',
+  onboardingValidationWeight: 'Please enter a valid weight (30–300 kg)',
+  onboardingValidationHeight: 'Please enter a valid height (100–250 cm)',
 };
 
 const ru: Translations = {
@@ -303,6 +417,12 @@ const ru: Translations = {
   photoAttached: 'Фото прикреплено',
   photoRemove: 'Удалить',
   takePhotoOrChoose: 'Сделать фото или выбрать из галереи',
+
+  chatTitle: 'Ассистент по питанию',
+  chatInputPlaceholder: 'Запишите приём пищи или задайте вопрос...',
+  chatClearHistory: 'Очистить чат',
+  chatClearHistoryConfirm: 'Очистить историю чата?',
+  chatAnswerError: 'Не удалось получить ответ. Попробуйте ещё раз или проверьте ключ API.',
 
   history: 'История',
   thisWeek: 'Эта неделя',
@@ -379,6 +499,56 @@ const ru: Translations = {
   chartPlaceholderSub: 'Запишите хотя бы 2 приёма пищи, чтобы увидеть тренды',
   last30Days: 'последние 30 дней',
   last12Months: 'последние 12 месяцев',
+
+  onboardingWelcomeTitle: 'Добро пожаловать в Diet Tracker',
+  onboardingWelcomeSubtitle: 'Легко отслеживайте питание. Опишите приём пищи, и ИИ посчитает калории и макронутриенты — или введите вручную. Все данные хранятся на устройстве.',
+  onboardingGetStarted: 'Начать →',
+  onboardingSkip: 'Пропустить настройку',
+  onboardingNutritionTitle: 'Как работает питание',
+  onboardingNutritionSubtitle: 'Еда даёт энергию через три макронутриента. Каждый играет свою роль:',
+  onboardingProteinDesc: 'Строит и восстанавливает мышцы. Важен для чувства сытости. Самый важный макронутриент.',
+  onboardingFatDesc: 'Поддерживает гормоны и усваивает витамины. Даёт длительное насыщение.',
+  onboardingCarbsDesc: 'Основной источник энергии для тела. Питает мозг и тренировки.',
+  onboardingReadFullGuide: '→ Читать полное руководство',
+  onboardingBodyStatsTitle: 'Расскажите о себе',
+  onboardingMale: 'Мужчина',
+  onboardingFemale: 'Женщина',
+  onboardingAge: 'Возраст (лет)',
+  onboardingWeight: 'Вес (кг)',
+  onboardingWeightHint: 'Перевод из фунтов: разделить на 2,2',
+  onboardingHeight: 'Рост (см)',
+  onboardingHeightHint: 'Перевод из футов/дюймов: футы × 30,5 + дюймы × 2,54',
+  onboardingActivityTitle: 'Насколько вы активны?',
+  onboardingActivitySedentary: 'Малоподвижный',
+  onboardingActivitySedentaryDesc: 'Сидячая работа, почти нет тренировок',
+  onboardingActivityLight: 'Умеренно активный',
+  onboardingActivityLightDesc: 'Лёгкие тренировки 1–3 дня в неделю',
+  onboardingActivityModerate: 'Активный',
+  onboardingActivityModerateDesc: 'Умеренные тренировки 3–5 дней в неделю',
+  onboardingActivityActive: 'Очень активный',
+  onboardingActivityActiveDesc: 'Интенсивные тренировки 6–7 дней в неделю',
+  onboardingActivityVeryActive: 'Чрезвычайно активный',
+  onboardingActivityVeryActiveDesc: 'Физический труд или двойные тренировки',
+  onboardingGoalTitle: 'Какова ваша цель?',
+  onboardingGoalLose: 'Похудеть',
+  onboardingGoalLoseDesc: 'Есть ~400 ккал меньше, чем сжигаете',
+  onboardingGoalMaintain: 'Поддерживать вес',
+  onboardingGoalMaintainDesc: 'Есть примерно столько, сколько сжигаете',
+  onboardingGoalGain: 'Набрать мышечную массу',
+  onboardingGoalGainDesc: 'Есть ~250 ккал больше, чем сжигаете',
+  onboardingResultsTitle: 'Ваши дневные цели',
+  onboardingTdeeLabel: 'Ваши поддерживающие калории (TDEE):',
+  onboardingAdjustMacros: 'Настроить макронутриенты',
+  onboardingCarbsDerived: 'Углеводы (рассчитываются автоматически)',
+  onboardingLowCarbsWarning: 'Углеводов очень мало. Попробуйте немного снизить белки или жиры.',
+  onboardingDoneTitle: 'Всё готово!',
+  onboardingDoneSummary: 'Ваша дневная цель:',
+  onboardingStartTracking: 'Начать отслеживать →',
+  onboardingNext: 'Далее →',
+  onboardingBack: '← Назад',
+  onboardingValidationAge: 'Введите корректный возраст (10–99)',
+  onboardingValidationWeight: 'Введите корректный вес (30–300 кг)',
+  onboardingValidationHeight: 'Введите корректный рост (100–250 см)',
 };
 
 const cs: Translations = {
@@ -426,6 +596,12 @@ const cs: Translations = {
   photoAttached: 'Foto přiloženo',
   photoRemove: 'Odebrat',
   takePhotoOrChoose: 'Vyfotografujte nebo vyberte z galerie',
+
+  chatTitle: 'Nutriční asistent',
+  chatInputPlaceholder: 'Zaznamenejte jídlo nebo se zeptejte...',
+  chatClearHistory: 'Smazat chat',
+  chatClearHistoryConfirm: 'Smazat historii chatu?',
+  chatAnswerError: 'Odpověď se nepodařilo získat. Zkuste znovu nebo zkontrolujte API klíč.',
 
   history: 'Historie',
   thisWeek: 'Tento týden',
@@ -502,6 +678,56 @@ const cs: Translations = {
   chartPlaceholderSub: 'Zaznamenejte alespoň 2 jídla, abyste viděli trendy',
   last30Days: 'posledních 30 dní',
   last12Months: 'posledních 12 měsíců',
+
+  onboardingWelcomeTitle: 'Vítejte v Diet Tracker',
+  onboardingWelcomeSubtitle: 'Sledujte výživu snadno. Popište jídlo a AI spočítá kalorie a makra — nebo zadejte ručně. Vše zůstává v zařízení.',
+  onboardingGetStarted: 'Začít →',
+  onboardingSkip: 'Přeskočit nastavení',
+  onboardingNutritionTitle: 'Jak funguje výživa',
+  onboardingNutritionSubtitle: 'Jídlo poskytuje energii prostřednictvím tří makronutrientů:',
+  onboardingProteinDesc: 'Buduje a opravuje svaly. Pomáhá zasytit. Nejdůležitější makronutrient.',
+  onboardingFatDesc: 'Podporuje hormony a vstřebávání vitamínů. Zajišťuje delší sytost.',
+  onboardingCarbsDesc: 'Primární zdroj energie. Pohání mozek i trénink.',
+  onboardingReadFullGuide: '→ Přečíst celého průvodce',
+  onboardingBodyStatsTitle: 'Řekněte nám o sobě',
+  onboardingMale: 'Muž',
+  onboardingFemale: 'Žena',
+  onboardingAge: 'Věk (roky)',
+  onboardingWeight: 'Hmotnost (kg)',
+  onboardingWeightHint: 'Převod z liber: vydělit 2,2',
+  onboardingHeight: 'Výška (cm)',
+  onboardingHeightHint: 'Převod ze stop/palců: stopy × 30,5 + palce × 2,54',
+  onboardingActivityTitle: 'Jak jste aktivní?',
+  onboardingActivitySedentary: 'Sedavý',
+  onboardingActivitySedentaryDesc: 'Kancelářská práce, téměř žádný pohyb',
+  onboardingActivityLight: 'Mírně aktivní',
+  onboardingActivityLightDesc: 'Lehké cvičení 1–3 dny v týdnu',
+  onboardingActivityModerate: 'Středně aktivní',
+  onboardingActivityModerateDesc: 'Umírněné cvičení 3–5 dní v týdnu',
+  onboardingActivityActive: 'Aktivní',
+  onboardingActivityActiveDesc: 'Intenzivní cvičení 6–7 dní v týdnu',
+  onboardingActivityVeryActive: 'Velmi aktivní',
+  onboardingActivityVeryActiveDesc: 'Fyzická práce nebo dvojí trénink',
+  onboardingGoalTitle: 'Jaký je váš cíl?',
+  onboardingGoalLose: 'Zhubnout',
+  onboardingGoalLoseDesc: 'Jíst ~400 kcal méně, než spálíte',
+  onboardingGoalMaintain: 'Udržet váhu',
+  onboardingGoalMaintainDesc: 'Jíst přibližně tolik, kolik spálíte',
+  onboardingGoalGain: 'Nabrat svaly',
+  onboardingGoalGainDesc: 'Jíst ~250 kcal více, než spálíte',
+  onboardingResultsTitle: 'Vaše denní cíle',
+  onboardingTdeeLabel: 'Vaše udržovací kalorie (TDEE):',
+  onboardingAdjustMacros: 'Upravit makronutrienty',
+  onboardingCarbsDerived: 'Sacharidy (vypočítány automaticky)',
+  onboardingLowCarbsWarning: 'Sacharidů je velmi málo. Zkuste mírně snížit bílkoviny nebo tuky.',
+  onboardingDoneTitle: 'Vše je připraveno!',
+  onboardingDoneSummary: 'Váš denní cíl:',
+  onboardingStartTracking: 'Začít sledovat →',
+  onboardingNext: 'Dále →',
+  onboardingBack: '← Zpět',
+  onboardingValidationAge: 'Zadejte platný věk (10–99)',
+  onboardingValidationWeight: 'Zadejte platnou hmotnost (30–300 kg)',
+  onboardingValidationHeight: 'Zadejte platnou výšku (100–250 cm)',
 };
 
 const de: Translations = {
@@ -549,6 +775,12 @@ const de: Translations = {
   photoAttached: 'Foto angehängt',
   photoRemove: 'Entfernen',
   takePhotoOrChoose: 'Foto aufnehmen oder aus Galerie wählen',
+
+  chatTitle: 'Ernährungs-Assistent',
+  chatInputPlaceholder: 'Mahlzeit erfassen oder Frage stellen...',
+  chatClearHistory: 'Chat löschen',
+  chatClearHistoryConfirm: 'Chatverlauf löschen?',
+  chatAnswerError: 'Antwort konnte nicht abgerufen werden. Erneut versuchen oder API-Schlüssel prüfen.',
 
   history: 'Verlauf',
   thisWeek: 'Diese Woche',
@@ -625,6 +857,56 @@ const de: Translations = {
   chartPlaceholderSub: 'Erfassen Sie mindestens 2 Mahlzeiten für Trends',
   last30Days: 'letzte 30 Tage',
   last12Months: 'letzte 12 Monate',
+
+  onboardingWelcomeTitle: 'Willkommen bei Diet Tracker',
+  onboardingWelcomeSubtitle: 'Verfolgen Sie Ihre Ernährung mühelos. Beschreiben Sie Mahlzeiten in natürlicher Sprache und die KI berechnet Kalorien und Makros — oder manuell eingeben. Alles bleibt auf Ihrem Gerät.',
+  onboardingGetStarted: 'Loslegen →',
+  onboardingSkip: 'Einrichtung überspringen',
+  onboardingNutritionTitle: 'Wie Ernährung funktioniert',
+  onboardingNutritionSubtitle: 'Essen liefert Energie durch drei Makronährstoffe:',
+  onboardingProteinDesc: 'Baut Muskeln auf und repariert sie. Wichtig für Sättigung. Der wichtigste Makronährstoff.',
+  onboardingFatDesc: 'Unterstützt Hormone und Vitaminaufnahme. Hält länger satt.',
+  onboardingCarbsDesc: 'Bevorzugter Brennstoff des Körpers. Treibt Gehirn und Training an.',
+  onboardingReadFullGuide: '→ Vollständigen Leitfaden lesen',
+  onboardingBodyStatsTitle: 'Erzählen Sie uns von sich',
+  onboardingMale: 'Mann',
+  onboardingFemale: 'Frau',
+  onboardingAge: 'Alter (Jahre)',
+  onboardingWeight: 'Gewicht (kg)',
+  onboardingWeightHint: 'Umrechnung aus Pfund: durch 2,2 dividieren',
+  onboardingHeight: 'Größe (cm)',
+  onboardingHeightHint: 'Umrechnung aus Fuß/Zoll: Fuß × 30,5 + Zoll × 2,54',
+  onboardingActivityTitle: 'Wie aktiv sind Sie?',
+  onboardingActivitySedentary: 'Sitzend',
+  onboardingActivitySedentaryDesc: 'Büroarbeit, kaum Sport',
+  onboardingActivityLight: 'Leicht aktiv',
+  onboardingActivityLightDesc: 'Leichter Sport 1–3 Tage/Woche',
+  onboardingActivityModerate: 'Mäßig aktiv',
+  onboardingActivityModerateDesc: 'Moderater Sport 3–5 Tage/Woche',
+  onboardingActivityActive: 'Aktiv',
+  onboardingActivityActiveDesc: 'Intensiver Sport 6–7 Tage/Woche',
+  onboardingActivityVeryActive: 'Sehr aktiv',
+  onboardingActivityVeryActiveDesc: 'Körperliche Arbeit oder doppeltes Training',
+  onboardingGoalTitle: 'Was ist Ihr Ziel?',
+  onboardingGoalLose: 'Abnehmen',
+  onboardingGoalLoseDesc: '~400 kcal weniger als verbraucht essen',
+  onboardingGoalMaintain: 'Gewicht halten',
+  onboardingGoalMaintainDesc: 'Ungefähr so viel essen wie verbraucht',
+  onboardingGoalGain: 'Muskeln aufbauen',
+  onboardingGoalGainDesc: '~250 kcal mehr als verbraucht essen',
+  onboardingResultsTitle: 'Ihre Tagesziele',
+  onboardingTdeeLabel: 'Ihre Erhaltungskalorien (TDEE):',
+  onboardingAdjustMacros: 'Makros anpassen',
+  onboardingCarbsDerived: 'Kohlenhydrate (automatisch berechnet)',
+  onboardingLowCarbsWarning: 'Sehr wenig Kohlenhydrate. Erwägen Sie, Protein oder Fett leicht zu reduzieren.',
+  onboardingDoneTitle: 'Alles bereit!',
+  onboardingDoneSummary: 'Ihr Tagesziel:',
+  onboardingStartTracking: 'Tracking starten →',
+  onboardingNext: 'Weiter →',
+  onboardingBack: '← Zurück',
+  onboardingValidationAge: 'Bitte ein gültiges Alter eingeben (10–99)',
+  onboardingValidationWeight: 'Bitte ein gültiges Gewicht eingeben (30–300 kg)',
+  onboardingValidationHeight: 'Bitte eine gültige Größe eingeben (100–250 cm)',
 };
 
 const fr: Translations = {
@@ -672,6 +954,12 @@ const fr: Translations = {
   photoAttached: 'Photo jointe',
   photoRemove: 'Supprimer',
   takePhotoOrChoose: 'Prendre une photo ou choisir dans la bibliothèque',
+
+  chatTitle: 'Assistant nutrition',
+  chatInputPlaceholder: 'Enregistrer un repas ou poser une question...',
+  chatClearHistory: 'Effacer le chat',
+  chatClearHistoryConfirm: 'Effacer l\'historique du chat ?',
+  chatAnswerError: 'Impossible d\'obtenir une réponse. Réessayez ou vérifiez votre clé API.',
 
   history: 'Historique',
   thisWeek: 'Cette semaine',
@@ -748,6 +1036,56 @@ const fr: Translations = {
   chartPlaceholderSub: 'Enregistrez au moins 2 repas pour voir les tendances',
   last30Days: '30 derniers jours',
   last12Months: '12 derniers mois',
+
+  onboardingWelcomeTitle: 'Bienvenue dans Diet Tracker',
+  onboardingWelcomeSubtitle: 'Suivez votre nutrition facilement. Décrivez vos repas en langage naturel et l\'IA calcule calories et macros — ou saisie manuelle. Tout reste sur votre appareil.',
+  onboardingGetStarted: 'Commencer →',
+  onboardingSkip: 'Passer la configuration',
+  onboardingNutritionTitle: 'Comment fonctionne la nutrition',
+  onboardingNutritionSubtitle: 'La nourriture fournit de l\'énergie via trois macronutriments :',
+  onboardingProteinDesc: 'Construit et répare les muscles. Essentiel pour la satiété. Le macronutriment le plus important.',
+  onboardingFatDesc: 'Soutient les hormones et absorbe les vitamines. Procure une satiété durable.',
+  onboardingCarbsDesc: 'Source d\'énergie préférée du corps. Alimente le cerveau et l\'entraînement.',
+  onboardingReadFullGuide: '→ Lire le guide complet',
+  onboardingBodyStatsTitle: 'Parlez-nous de vous',
+  onboardingMale: 'Homme',
+  onboardingFemale: 'Femme',
+  onboardingAge: 'Âge (années)',
+  onboardingWeight: 'Poids (kg)',
+  onboardingWeightHint: 'Conversion depuis les livres : diviser par 2,2',
+  onboardingHeight: 'Taille (cm)',
+  onboardingHeightHint: 'Conversion depuis pieds/pouces : pieds × 30,5 + pouces × 2,54',
+  onboardingActivityTitle: 'Quel est votre niveau d\'activité ?',
+  onboardingActivitySedentary: 'Sédentaire',
+  onboardingActivitySedentaryDesc: 'Travail de bureau, peu ou pas d\'exercice',
+  onboardingActivityLight: 'Légèrement actif',
+  onboardingActivityLightDesc: 'Exercice léger 1–3 jours/semaine',
+  onboardingActivityModerate: 'Modérément actif',
+  onboardingActivityModerateDesc: 'Exercice modéré 3–5 jours/semaine',
+  onboardingActivityActive: 'Actif',
+  onboardingActivityActiveDesc: 'Exercice intense 6–7 jours/semaine',
+  onboardingActivityVeryActive: 'Très actif',
+  onboardingActivityVeryActiveDesc: 'Travail physique ou double entraînement',
+  onboardingGoalTitle: 'Quel est votre objectif ?',
+  onboardingGoalLose: 'Perdre du poids',
+  onboardingGoalLoseDesc: 'Manger ~400 kcal de moins que vous brûlez',
+  onboardingGoalMaintain: 'Maintenir le poids',
+  onboardingGoalMaintainDesc: 'Manger environ ce que vous brûlez',
+  onboardingGoalGain: 'Prendre de la masse',
+  onboardingGoalGainDesc: 'Manger ~250 kcal de plus que vous brûlez',
+  onboardingResultsTitle: 'Vos objectifs quotidiens',
+  onboardingTdeeLabel: 'Vos calories de maintien (TDEE) :',
+  onboardingAdjustMacros: 'Ajuster les macros',
+  onboardingCarbsDerived: 'Glucides (calculés automatiquement)',
+  onboardingLowCarbsWarning: 'Glucides très bas. Réduisez légèrement les protéines ou les lipides.',
+  onboardingDoneTitle: 'Vous êtes prêt !',
+  onboardingDoneSummary: 'Votre objectif quotidien :',
+  onboardingStartTracking: 'Commencer le suivi →',
+  onboardingNext: 'Suivant →',
+  onboardingBack: '← Retour',
+  onboardingValidationAge: 'Veuillez entrer un âge valide (10–99)',
+  onboardingValidationWeight: 'Veuillez entrer un poids valide (30–300 kg)',
+  onboardingValidationHeight: 'Veuillez entrer une taille valide (100–250 cm)',
 };
 
 const es: Translations = {
@@ -795,6 +1133,12 @@ const es: Translations = {
   photoAttached: 'Foto adjunta',
   photoRemove: 'Eliminar',
   takePhotoOrChoose: 'Tomar foto o elegir de la galería',
+
+  chatTitle: 'Asistente de nutrición',
+  chatInputPlaceholder: 'Registrar una comida o hacer una pregunta...',
+  chatClearHistory: 'Borrar chat',
+  chatClearHistoryConfirm: '¿Borrar historial del chat?',
+  chatAnswerError: 'No se pudo obtener respuesta. Inténtalo de nuevo o verifica tu clave API.',
 
   history: 'Historial',
   thisWeek: 'Esta semana',
@@ -871,6 +1215,56 @@ const es: Translations = {
   chartPlaceholderSub: 'Registra al menos 2 comidas para ver las tendencias',
   last30Days: 'últimos 30 días',
   last12Months: 'últimos 12 meses',
+
+  onboardingWelcomeTitle: 'Bienvenido a Diet Tracker',
+  onboardingWelcomeSubtitle: 'Rastrea tu nutrición fácilmente. Describe tus comidas en lenguaje natural y la IA calcula calorías y macros — o ingresa manualmente. Todo permanece en tu dispositivo.',
+  onboardingGetStarted: 'Comenzar →',
+  onboardingSkip: 'Omitir configuración',
+  onboardingNutritionTitle: 'Cómo funciona la nutrición',
+  onboardingNutritionSubtitle: 'Los alimentos proporcionan energía a través de tres macronutrientes:',
+  onboardingProteinDesc: 'Construye y repara músculos. Esencial para la saciedad. El macronutriente más importante.',
+  onboardingFatDesc: 'Apoya las hormonas y absorbe vitaminas. Proporciona saciedad duradera.',
+  onboardingCarbsDesc: 'La fuente de energía preferida del cuerpo. Impulsa el cerebro y los entrenamientos.',
+  onboardingReadFullGuide: '→ Leer la guía completa',
+  onboardingBodyStatsTitle: 'Cuéntanos sobre ti',
+  onboardingMale: 'Hombre',
+  onboardingFemale: 'Mujer',
+  onboardingAge: 'Edad (años)',
+  onboardingWeight: 'Peso (kg)',
+  onboardingWeightHint: 'Conversión desde libras: dividir entre 2,2',
+  onboardingHeight: 'Altura (cm)',
+  onboardingHeightHint: 'Conversión desde pies/pulgadas: pies × 30,5 + pulgadas × 2,54',
+  onboardingActivityTitle: '¿Qué tan activo eres?',
+  onboardingActivitySedentary: 'Sedentario',
+  onboardingActivitySedentaryDesc: 'Trabajo de escritorio, poco o ningún ejercicio',
+  onboardingActivityLight: 'Ligeramente activo',
+  onboardingActivityLightDesc: 'Ejercicio ligero 1–3 días/semana',
+  onboardingActivityModerate: 'Moderadamente activo',
+  onboardingActivityModerateDesc: 'Ejercicio moderado 3–5 días/semana',
+  onboardingActivityActive: 'Activo',
+  onboardingActivityActiveDesc: 'Ejercicio intenso 6–7 días/semana',
+  onboardingActivityVeryActive: 'Muy activo',
+  onboardingActivityVeryActiveDesc: 'Trabajo físico o entrenamiento doble',
+  onboardingGoalTitle: '¿Cuál es tu objetivo?',
+  onboardingGoalLose: 'Perder peso',
+  onboardingGoalLoseDesc: 'Comer ~400 kcal menos de lo que quemas',
+  onboardingGoalMaintain: 'Mantener el peso',
+  onboardingGoalMaintainDesc: 'Comer aproximadamente lo que quemas',
+  onboardingGoalGain: 'Ganar músculo',
+  onboardingGoalGainDesc: 'Comer ~250 kcal más de lo que quemas',
+  onboardingResultsTitle: 'Tus objetivos diarios',
+  onboardingTdeeLabel: 'Tus calorías de mantenimiento (TDEE):',
+  onboardingAdjustMacros: 'Ajustar macros',
+  onboardingCarbsDerived: 'Carbohidratos (calculados automáticamente)',
+  onboardingLowCarbsWarning: 'Carbohidratos muy bajos. Considera reducir proteínas o grasas ligeramente.',
+  onboardingDoneTitle: '¡Estás listo!',
+  onboardingDoneSummary: 'Tu objetivo diario:',
+  onboardingStartTracking: 'Empezar a rastrear →',
+  onboardingNext: 'Siguiente →',
+  onboardingBack: '← Atrás',
+  onboardingValidationAge: 'Ingresa una edad válida (10–99)',
+  onboardingValidationWeight: 'Ingresa un peso válido (30–300 kg)',
+  onboardingValidationHeight: 'Ingresa una altura válida (100–250 cm)',
 };
 
 const uk: Translations = {
@@ -918,6 +1312,12 @@ const uk: Translations = {
   photoAttached: 'Фото додано',
   photoRemove: 'Видалити',
   takePhotoOrChoose: 'Зробити фото або вибрати з галереї',
+
+  chatTitle: 'Асистент з харчування',
+  chatInputPlaceholder: 'Запишіть прийом їжі або поставте запитання...',
+  chatClearHistory: 'Очистити чат',
+  chatClearHistoryConfirm: 'Очистити історію чату?',
+  chatAnswerError: 'Не вдалося отримати відповідь. Спробуйте ще раз або перевірте ключ API.',
 
   history: 'Історія',
   thisWeek: 'Цей тиждень',
@@ -994,6 +1394,56 @@ const uk: Translations = {
   chartPlaceholderSub: 'Запишіть хоча б 2 прийоми їжі, щоб побачити тренди',
   last30Days: 'останні 30 днів',
   last12Months: 'останні 12 місяців',
+
+  onboardingWelcomeTitle: 'Ласкаво просимо до Diet Tracker',
+  onboardingWelcomeSubtitle: 'Відстежуйте харчування легко. Опишіть їжу, і ШІ порахує калорії та макронутрієнти — або введіть вручну. Усі дані зберігаються на пристрої.',
+  onboardingGetStarted: 'Почати →',
+  onboardingSkip: 'Пропустити налаштування',
+  onboardingNutritionTitle: 'Як працює харчування',
+  onboardingNutritionSubtitle: 'Їжа дає енергію через три макронутрієнти. Кожен виконує свою роль:',
+  onboardingProteinDesc: 'Будує та відновлює м\'язи. Важливий для відчуття ситості. Найважливіший макронутрієнт.',
+  onboardingFatDesc: 'Підтримує гормони та засвоєння вітамінів. Забезпечує тривале насичення.',
+  onboardingCarbsDesc: 'Основне джерело енергії для тіла. Живить мозок і тренування.',
+  onboardingReadFullGuide: '→ Читати повний посібник',
+  onboardingBodyStatsTitle: 'Розкажіть про себе',
+  onboardingMale: 'Чоловік',
+  onboardingFemale: 'Жінка',
+  onboardingAge: 'Вік (роки)',
+  onboardingWeight: 'Вага (кг)',
+  onboardingWeightHint: 'Перевід із фунтів: поділити на 2,2',
+  onboardingHeight: 'Зріст (см)',
+  onboardingHeightHint: 'Перевід із футів/дюймів: фути × 30,5 + дюйми × 2,54',
+  onboardingActivityTitle: 'Наскільки ви активні?',
+  onboardingActivitySedentary: 'Малорухливий',
+  onboardingActivitySedentaryDesc: 'Сидяча робота, майже немає тренувань',
+  onboardingActivityLight: 'Помірно активний',
+  onboardingActivityLightDesc: 'Легкі тренування 1–3 дні на тиждень',
+  onboardingActivityModerate: 'Активний',
+  onboardingActivityModerateDesc: 'Помірні тренування 3–5 днів на тиждень',
+  onboardingActivityActive: 'Дуже активний',
+  onboardingActivityActiveDesc: 'Інтенсивні тренування 6–7 днів на тиждень',
+  onboardingActivityVeryActive: 'Надзвичайно активний',
+  onboardingActivityVeryActiveDesc: 'Фізична праця або подвійні тренування',
+  onboardingGoalTitle: 'Яка ваша мета?',
+  onboardingGoalLose: 'Схуднути',
+  onboardingGoalLoseDesc: 'Їсти ~400 ккал менше, ніж спалюєте',
+  onboardingGoalMaintain: 'Підтримувати вагу',
+  onboardingGoalMaintainDesc: 'Їсти приблизно стільки, скільки спалюєте',
+  onboardingGoalGain: 'Набрати м\'язову масу',
+  onboardingGoalGainDesc: 'Їсти ~250 ккал більше, ніж спалюєте',
+  onboardingResultsTitle: 'Ваші денні цілі',
+  onboardingTdeeLabel: 'Ваші підтримуючі калорії (TDEE):',
+  onboardingAdjustMacros: 'Налаштувати макронутрієнти',
+  onboardingCarbsDerived: 'Вуглеводи (розраховуються автоматично)',
+  onboardingLowCarbsWarning: 'Вуглеводів дуже мало. Спробуйте трохи знизити білки або жири.',
+  onboardingDoneTitle: 'Усе готово!',
+  onboardingDoneSummary: 'Ваша денна ціль:',
+  onboardingStartTracking: 'Почати відстежувати →',
+  onboardingNext: 'Далі →',
+  onboardingBack: '← Назад',
+  onboardingValidationAge: 'Введіть коректний вік (10–99)',
+  onboardingValidationWeight: 'Введіть коректну вагу (30–300 кг)',
+  onboardingValidationHeight: 'Введіть коректний зріст (100–250 см)',
 };
 
 export const TRANSLATIONS: Record<AppLanguage, Translations> = { en, ru, cs, de, fr, es, uk };

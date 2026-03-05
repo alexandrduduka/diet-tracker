@@ -31,6 +31,19 @@ Look for the install icon in the browser's address bar and click it.
 
 ## First-Time Setup
 
+### Onboarding wizard
+
+New users see a 6-step onboarding flow on first launch:
+
+1. **Welcome** — brief app description and language picker
+2. **Nutrition basics** — protein, fat, and carbs explained visually with macro split illustration. Links to the in-app article library for a deeper dive.
+3. **Your body stats** — sex, age, weight (kg), height (cm). Metric only; conversion hints provided.
+4. **Activity & goal** — 5 activity levels + 3 goal options (lose / maintain / gain)
+5. **Your targets** — calculated calorie goal (Mifflin-St Jeor BMR × activity TDEE ± goal offset). Connected sliders for protein and fat; carbs update automatically to fill the calorie budget. Slider bounds enforce healthy minimums (≥20% of calories from fat, ≥20g carbs).
+6. **Done** — recap with daily targets; tap **Start tracking** to save and go to the Dashboard
+
+Tapping **Skip setup** at any point takes you directly to the Dashboard with default goals.
+
 ### Get a free Gemini API key
 
 The AI meal logging feature requires a Google Gemini API key. It's **free** and takes about **30 seconds** to set up.

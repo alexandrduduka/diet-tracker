@@ -9,6 +9,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- First-time user onboarding flow (`/onboarding`): 6-step wizard — Welcome (with language picker), Nutrition Primer (protein/fat/carbs explained with macro split visual + link to articles), Body Stats (sex/age/weight/height), Activity & Goal, Results with connected macro sliders, and Done screen. Calculates personalised calorie and macro targets using Mifflin-St Jeor BMR × activity TDEE. Protein and fat sliders update carbs automatically; slider bounds enforce healthy minimums (≥20% of calories from fat, ≥20g carbs). Existing users auto-migrated to skip onboarding via `migrateSettings()`.
+- `src/lib/goalCalculator.ts` — pure calculation functions for BMR, TDEE, calorie target, macro goals, and slider bounds. 26 Vitest tests in `goalCalculator.test.ts`.
+- `OnboardingProfile` type in `src/types/index.ts`; `UserSettings` extended with `onboardingComplete` and `onboardingProfile`.
+- PWA maskable icon: `public/icons/icon-maskable-512x512.png` — icon at 75% scale on 512×512 dark background, keeping content within the W3C safe zone. Manifest now references this dedicated file for the `maskable` purpose.
 - Edit and delete actions on meal items: pencil + trash icons appear on hover (desktop) and after a 300ms long-press (mobile), keeping the UI clean by default. Available on both Dashboard meal cards and History day-summary meal rows.
 - Edit Meal dialog: tap the pencil icon to edit the meal description and notes inline. Saves to IndexedDB without re-parsing with LLM.
 
