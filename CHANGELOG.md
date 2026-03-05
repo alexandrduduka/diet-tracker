@@ -9,6 +9,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Chat history persistence**: chat messages (including coach, answer, result, and user bubbles) are saved to `localStorage` under key `dtk_chat_history` and restored on re-open. Maximum 100 messages retained; `setup` messages are never persisted. A clear-chat button (trash icon) in the header lets users wipe the history.
+- **LLM-powered nutrition Q&A**: users can now ask free-form questions in the chat ("how am I doing today?", "why am I losing weight slowly?", "summarise what I ate", "is my protein high enough?"). The app automatically classifies the intent — if it's a question it calls the new `askNutritionQuestion` function; if it's a meal description it calls the existing `parseMealDescription` function.
+- `classifyIntent(userInput, lang)` — lightweight Gemini call (64 token output) that returns `'log' | 'question'`. Photos always route to meal-logging; classification is skipped for image-only messages.
+- `askNutritionQuestion(question, lang, context)` — plain-text Gemini response using a coaching system prompt. Context includes today's goals and consumed macros, last 7 days of daily totals (only days with data), and latest logged body weight.
+- `NutritionContext` interface extending `MealContext` with `recentDays` and `latestWeight` fields.
+- New `'answer'` role in `ChatMessage` union: renders as a slightly distinct bubble (dark background, `whitespace-pre-wrap`) so answers are visually distinct from welcome/coaching messages.
+- New i18n strings in all 7 languages: `chatTitle`, `chatInputPlaceholder`, `chatClearHistory`, `chatClearHistoryConfirm`, `chatAnswerError`.
+- Chat page header now shows "Nutrition Assistant" (`chatTitle`) and input placeholder updated to "Log a meal or ask a question...".
+
+---
+
+### Added (previous)
 - First-time user onboarding flow (`/onboarding`): 6-step wizard — Welcome (with language picker), Nutrition Primer (protein/fat/carbs explained with macro split visual + link to articles), Body Stats (sex/age/weight/height), Activity & Goal, Results with connected macro sliders, and Done screen. Calculates personalised calorie and macro targets using Mifflin-St Jeor BMR × activity TDEE. Protein and fat sliders update carbs automatically; slider bounds enforce healthy minimums (≥20% of calories from fat, ≥20g carbs). Existing users auto-migrated to skip onboarding via `migrateSettings()`.
 - `src/lib/goalCalculator.ts` — pure calculation functions for BMR, TDEE, calorie target, macro goals, and slider bounds. 26 Vitest tests in `goalCalculator.test.ts`.
 - `OnboardingProfile` type in `src/types/index.ts`; `UserSettings` extended with `onboardingComplete` and `onboardingProfile`.
