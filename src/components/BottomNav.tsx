@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Bot, BarChart2, BookOpen, Settings } from 'lucide-react';
+import { Home, PenLine, BarChart2, BookOpen, Settings } from 'lucide-react';
 import { useLang } from '../store/langContext';
 
 export function BottomNav() {
@@ -7,7 +7,7 @@ export function BottomNav() {
 
   const NAV_ITEMS = [
     { to: '/', label: t.navToday, icon: Home },
-    { to: '/chat', label: t.navLog, icon: Bot },
+    { to: '/chat', label: t.navLog, icon: PenLine },
     { to: '/analytics', label: t.navCharts, icon: BarChart2 },
     { to: '/articles', label: t.navArticles, icon: BookOpen },
     { to: '/settings', label: t.navSettings, icon: Settings },

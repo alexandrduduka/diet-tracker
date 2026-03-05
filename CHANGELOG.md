@@ -21,6 +21,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - Settings page now shows the bottom nav bar (was hidden before — now it's a main nav tab).
 - `HIDE_NAV_ROUTES` reduced to `['/onboarding']` only.
+- **App icon redesigned**: replaced abstract teardrop with a "seed sprouting into a progress arc" — an amber seed at the bottom of a gap in a green circular arc, with a leaf bud at the arc tip. Communicates growth + nutrition tracking, works for all diets. All PNG variants regenerated (192px, 512px, 180px apple-touch, 512px maskable).
+- **Chat tab icon**: changed from Bot to `PenLine` (pen with line) — better conveys both logging and asking.
 
 - **Google Analytics 4** (G-CX3LDP2Y41): page-view tracking on every HashRouter navigation plus custom events — `meal_saved`, `meal_discarded`, `meal_edited`, `meal_log_started` (method: text/photo/voice), `nutrition_question_asked`, `chat_history_cleared`, `api_key_saved`, `goals_updated`, `language_changed`, `data_exported`, `onboarding_completed`, `measurement_logged`, `article_opened`. IP anonymization enabled; no PII sent.
 - **Microsoft Clarity** (project `vr5878quce`): free heatmap and session-recording tool injected via standard snippet in `index.html`.
