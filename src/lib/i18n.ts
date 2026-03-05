@@ -368,7 +368,7 @@ const en: Translations = {
   last30Days: 'last 30 days',
   last12Months: 'last 12 months',
 
-  onboardingWelcomeTitle: 'Welcome to Diet Tracker',
+  onboardingWelcomeTitle: 'Welcome to Eat Me',
   onboardingWelcomeSubtitle: 'Track your nutrition effortlessly. Describe meals in plain text and AI calculates your calories and macros — or log manually. Everything stays on your device.',
   onboardingGetStarted: 'Get started →',
   onboardingSkip: 'Skip setup',
@@ -582,7 +582,7 @@ const ru: Translations = {
   last30Days: 'последние 30 дней',
   last12Months: 'последние 12 месяцев',
 
-  onboardingWelcomeTitle: 'Добро пожаловать в Diet Tracker',
+  onboardingWelcomeTitle: 'Добро пожаловать в Eat Me',
   onboardingWelcomeSubtitle: 'Легко отслеживайте питание. Опишите приём пищи, и ИИ посчитает калории и макронутриенты — или введите вручную. Все данные хранятся на устройстве.',
   onboardingGetStarted: 'Начать →',
   onboardingSkip: 'Пропустить настройку',
@@ -796,7 +796,7 @@ const cs: Translations = {
   last30Days: 'posledních 30 dní',
   last12Months: 'posledních 12 měsíců',
 
-  onboardingWelcomeTitle: 'Vítejte v Diet Tracker',
+  onboardingWelcomeTitle: 'Vítejte v Eat Me',
   onboardingWelcomeSubtitle: 'Sledujte výživu snadno. Popište jídlo a AI spočítá kalorie a makra — nebo zadejte ručně. Vše zůstává v zařízení.',
   onboardingGetStarted: 'Začít →',
   onboardingSkip: 'Přeskočit nastavení',
@@ -1010,7 +1010,7 @@ const de: Translations = {
   last30Days: 'letzte 30 Tage',
   last12Months: 'letzte 12 Monate',
 
-  onboardingWelcomeTitle: 'Willkommen bei Diet Tracker',
+  onboardingWelcomeTitle: 'Willkommen bei Eat Me',
   onboardingWelcomeSubtitle: 'Verfolgen Sie Ihre Ernährung mühelos. Beschreiben Sie Mahlzeiten in natürlicher Sprache und die KI berechnet Kalorien und Makros — oder manuell eingeben. Alles bleibt auf Ihrem Gerät.',
   onboardingGetStarted: 'Loslegen →',
   onboardingSkip: 'Einrichtung überspringen',
@@ -1224,7 +1224,7 @@ const fr: Translations = {
   last30Days: '30 derniers jours',
   last12Months: '12 derniers mois',
 
-  onboardingWelcomeTitle: 'Bienvenue dans Diet Tracker',
+  onboardingWelcomeTitle: 'Bienvenue dans Eat Me',
   onboardingWelcomeSubtitle: 'Suivez votre nutrition facilement. Décrivez vos repas en langage naturel et l\'IA calcule calories et macros — ou saisie manuelle. Tout reste sur votre appareil.',
   onboardingGetStarted: 'Commencer →',
   onboardingSkip: 'Passer la configuration',
@@ -1438,7 +1438,7 @@ const es: Translations = {
   last30Days: 'últimos 30 días',
   last12Months: 'últimos 12 meses',
 
-  onboardingWelcomeTitle: 'Bienvenido a Diet Tracker',
+  onboardingWelcomeTitle: 'Bienvenido a Eat Me',
   onboardingWelcomeSubtitle: 'Rastrea tu nutrición fácilmente. Describe tus comidas en lenguaje natural y la IA calcula calorías y macros — o ingresa manualmente. Todo permanece en tu dispositivo.',
   onboardingGetStarted: 'Comenzar →',
   onboardingSkip: 'Omitir configuración',
@@ -1652,7 +1652,7 @@ const uk: Translations = {
   last30Days: 'останні 30 днів',
   last12Months: 'останні 12 місяців',
 
-  onboardingWelcomeTitle: 'Ласкаво просимо до Diet Tracker',
+  onboardingWelcomeTitle: 'Ласкаво просимо до Eat Me',
   onboardingWelcomeSubtitle: 'Відстежуйте харчування легко. Опишіть їжу, і ШІ порахує калорії та макронутрієнти — або введіть вручну. Усі дані зберігаються на пристрої.',
   onboardingGetStarted: 'Почати →',
   onboardingSkip: 'Пропустити налаштування',

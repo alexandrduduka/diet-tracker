@@ -182,7 +182,7 @@ export function Onboarding() {
         {/* Step 0 — Welcome */}
         {step === 0 && (
           <div className="flex flex-col items-center text-center gap-6">
-            <img src="/icons/icon-192x192.png" alt="Diet Tracker" className="w-20 h-20 rounded-2xl" />
+            <img src="/icons/icon-192x192.png" alt="Eat Me" className="w-20 h-20 rounded-2xl" />
             <div>
               <h1 className="text-2xl font-bold text-[#f0ede4] mb-3">{t.onboardingWelcomeTitle}</h1>
               <p className="text-[#9a9680] text-sm leading-relaxed">{t.onboardingWelcomeSubtitle}</p>

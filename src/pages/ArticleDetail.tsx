@@ -118,11 +118,11 @@ export function ArticleDetail() {
 
   useEffect(() => {
     if (article) {
-      document.title = `${article.title} — Diet Tracker`;
+      document.title = `${article.title} — Eat Me`;
       if (slug) trackArticleOpened(slug);
     }
     return () => {
-      document.title = 'Diet Tracker — AI-Powered Nutrition & Calorie Tracker';
+      document.title = 'Eat Me — AI-Powered Nutrition & Calorie Tracker';
     };
   }, [article, slug]);
 

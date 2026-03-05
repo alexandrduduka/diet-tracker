@@ -11,8 +11,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/*.png', 'icons/*.svg'],
       manifest: {
-        name: 'Diet Tracker',
-        short_name: 'Diet Tracker',
+        name: 'Eat Me',
+        short_name: 'Eat Me',
         description: 'AI-powered nutrition and calorie tracker. Describe meals in plain text — get instant calorie and macro breakdowns.',
         theme_color: '#7cb87a',
         background_color: '#18180f',

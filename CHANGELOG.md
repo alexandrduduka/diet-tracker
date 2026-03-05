@@ -9,6 +9,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **App renamed to "Eat Me"**: updated in HTML title, Open Graph / Twitter meta tags, PWA manifest name, apple-mobile-web-app-title, JSON-LD structured data, and all 7 onboarding welcome strings.
+- **Logo strip more prominent**: icon enlarged from 16 px to 24 px, name text size raised from 10 px to 12 px, opacity lifted — more readable on both mobile and desktop.
 - **Past-day navigation on Dashboard**: left/right arrow buttons in the Dashboard header let you browse any previous day's meals and macros. Swipe left/right on mobile to change days. Past days show the full calorie ring and macro bars for that day vs. goals. Edit and delete work on past meals; the FAB (add meal) is hidden for past days. A "Today" pill appears when viewing a past day for quick return.
 - **Body profile in Settings**: the onboarding profile (weight, height, age, sex, activity level, goal) is now editable inline in the Settings page. When the saved weight changes by ≥ 2 kg, a banner appears offering to recalculate macros using the same Mifflin-St Jeor / TDEE formula as onboarding.
 - **Nav rework — 5-tab bottom nav**: Today / Log & Ask / Charts / Learn / Settings. Removed dedicated Body and History tabs; Settings is now a first-class nav item.
