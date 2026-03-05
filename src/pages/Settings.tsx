@@ -367,7 +367,15 @@ export function Settings() {
               </div>
             </div>
           ) : (
-            <p className="text-xs text-[#5a5a44]">{t.profileNotSet}</p>
+            <div className="py-2 text-center space-y-2">
+              <p className="text-xs text-[#5a5a44]">{t.profileNotSet}</p>
+              <button
+                onClick={() => navigate('/onboarding')}
+                className="text-sm text-[#7cb87a] hover:text-[#8fce8d] font-medium"
+              >
+                {t.profileNotSetLink} →
+              </button>
+            </div>
           )}
         </section>
 

@@ -756,20 +756,18 @@ export function Chat() {
             </div>
           ) : (
             <div className="space-y-2">
-              {/* Suggestion chips — shown only on a fresh chat */}
-              {messages.length === 1 && messages[0].role === 'assistant' && (
-                <div className="flex gap-2 pb-1 overflow-x-auto no-scrollbar">
-                  {([t.chatSuggestionLogMeal, t.chatSuggestionHowAmIDoing, t.chatSuggestionProtein, t.chatSuggestionSummary, t.chatSuggestionWeightLoss] as string[]).map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setInput(s)}
-                      className="shrink-0 px-3 py-1.5 rounded-full bg-[#2e2e22] border border-[#3a3a2a] text-xs text-[#c8c4b0] hover:border-[#7cb87a] hover:text-[#f0ede4] transition-colors whitespace-nowrap"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              )}
+              {/* Suggestion chips */}
+              <div className="flex gap-2 pb-1 overflow-x-auto no-scrollbar">
+                {([t.chatSuggestionLogMeal, t.chatSuggestionHowAmIDoing, t.chatSuggestionProtein, t.chatSuggestionSummary, t.chatSuggestionWeightLoss] as string[]).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setInput(s)}
+                    className="shrink-0 px-3 py-1.5 rounded-full bg-[#2e2e22] border border-[#3a3a2a] text-xs text-[#c8c4b0] hover:border-[#7cb87a] hover:text-[#f0ede4] transition-colors whitespace-nowrap"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
 
               {/* Photo preview */}
               {imagePreview && (

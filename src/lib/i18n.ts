@@ -229,6 +229,7 @@ export interface Translations {
   recalcMacrosBtn: string;
   recalcMacrosDone: string;
   profileNotSet: string;
+  profileNotSetLink: string;
 }
 
 const en: Translations = {
@@ -442,7 +443,8 @@ const en: Translations = {
   recalcMacrosBanner: 'Your weight changed — recalculate macros?',
   recalcMacrosBtn: 'Recalculate',
   recalcMacrosDone: 'Macros updated!',
-  profileNotSet: 'No profile yet — complete onboarding to enable this.',
+  profileNotSet: 'No body profile found.',
+  profileNotSetLink: 'Set up your profile',
 };
 
 const ru: Translations = {
@@ -656,7 +658,8 @@ const ru: Translations = {
   recalcMacrosBanner: 'Вес изменился — пересчитать макросы?',
   recalcMacrosBtn: 'Пересчитать',
   recalcMacrosDone: 'Макросы обновлены!',
-  profileNotSet: 'Профиль не настроен — пройдите онбординг для активации.',
+  profileNotSet: 'Профиль тела не найден.',
+  profileNotSetLink: 'Настроить профиль',
 };
 
 const cs: Translations = {
@@ -870,7 +873,8 @@ const cs: Translations = {
   recalcMacrosBanner: 'Vaše hmotnost se změnila — přepočítat makra?',
   recalcMacrosBtn: 'Přepočítat',
   recalcMacrosDone: 'Makra aktualizována!',
-  profileNotSet: 'Profil není nastaven — dokončete onboarding pro aktivaci.',
+  profileNotSet: 'Profil těla nenalezen.',
+  profileNotSetLink: 'Nastavit profil',
 };
 
 const de: Translations = {
@@ -1084,7 +1088,8 @@ const de: Translations = {
   recalcMacrosBanner: 'Gewicht geändert — Makros neu berechnen?',
   recalcMacrosBtn: 'Neu berechnen',
   recalcMacrosDone: 'Makros aktualisiert!',
-  profileNotSet: 'Kein Profil vorhanden — Onboarding abschließen, um dies zu aktivieren.',
+  profileNotSet: 'Kein Körperprofil gefunden.',
+  profileNotSetLink: 'Profil einrichten',
 };
 
 const fr: Translations = {
@@ -1298,7 +1303,8 @@ const fr: Translations = {
   recalcMacrosBanner: 'Poids modifié — recalculer les macros ?',
   recalcMacrosBtn: 'Recalculer',
   recalcMacrosDone: 'Macros mis à jour !',
-  profileNotSet: 'Aucun profil — terminez l\'onboarding pour activer ceci.',
+  profileNotSet: 'Aucun profil corporel trouvé.',
+  profileNotSetLink: 'Configurer le profil',
 };
 
 const es: Translations = {
@@ -1512,7 +1518,8 @@ const es: Translations = {
   recalcMacrosBanner: 'Peso cambiado — ¿recalcular macros?',
   recalcMacrosBtn: 'Recalcular',
   recalcMacrosDone: '¡Macros actualizados!',
-  profileNotSet: 'Sin perfil — completa el onboarding para activar esto.',
+  profileNotSet: 'No se encontró perfil corporal.',
+  profileNotSetLink: 'Configurar perfil',
 };
 
 const uk: Translations = {
@@ -1726,7 +1733,8 @@ const uk: Translations = {
   recalcMacrosBanner: 'Вага змінилася — перерахувати макроси?',
   recalcMacrosBtn: 'Перерахувати',
   recalcMacrosDone: 'Макроси оновлено!',
-  profileNotSet: 'Профіль не налаштовано — завершіть онбординг для активації.',
+  profileNotSet: 'Профіль тіла не знайдено.',
+  profileNotSetLink: 'Налаштувати профіль',
 };
 
 export const TRANSLATIONS: Record<AppLanguage, Translations> = { en, ru, cs, de, fr, es, uk };

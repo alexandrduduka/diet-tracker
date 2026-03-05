@@ -23,6 +23,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **`navSettings` i18n key** added to all 7 languages; `navLog` updated across all languages to convey "Log & Ask"; `chatWelcome` updated to highlight both meal logging and Q&A in one sentence; 4 `chatSuggestion*` chip strings added; `bodyNudgeText`/`bodyNudgeAction`/`apiKeyQuotaNote`/`apiKeyViewUsage` added.
 
 ### Changed
+- **Body profile absent state in Settings**: replaced the static "complete onboarding" hint with a tappable "Set up your profile →" link that navigates to the onboarding screen.
+- **Chat suggestion chips**: chips are now always visible in the input bar (previously only shown on a fresh/empty chat). They persist throughout the conversation so common prompts are always one tap away.
 - Settings page now shows the bottom nav bar (was hidden before — now it's a main nav tab).
 - `HIDE_NAV_ROUTES` reduced to `['/onboarding']` only.
 - **App icon redesigned**: replaced abstract teardrop with a measuring cup partially filled with green liquid, with a small leaf motif on the cup body and graduation marks. Communicates measuring/tracking food, works for all diets. All PNG variants regenerated (192px, 512px, 180px apple-touch, 512px maskable).
