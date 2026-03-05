@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import { useLang } from '../store/langContext';
 import { saveSettings } from '../store/settings';
+import { db } from '../db';
+import { getTodayKey } from '../lib/date';
 import { LANGUAGE_LABELS } from '../lib/i18n';
 import {
   calculateCalorieTarget,
@@ -68,7 +70,7 @@ export function Onboarding() {
     setStep(4);
   }
 
-  function handleFinish() {
+  async function handleFinish() {
     const profile = buildProfile();
     const calories = calculateCalorieTarget(profile);
     const carbs = derivedCarbs(calories, protein, fat);
@@ -78,6 +80,14 @@ export function Onboarding() {
       onboardingProfile: profile,
     });
     window.dispatchEvent(new Event('dtk:settings-changed'));
+    // Save onboarding weight as first Body log entry
+    if (profile.weightKg > 0) {
+      await db.measurements.add({
+        timestamp: new Date(),
+        dayKey: getTodayKey(),
+        weight: profile.weightKg,
+      });
+    }
     navigate('/', { replace: true });
   }
 
@@ -134,6 +144,19 @@ export function Onboarding() {
   const proteinPct = Math.round((protein * 4 * 100) / calories);
   const fatPct = Math.round((fat * 9 * 100) / calories);
   const carbsPct = Math.round((carbs * 4 * 100) / calories);
+
+  // Macro insight logic
+  const weightKgNum = Number(weightKg) || 70;
+  function getMacroInsight(): { text: string; type: 'warn' | 'info' | 'good' } {
+    const proteinPerKg = protein / weightKgNum;
+    if (proteinPerKg < 1.2) return { text: t.macroInsightLowProtein, type: 'warn' };
+    if (fatPct < 20) return { text: t.macroInsightLowFat, type: 'warn' };
+    if (carbs < 80) return { text: t.macroInsightLowCarbs, type: 'info' };
+    if (fatPct > 40) return { text: t.macroInsightHighFat, type: 'info' };
+    if (proteinPerKg >= 2.0) return { text: t.macroInsightHighProtein, type: 'good' };
+    return { text: t.macroInsightBalanced, type: 'good' };
+  }
+  const macroInsight = step === 4 ? getMacroInsight() : null;
 
   // Progress dots
   const ProgressDots = () => (
@@ -453,6 +476,18 @@ export function Onboarding() {
               <p className="text-xs text-[#e09070] bg-[#3a2a1a] border border-[#5a3a20] rounded-xl px-3 py-2">
                 {t.onboardingLowCarbsWarning}
               </p>
+            )}
+
+            {macroInsight && (
+              <div className={`rounded-xl px-3 py-2.5 text-xs leading-relaxed border ${
+                macroInsight.type === 'warn'
+                  ? 'bg-[#3a2a1a] border-[#5a3a20] text-[#e09070]'
+                  : macroInsight.type === 'info'
+                  ? 'bg-[#2a2a1a] border-[#4a4a28] text-[#c8c4b0]'
+                  : 'bg-[#1a2a1a] border-[#2a4a2a] text-[#8fce8d]'
+              }`}>
+                {macroInsight.text}
+              </div>
             )}
           </div>
         )}

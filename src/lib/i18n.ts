@@ -191,6 +191,27 @@ export interface Translations {
   onboardingValidationAge: string;
   onboardingValidationWeight: string;
   onboardingValidationHeight: string;
+
+  // Onboarding macro insights
+  macroInsightLowProtein: string;
+  macroInsightHighProtein: string;
+  macroInsightLowFat: string;
+  macroInsightHighFat: string;
+  macroInsightLowCarbs: string;
+  macroInsightBalanced: string;
+
+  // API key explainer modal
+  apiKeyWhatIsThis: string;
+  apiKeyExplainTitle: string;
+  apiKeyExplainBody: string;
+  apiKeyExplainStep1: string;
+  apiKeyExplainStep2: string;
+  apiKeyExplainStep3: string;
+  apiKeyExplainGotIt: string;
+
+  // Clear data archive
+  clearAllDataArchiveDesc: string;
+  archiveEverything: string;
 }
 
 const en: Translations = {
@@ -370,6 +391,24 @@ const en: Translations = {
   onboardingValidationAge: 'Please enter a valid age (10–99)',
   onboardingValidationWeight: 'Please enter a valid weight (30–300 kg)',
   onboardingValidationHeight: 'Please enter a valid height (100–250 cm)',
+
+  macroInsightLowProtein: 'Low protein may lead to muscle loss and poor recovery. Aim for at least 1.2g per kg of body weight.',
+  macroInsightHighProtein: 'High protein helps preserve muscle and keeps you full. A great choice for active lifestyles.',
+  macroInsightLowFat: 'Very low fat can disrupt hormone production and reduce absorption of fat-soluble vitamins (A, D, E, K).',
+  macroInsightHighFat: 'High fat with low carbs is a ketogenic-style split. Good for some people, but requires adaptation.',
+  macroInsightLowCarbs: 'Under 80g of carbs puts you in low-carb territory. Brain and high-intensity workouts run best on carbs.',
+  macroInsightBalanced: 'Well-balanced split. Good protein for muscle, enough fat for hormones, and carbs for energy.',
+
+  apiKeyWhatIsThis: 'Uff, what is an API key?',
+  apiKeyExplainTitle: 'What is an API key?',
+  apiKeyExplainBody: 'An API key is a free password that lets this app talk to Google\'s AI. You create it in about 30 seconds — no credit card needed.',
+  apiKeyExplainStep1: 'Go to aistudio.google.com and sign in with any Google account',
+  apiKeyExplainStep2: 'Click "Create API key" and copy the key (starts with AIza...)',
+  apiKeyExplainStep3: 'Paste the key here and tap Save',
+  apiKeyExplainGotIt: 'Got it',
+
+  clearAllDataArchiveDesc: 'Your data will be archived (not permanently deleted) and you will be returned to the setup screen. You can contact support to recover archived data.',
+  archiveEverything: 'Archive & reset',
 };
 
 const ru: Translations = {
@@ -549,6 +588,24 @@ const ru: Translations = {
   onboardingValidationAge: 'Введите корректный возраст (10–99)',
   onboardingValidationWeight: 'Введите корректный вес (30–300 кг)',
   onboardingValidationHeight: 'Введите корректный рост (100–250 см)',
+
+  macroInsightLowProtein: 'Мало белка — риск потери мышечной массы и плохого восстановления. Старайтесь получать хотя бы 1,2г на кг веса.',
+  macroInsightHighProtein: 'Много белка помогает сохранять мышцы и дольше насыщает. Отличный выбор для активного образа жизни.',
+  macroInsightLowFat: 'Очень мало жиров может нарушить выработку гормонов и усвоение жирорастворимых витаминов (A, D, E, K).',
+  macroInsightHighFat: 'Много жиров при малом количестве углеводов — это кетогенная диета. Подходит некоторым, но требует адаптации.',
+  macroInsightLowCarbs: 'Менее 80г углеводов — это низкоуглеводный режим. Мозг и интенсивные тренировки лучше работают на углеводах.',
+  macroInsightBalanced: 'Сбалансированное распределение. Достаточно белка для мышц, жиров для гормонов и углеводов для энергии.',
+
+  apiKeyWhatIsThis: 'Что такое API-ключ?',
+  apiKeyExplainTitle: 'Что такое API-ключ?',
+  apiKeyExplainBody: 'API-ключ — это бесплатный пароль, позволяющий приложению общаться с ИИ Google. Создаётся за 30 секунд — без банковской карты.',
+  apiKeyExplainStep1: 'Перейдите на aistudio.google.com и войдите через Google-аккаунт',
+  apiKeyExplainStep2: 'Нажмите «Create API key» и скопируйте ключ (начинается с AIza...)',
+  apiKeyExplainStep3: 'Вставьте ключ здесь и нажмите «Сохранить»',
+  apiKeyExplainGotIt: 'Понятно',
+
+  clearAllDataArchiveDesc: 'Данные будут заархивированы (не удалены навсегда), и вы вернётесь к экрану настройки. Архивные данные можно восстановить.',
+  archiveEverything: 'Архивировать и сбросить',
 };
 
 const cs: Translations = {
@@ -728,6 +785,24 @@ const cs: Translations = {
   onboardingValidationAge: 'Zadejte platný věk (10–99)',
   onboardingValidationWeight: 'Zadejte platnou hmotnost (30–300 kg)',
   onboardingValidationHeight: 'Zadejte platnou výšku (100–250 cm)',
+
+  macroInsightLowProtein: 'Málo bílkovin může vést ke ztrátě svalové hmoty a špatnému zotavení. Snažte se o alespoň 1,2g na kg tělesné hmotnosti.',
+  macroInsightHighProtein: 'Vysoký příjem bílkovin pomáhá zachovat svaly a udržuje sytost. Skvělá volba pro aktivní životní styl.',
+  macroInsightLowFat: 'Velmi málo tuků může narušit produkci hormonů a vstřebávání vitamínů rozpustných v tucích (A, D, E, K).',
+  macroInsightHighFat: 'Hodně tuků s málo sacharidy je ketogenní styl. Pro někoho vhodné, ale vyžaduje adaptaci.',
+  macroInsightLowCarbs: 'Méně než 80g sacharidů je nízkosacharidový režim. Mozek a intenzivní tréninky fungují nejlépe na sacharidech.',
+  macroInsightBalanced: 'Vyvážené rozložení. Dostatek bílkovin pro svaly, tuků pro hormony a sacharidů pro energii.',
+
+  apiKeyWhatIsThis: 'Co je to API klíč?',
+  apiKeyExplainTitle: 'Co je to API klíč?',
+  apiKeyExplainBody: 'API klíč je bezplatné heslo, které umožňuje aplikaci komunikovat s AI od Google. Vytvoříte ho za 30 sekund — bez platební karty.',
+  apiKeyExplainStep1: 'Přejděte na aistudio.google.com a přihlaste se Google účtem',
+  apiKeyExplainStep2: 'Klikněte na „Create API key" a zkopírujte klíč (začíná AIza...)',
+  apiKeyExplainStep3: 'Vložte klíč zde a klepněte na Uložit',
+  apiKeyExplainGotIt: 'Rozumím',
+
+  clearAllDataArchiveDesc: 'Vaše data budou archivována (ne trvale smazána) a vrátíte se na obrazovku nastavení.',
+  archiveEverything: 'Archivovat a resetovat',
 };
 
 const de: Translations = {
@@ -907,6 +982,24 @@ const de: Translations = {
   onboardingValidationAge: 'Bitte ein gültiges Alter eingeben (10–99)',
   onboardingValidationWeight: 'Bitte ein gültiges Gewicht eingeben (30–300 kg)',
   onboardingValidationHeight: 'Bitte eine gültige Größe eingeben (100–250 cm)',
+
+  macroInsightLowProtein: 'Zu wenig Protein kann zu Muskelverlust und schlechter Erholung führen. Mindestens 1,2g pro kg Körpergewicht anstreben.',
+  macroInsightHighProtein: 'Viel Protein hilft, Muskeln zu erhalten und macht länger satt. Ideal für aktive Lebensweise.',
+  macroInsightLowFat: 'Sehr wenig Fett kann die Hormonproduktion stören und die Aufnahme fettlöslicher Vitamine (A, D, E, K) beeinträchtigen.',
+  macroInsightHighFat: 'Viel Fett bei wenig Kohlenhydraten ist ein ketogener Ansatz. Für manche geeignet, braucht aber Anpassungszeit.',
+  macroInsightLowCarbs: 'Unter 80g Kohlenhydrate ist Low-Carb-Bereich. Gehirn und intensive Workouts laufen am besten mit Kohlenhydraten.',
+  macroInsightBalanced: 'Ausgewogene Verteilung. Genug Protein für Muskeln, Fett für Hormone und Kohlenhydrate für Energie.',
+
+  apiKeyWhatIsThis: 'Was ist ein API-Schlüssel?',
+  apiKeyExplainTitle: 'Was ist ein API-Schlüssel?',
+  apiKeyExplainBody: 'Ein API-Schlüssel ist ein kostenloses Passwort, das der App erlaubt, mit Googles KI zu kommunizieren. Erstellt in 30 Sekunden — keine Kreditkarte nötig.',
+  apiKeyExplainStep1: 'Gehen Sie zu aistudio.google.com und melden Sie sich mit einem Google-Konto an',
+  apiKeyExplainStep2: 'Klicken Sie auf „Create API key" und kopieren Sie den Schlüssel (beginnt mit AIza...)',
+  apiKeyExplainStep3: 'Fügen Sie den Schlüssel hier ein und tippen Sie auf Speichern',
+  apiKeyExplainGotIt: 'Verstanden',
+
+  clearAllDataArchiveDesc: 'Ihre Daten werden archiviert (nicht dauerhaft gelöscht) und Sie kehren zum Einrichtungsbildschirm zurück.',
+  archiveEverything: 'Archivieren & zurücksetzen',
 };
 
 const fr: Translations = {
@@ -1086,6 +1179,24 @@ const fr: Translations = {
   onboardingValidationAge: 'Veuillez entrer un âge valide (10–99)',
   onboardingValidationWeight: 'Veuillez entrer un poids valide (30–300 kg)',
   onboardingValidationHeight: 'Veuillez entrer une taille valide (100–250 cm)',
+
+  macroInsightLowProtein: 'Peu de protéines peut entraîner une perte musculaire et une mauvaise récupération. Visez au moins 1,2g par kg de poids corporel.',
+  macroInsightHighProtein: 'Beaucoup de protéines aide à préserver les muscles et procure une meilleure satiété. Excellent pour un mode de vie actif.',
+  macroInsightLowFat: 'Très peu de lipides peut perturber la production hormonale et réduire l\'absorption des vitamines liposolubles (A, D, E, K).',
+  macroInsightHighFat: 'Beaucoup de lipides avec peu de glucides est une approche cétogène. Convient à certains mais nécessite une adaptation.',
+  macroInsightLowCarbs: 'Moins de 80g de glucides vous place en régime low-carb. Le cerveau et les exercices intenses fonctionnent mieux avec des glucides.',
+  macroInsightBalanced: 'Répartition équilibrée. Assez de protéines pour les muscles, de lipides pour les hormones et de glucides pour l\'énergie.',
+
+  apiKeyWhatIsThis: 'C\'est quoi une clé API ?',
+  apiKeyExplainTitle: 'C\'est quoi une clé API ?',
+  apiKeyExplainBody: 'Une clé API est un mot de passe gratuit qui permet à l\'application de communiquer avec l\'IA de Google. Elle se crée en 30 secondes — sans carte bancaire.',
+  apiKeyExplainStep1: 'Allez sur aistudio.google.com et connectez-vous avec un compte Google',
+  apiKeyExplainStep2: 'Cliquez sur « Create API key » et copiez la clé (commence par AIza...)',
+  apiKeyExplainStep3: 'Collez la clé ici et appuyez sur Enregistrer',
+  apiKeyExplainGotIt: 'Compris',
+
+  clearAllDataArchiveDesc: 'Vos données seront archivées (pas définitivement supprimées) et vous reviendrez à l\'écran de configuration.',
+  archiveEverything: 'Archiver et réinitialiser',
 };
 
 const es: Translations = {
@@ -1265,6 +1376,24 @@ const es: Translations = {
   onboardingValidationAge: 'Ingresa una edad válida (10–99)',
   onboardingValidationWeight: 'Ingresa un peso válido (30–300 kg)',
   onboardingValidationHeight: 'Ingresa una altura válida (100–250 cm)',
+
+  macroInsightLowProtein: 'Poca proteína puede causar pérdida muscular y mala recuperación. Apunta a al menos 1,2g por kg de peso corporal.',
+  macroInsightHighProtein: 'Alta proteína ayuda a preservar músculo y mantiene la saciedad. Excelente para estilos de vida activos.',
+  macroInsightLowFat: 'Muy poca grasa puede alterar la producción hormonal y reducir la absorción de vitaminas liposolubles (A, D, E, K).',
+  macroInsightHighFat: 'Mucha grasa con pocos carbohidratos es un enfoque cetogénico. Funciona para algunos, pero requiere adaptación.',
+  macroInsightLowCarbs: 'Menos de 80g de carbohidratos te sitúa en zona baja en carbos. El cerebro y los ejercicios intensos funcionan mejor con carbohidratos.',
+  macroInsightBalanced: 'Distribución equilibrada. Suficiente proteína para músculos, grasa para hormonas y carbohidratos para energía.',
+
+  apiKeyWhatIsThis: '¿Qué es una clave API?',
+  apiKeyExplainTitle: '¿Qué es una clave API?',
+  apiKeyExplainBody: 'Una clave API es una contraseña gratuita que permite a la app comunicarse con la IA de Google. Se crea en 30 segundos — sin tarjeta de crédito.',
+  apiKeyExplainStep1: 'Ve a aistudio.google.com e inicia sesión con una cuenta de Google',
+  apiKeyExplainStep2: 'Haz clic en "Create API key" y copia la clave (empieza con AIza...)',
+  apiKeyExplainStep3: 'Pega la clave aquí y toca Guardar',
+  apiKeyExplainGotIt: 'Entendido',
+
+  clearAllDataArchiveDesc: 'Tus datos serán archivados (no eliminados permanentemente) y volverás a la pantalla de configuración.',
+  archiveEverything: 'Archivar y restablecer',
 };
 
 const uk: Translations = {
@@ -1444,6 +1573,24 @@ const uk: Translations = {
   onboardingValidationAge: 'Введіть коректний вік (10–99)',
   onboardingValidationWeight: 'Введіть коректну вагу (30–300 кг)',
   onboardingValidationHeight: 'Введіть коректний зріст (100–250 см)',
+
+  macroInsightLowProtein: 'Мало білка — ризик втрати м\'язів і поганого відновлення. Намагайтеся отримувати хоча б 1,2г на кг ваги.',
+  macroInsightHighProtein: 'Багато білка допомагає зберегти м\'язи та довше насичує. Чудовий вибір для активного способу життя.',
+  macroInsightLowFat: 'Дуже мало жирів може порушити вироблення гормонів та засвоєння жиророзчинних вітамінів (A, D, E, K).',
+  macroInsightHighFat: 'Багато жирів при малій кількості вуглеводів — це кетогенний підхід. Підходить деяким, але потребує адаптації.',
+  macroInsightLowCarbs: 'Менше 80г вуглеводів — низьковуглеводний режим. Мозок та інтенсивні тренування працюють краще на вуглеводах.',
+  macroInsightBalanced: 'Збалансований розподіл. Достатньо білка для м\'язів, жирів для гормонів і вуглеводів для енергії.',
+
+  apiKeyWhatIsThis: 'Що таке API-ключ?',
+  apiKeyExplainTitle: 'Що таке API-ключ?',
+  apiKeyExplainBody: 'API-ключ — це безкоштовний пароль, що дозволяє додатку спілкуватися з ШІ Google. Створюється за 30 секунд — без банківської картки.',
+  apiKeyExplainStep1: 'Перейдіть на aistudio.google.com та увійдіть через Google-акаунт',
+  apiKeyExplainStep2: 'Натисніть «Create API key» та скопіюйте ключ (починається з AIza...)',
+  apiKeyExplainStep3: 'Вставте ключ тут і натисніть «Зберегти»',
+  apiKeyExplainGotIt: 'Зрозуміло',
+
+  clearAllDataArchiveDesc: 'Ваші дані будуть заархівовані (не видалені назавжди), і ви повернетеся до екрана налаштування.',
+  archiveEverything: 'Архівувати та скинути',
 };
 
 export const TRANSLATIONS: Record<AppLanguage, Translations> = { en, ru, cs, de, fr, es, uk };

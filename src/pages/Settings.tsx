@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, EyeOff, ExternalLink, Check } from 'lucide-react';
+import { Eye, EyeOff, ExternalLink, Check, HelpCircle, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getSettings, saveSettings } from '../store/settings';
 import { db } from '../db';
@@ -9,6 +9,45 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/
 import { useLang } from '../store/langContext';
 import { LANGUAGE_LABELS } from '../lib/i18n';
 import type { AppLanguage } from '../types';
+import type { Translations } from '../lib/i18n';
+
+function ApiKeyExplainerModal({ t, onClose }: { t: Translations; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
+      <div className="absolute inset-0 bg-black/70" onClick={onClose} />
+      <div className="relative bg-[#242419] rounded-t-3xl sm:rounded-2xl border-t sm:border border-[#3a3a2a] px-5 pt-5 pb-8 sm:pb-6 max-w-md w-full mx-auto">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base font-semibold text-[#f0ede4]">{t.apiKeyExplainTitle}</h2>
+          <button onClick={onClose} className="text-[#9a9680] hover:text-[#f0ede4] p-1">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <p className="text-sm text-[#c8c4b0] mb-4 leading-relaxed">{t.apiKeyExplainBody}</p>
+        <div className="space-y-3 mb-5">
+          {([t.apiKeyExplainStep1, t.apiKeyExplainStep2, t.apiKeyExplainStep3] as string[]).map((step, i) => (
+            <div key={i} className="flex gap-3 items-start">
+              <span className="w-6 h-6 rounded-full bg-[#7cb87a]/20 border border-[#7cb87a]/40 text-[#7cb87a] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                {i + 1}
+              </span>
+              <p className="text-sm text-[#9a9680] leading-relaxed">{step}</p>
+            </div>
+          ))}
+        </div>
+        <a
+          href="https://aistudio.google.com/app/apikey"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-[#7cb87a] text-[#18180f] font-medium text-sm hover:bg-[#8fce8d] active:bg-[#6aa368] mb-3"
+        >
+          {t.apiKeyOpenStudio} <ExternalLink className="w-3.5 h-3.5" />
+        </a>
+        <button onClick={onClose} className="w-full py-2 text-sm text-[#9a9680] hover:text-[#f0ede4]">
+          {t.apiKeyExplainGotIt}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 type GoalKey = 'calories' | 'protein' | 'carbs' | 'fat';
 
@@ -30,6 +69,7 @@ export function Settings() {
   const [showKey, setShowKey] = useState(false);
   const [saved, setSaved] = useState(false);
   const [showClearDialog, setShowClearDialog] = useState(false);
+  const [showApiKeyExplainer, setShowApiKeyExplainer] = useState(false);
 
   const GOAL_FIELDS: { key: GoalKey; label: string; unit: string }[] = [
     { key: 'calories', label: t.calories, unit: 'kcal' },
@@ -73,13 +113,30 @@ export function Settings() {
   }
 
   async function handleClearAll() {
+    const timestamp = Date.now();
+    // Archive settings by renaming the key (not deleting)
+    const settingsRaw = localStorage.getItem('dtk_settings');
+    if (settingsRaw) {
+      localStorage.setItem(`dtk_archive_${timestamp}_settings`, settingsRaw);
+      localStorage.removeItem('dtk_settings');
+    }
+    // Archive chat history
+    const chatRaw = localStorage.getItem('dtk_chat_history');
+    if (chatRaw) {
+      localStorage.setItem(`dtk_archive_${timestamp}_chat_history`, chatRaw);
+      localStorage.removeItem('dtk_chat_history');
+    }
+    // Clear meals and measurements from IndexedDB
     await db.meals.clear();
     await db.measurements.clear();
     setShowClearDialog(false);
+    // Navigate to onboarding since settings are cleared
+    navigate('/onboarding');
   }
 
   return (
     <div className="flex flex-col min-h-full pb-24">
+      {showApiKeyExplainer && <ApiKeyExplainerModal t={t} onClose={() => setShowApiKeyExplainer(false)} />}
       {/* Header */}
       <div className="px-4 pt-12 pb-4 border-b border-[#3a3a2a] flex items-center gap-3">
         <button onClick={() => navigate('/')} className="text-[#9a9680] hover:text-[#f0ede4] p-1">
@@ -128,14 +185,23 @@ export function Settings() {
               {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
-          <a
-            href="https://aistudio.google.com/app/apikey"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs text-[#7cb87a] hover:text-[#8fce8d]"
-          >
-            {t.getKeyAt} <ExternalLink className="w-3 h-3" />
-          </a>
+          <div className="flex items-center justify-between">
+            <a
+              href="https://aistudio.google.com/app/apikey"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs text-[#7cb87a] hover:text-[#8fce8d]"
+            >
+              {t.getKeyAt} <ExternalLink className="w-3 h-3" />
+            </a>
+            <button
+              onClick={() => setShowApiKeyExplainer(true)}
+              className="inline-flex items-center gap-1 text-xs text-[#9a9680] hover:text-[#c8c4b0]"
+            >
+              <HelpCircle className="w-3 h-3" />
+              {t.apiKeyWhatIsThis}
+            </button>
+          </div>
           <p className="text-xs text-[#5a5a44]">{t.keyStoredLocally}</p>
         </section>
 
@@ -191,11 +257,11 @@ export function Settings() {
             <DialogTitle>{t.clearAllDataConfirm}</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-[#9a9680] mb-5">
-            {t.clearAllDataDesc}
+            {t.clearAllDataArchiveDesc}
           </p>
           <div className="flex gap-3">
             <Button variant="outline" onClick={() => setShowClearDialog(false)} className="flex-1">{t.cancel}</Button>
-            <Button variant="destructive" onClick={handleClearAll} className="flex-1">{t.deleteEverything}</Button>
+            <Button variant="destructive" onClick={handleClearAll} className="flex-1">{t.archiveEverything}</Button>
           </div>
         </DialogContent>
       </Dialog>
