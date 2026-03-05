@@ -246,6 +246,9 @@ New test files go alongside source in `src/**/*.test.ts`.
 - `maxOutputTokens: 1024` caused PARSE_ERROR for gemini-2.5-flash when coaching context was included — raised to 2048, then raised again to 4096 after truncation observed even on simple queries ("banana")
 - Onboarding redirect guard calls `getSettings()` directly in `AppShell` (not via React state) — only for the initial redirect decision; existing users have `onboardingComplete: true` after migration
 - PWA maskable icon uses a separate `icon-maskable-512x512.png` (icon at 75% scale, centered on dark background) rather than reusing the regular icon — ensures content stays within the W3C safe zone circle for all Android launcher shapes
+- "Clear all data" archives rather than deletes: `dtk_settings` and `dtk_chat_history` localStorage keys are renamed to `dtk_archive_<timestamp>_settings` / `dtk_archive_<timestamp>_chat_history`, IndexedDB is cleared, and the user is redirected to `/onboarding`
+- API key explainer modal (`apiKeyWhatIsThis`) appears as a bottom-sheet; the same modal is rendered in both `Settings.tsx` (inline component `ApiKeyExplainerModal`) and `Chat.tsx` (inline JSX). The modal re-uses `apiKeyOpenStudio` and `apiKeyExplainStep1/2/3` i18n keys.
+- API key modal uses a separate component in Settings.tsx (`function ApiKeyExplainerModal`) but is inlined as JSX in Chat.tsx to avoid a shared module dependency
 
 ## Onboarding & Goal Calculator
 
@@ -258,7 +261,15 @@ New test files go alongside source in `src/**/*.test.ts`.
 4. Results + Sliders — calorie target, protein slider, fat slider, carbs derived automatically
 5. Done — recap + save
 
-After completing step 5, `saveSettings({ goals, onboardingComplete: true, onboardingProfile })` is called and user is redirected to `/`.
+After completing step 5, `saveSettings({ goals, onboardingComplete: true, onboardingProfile })` is called, the entered `weightKg` is saved as the first `BodyMeasurement` record via `db.measurements.add(...)`, and the user is redirected to `/`.
+
+**Step 4 macro insights**: a live contextual note below the sliders classifies the current distribution:
+- protein < 1.2g/kg → warn (muscle loss risk) — `type: 'warn'` — orange-tinted
+- fat < 20% of calories → warn (hormones/vitamins) — `type: 'warn'`
+- carbs < 80g → info (low-carb territory) — `type: 'info'` — neutral
+- fat > 40% of calories → info (ketogenic-style) — `type: 'info'`
+- protein ≥ 2.0g/kg → good (high protein) — `type: 'good'` — green-tinted
+- otherwise → good (balanced) — `type: 'good'`
 
 ### Goal Calculator (`src/lib/goalCalculator.ts`)
 Pure functions (no side effects):

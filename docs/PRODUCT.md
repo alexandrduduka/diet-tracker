@@ -39,8 +39,8 @@ New users see a 6-step onboarding flow on first launch:
 2. **Nutrition basics** — protein, fat, and carbs explained visually with macro split illustration. Links to the in-app article library for a deeper dive.
 3. **Your body stats** — sex, age, weight (kg), height (cm). Metric only; conversion hints provided.
 4. **Activity & goal** — 5 activity levels + 3 goal options (lose / maintain / gain)
-5. **Your targets** — calculated calorie goal (Mifflin-St Jeor BMR × activity TDEE ± goal offset). Connected sliders for protein and fat; carbs update automatically to fill the calorie budget. Slider bounds enforce healthy minimums (≥20% of calories from fat, ≥20g carbs).
-6. **Done** — recap with daily targets; tap **Start tracking** to save and go to the Dashboard
+5. **Your targets** — calculated calorie goal (Mifflin-St Jeor BMR × activity TDEE ± goal offset). Connected sliders for protein and fat; carbs update automatically to fill the calorie budget. Slider bounds enforce healthy minimums (≥20% of calories from fat, ≥20g carbs). A live contextual note explains how the current distribution affects your health and goals (e.g. warns about muscle loss for low protein, hormone issues for very low fat, keto territory for high fat / low carbs).
+6. **Done** — recap with daily targets; tap **Start tracking** to save and go to the Dashboard. Your entered weight is automatically saved as the first Body log entry.
 
 Tapping **Skip setup** at any point takes you directly to the Dashboard with default goals.
 
@@ -131,7 +131,7 @@ Answers appear as a distinct bubble (slightly darker background) and stay in the
 
 **Coaching** — the AI knows your daily goals and what you've already eaten today. After each meal it tells you how many calories remain, whether you're on track for protein, and gives encouragement or a gentle warning if you're approaching a limit.
 
-**No API key** — if you haven't set up a key yet, a guided setup card appears instead of an error. It walks you through getting a free key from Google AI Studio and lets you paste it inline without leaving the Chat screen.
+**No API key** — if you haven't set up a key yet, a guided setup card appears instead of an error. It walks you through getting a free key from Google AI Studio and lets you paste it inline without leaving the Chat screen. A **"Uff, what is an API key?"** hint link opens a plain-language explainer modal with numbered steps and a direct link to AI Studio. The same hint is available in Settings next to the API key field.
 
 **Manual fallback** — if the AI call fails (no internet, rate limit), a manual entry form appears where you can type in macros directly.
 
@@ -206,7 +206,7 @@ Configure the app.
 
 **Export data** — downloads all meals and measurements as a JSON file.
 
-**Clear all data** — permanently deletes all meals and measurements from IndexedDB. This cannot be undone.
+**Clear all data** — archives your meals, measurements and settings (renames the localStorage keys with a timestamp prefix) and resets the app to first-time setup. The data is not permanently deleted and can be recovered by a developer if needed.
 
 ---
 
@@ -231,7 +231,7 @@ The app shell (all HTML/CSS/JS) is cached by the service worker on first load, s
 - Your **API key** is stored in `localStorage` and is only included in requests to `generativelanguage.googleapis.com`.
 - No cookies, no analytics, no third-party tracking.
 
-**Clearing data:** Settings → Clear All Data removes all IndexedDB records. Clearing browser site data also removes everything including the API key.
+**Clearing data:** Settings → Clear All Data archives IndexedDB records (renames localStorage keys) and returns you to onboarding. Clearing browser site data also removes everything including the API key and any archived backups.
 
 ---
 

@@ -140,7 +140,7 @@ Reads always merge stored data over defaults, so new fields added to `DEFAULT_SE
 - `temperature: 0.1` when no coaching context is provided
 - `temperature: 0.4` when `MealContext` is provided (allows more natural coaching phrasing)
 
-> Note: `gemini-2.0-flash` was retired on 2026-03-03. `gemini-2.5-flash` is the current replacement (free tier: 10 RPM, 250–500 RPD). Keep `maxOutputTokens` ≥ 2048 — this model uses internal thinking tokens, and lower values cause truncated JSON → PARSE_ERROR.
+> Note: `gemini-2.0-flash` was retired on 2026-03-03. `gemini-2.5-flash` is the current replacement (free tier: 10 RPM, 250–500 RPD). Keep `maxOutputTokens` ≥ 4096 — this model uses internal thinking tokens, and lower values cause truncated JSON → PARSE_ERROR (observed even with "banana").
 
 ### Prompt design
 
@@ -249,8 +249,11 @@ interface NutritionContext extends MealContext {
 When `NO_API_KEY` is thrown, instead of a generic error the Chat page appends a `{ role: 'setup', retryText }` message. This renders as an assistant-style card with:
 - "Free, ~30 seconds" framing
 - A button that opens `https://aistudio.google.com/app/apikey` in a new tab
+- A `?` hint link ("Uff, what is an API key?") that opens an `ApiKeyExplainerModal` bottom-sheet
 - An inline key input with show/hide toggle
 - A "Save & continue" button that calls `saveSettings({ geminiApiKey })` and retries the original meal text automatically
+
+The same explainer modal is available in `Settings.tsx` via a help icon next to the API key field.
 
 ---
 
@@ -316,8 +319,11 @@ The file also exports `getGeminiLanguageInstruction(lang)` which appends a langu
 | `/analytics` | `Analytics` |
 | `/measurements` | `Measurements` |
 | `/settings` | `Settings` |
+| `/onboarding` | `Onboarding` |
+| `/articles` | `Articles` |
+| `/articles/:slug` | `ArticleDetail` |
 
-The `BottomNav` is hidden on `/chat` and `/settings` via a `HIDE_NAV_ROUTES` list.
+`HIDE_NAV_ROUTES = ['/settings', '/onboarding']`. New users are redirected to `/onboarding` by a guard in `AppShell`; existing users skip it via `migrateSettings()`.
 
 ---
 
@@ -381,6 +387,7 @@ npm run test:watch # watch mode
 
 Test files live alongside source in `src/**/*.test.ts`.
 
-Current coverage:
-- `src/lib/nutrition.test.ts` — all nutrition math functions
-- `src/lib/date.test.ts` — day key generation and formatting
+Current coverage (64 tests):
+- `src/lib/nutrition.test.ts` — 20 tests covering all nutrition math functions
+- `src/lib/date.test.ts` — 18 tests for day key generation and formatting (pinned to 2026-03-04 via `vi.useFakeTimers`)
+- `src/lib/goalCalculator.test.ts` — 26 tests for BMR, TDEE, calorie target, macro goals, slider bounds

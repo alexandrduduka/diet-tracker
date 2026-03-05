@@ -9,45 +9,38 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
-- **Chat history persistence**: chat messages (including coach, answer, result, and user bubbles) are saved to `localStorage` under key `dtk_chat_history` and restored on re-open. Maximum 100 messages retained; `setup` messages are never persisted. A clear-chat button (trash icon) in the header lets users wipe the history.
-- **LLM-powered nutrition Q&A**: users can now ask free-form questions in the chat ("how am I doing today?", "why am I losing weight slowly?", "summarise what I ate", "is my protein high enough?"). The app automatically classifies the intent — if it's a question it calls the new `askNutritionQuestion` function; if it's a meal description it calls the existing `parseMealDescription` function.
-- `classifyIntent(userInput, lang)` — lightweight Gemini call (64 token output) that returns `'log' | 'question'`. Photos always route to meal-logging; classification is skipped for image-only messages.
-- `askNutritionQuestion(question, lang, context)` — plain-text Gemini response using a coaching system prompt. Context includes today's goals and consumed macros, last 7 days of daily totals (only days with data), and latest logged body weight.
-- `NutritionContext` interface extending `MealContext` with `recentDays` and `latestWeight` fields.
-- New `'answer'` role in `ChatMessage` union: renders as a slightly distinct bubble (dark background, `whitespace-pre-wrap`) so answers are visually distinct from welcome/coaching messages.
-- New i18n strings in all 7 languages: `chatTitle`, `chatInputPlaceholder`, `chatClearHistory`, `chatClearHistoryConfirm`, `chatAnswerError`.
-- Chat page header now shows "Nutrition Assistant" (`chatTitle`) and input placeholder updated to "Log a meal or ask a question...".
-
----
-
-### Added (previous)
-- First-time user onboarding flow (`/onboarding`): 6-step wizard — Welcome (with language picker), Nutrition Primer (protein/fat/carbs explained with macro split visual + link to articles), Body Stats (sex/age/weight/height), Activity & Goal, Results with connected macro sliders, and Done screen. Calculates personalised calorie and macro targets using Mifflin-St Jeor BMR × activity TDEE. Protein and fat sliders update carbs automatically; slider bounds enforce healthy minimums (≥20% of calories from fat, ≥20g carbs). Existing users auto-migrated to skip onboarding via `migrateSettings()`.
-- `src/lib/goalCalculator.ts` — pure calculation functions for BMR, TDEE, calorie target, macro goals, and slider bounds. 26 Vitest tests in `goalCalculator.test.ts`.
+- **First-time onboarding flow** (`/onboarding`): 6-step wizard — Welcome (with language picker), Nutrition Primer (protein/fat/carbs explained with macro split visual + link to articles), Body Stats (sex/age/weight/height, metric with conversion hints), Activity & Goal, Results with connected macro sliders, and Done screen. Calculates personalised calorie and macro targets using Mifflin-St Jeor BMR × activity TDEE.
+- **Macro distribution insights**: live contextual note on the onboarding slider screen explains how the current protein/fat/carbs split will affect lifestyle — warns about muscle loss for low protein (<1.2g/kg), hormone issues for very low fat (<20%), keto territory for high fat (>40%) or low carbs (<80g), and shows positive feedback for balanced distributions.
+- **Connected macro sliders**: protein and fat sliders update carbs automatically within calorie budget; slider bounds enforce healthy minimums (≥20% of calories from fat, ≥20g carbs). Protein defaults to 1.8–2.0g/kg depending on goal.
+- **Onboarding weight → Body log**: the `weightKg` entered during onboarding is saved as the first `BodyMeasurement` record, so the Body log is pre-populated immediately after setup.
+- `src/lib/goalCalculator.ts` — pure calculation functions for BMR, TDEE, calorie target, macro goals, and slider bounds. 26 Vitest tests added.
 - `OnboardingProfile` type in `src/types/index.ts`; `UserSettings` extended with `onboardingComplete` and `onboardingProfile`.
-- PWA maskable icon: `public/icons/icon-maskable-512x512.png` — icon at 75% scale on 512×512 dark background, keeping content within the W3C safe zone. Manifest now references this dedicated file for the `maskable` purpose.
-- Edit and delete actions on meal items: pencil + trash icons appear on hover (desktop) and after a 300ms long-press (mobile), keeping the UI clean by default. Available on both Dashboard meal cards and History day-summary meal rows.
-- Edit Meal dialog: tap the pencil icon to edit the meal description and notes inline. Saves to IndexedDB without re-parsing with LLM.
-
-### Fixed
-- FAB (+ button) on Dashboard no longer overflows outside the centered max-w-md column on desktop — wrapped in a `max-w-md mx-auto` constraint div
-- BottomNav now shown on the Log (Chat) page; page content adjusted with `pb-20` so the input bar stays above the nav
-
-### Added
-- Inline API key setup wizard in Chat: when no key is configured, a step-by-step card replaces the error message. Leads with "free, ~30 seconds", opens Google AI Studio directly, and retries the meal automatically after saving.
-- LLM coaching chat: Gemini now returns a 2–3 sentence coaching message alongside the meal analysis. Today's goals and consumed macros are passed as context so the coach knows the remaining budget. After saving a meal the coaching message appears as an assistant bubble; the input stays open to log more.
-- Voice-to-text mic button in Chat: tap the mic icon to speak your meal description — speech is transcribed and inserted into the text input using the Web Speech API. The mic button is automatically hidden on browsers that don't support it. The recognition language matches the selected app language.
-- Photo attachment in Chat: tap the camera icon to take a photo or choose from the library. The image is shown as a thumbnail preview and passed as inline multimodal data to Gemini alongside the text description, enabling food recognition from photos.
-- Articles section (/articles) with 3 evidence-based nutrition guides: "How to Calculate Your Daily Calorie Needs" (BMR/TDEE with Mifflin-St Jeor formula), "Understanding Macros: Protein, Carbs & Fat" (Atwater factors, AMDR ranges, per-macro roles), and "Evidence-Based Dietary Strategies That Work" (Mediterranean diet, calorie balance, high-protein, IF, low-carb review). Accessible via a new "Learn" tab in the bottom navigation. Article detail pages update the browser title for SEO. Content structured as JSX-renderable sections (no markdown library needed).
-- SEO improvements: full meta tags in index.html (description, Open Graph, Twitter Card), JSON-LD WebApplication structured data, canonical URL, `robots.txt`, `sitemap.xml`
-- Accessibility improvements: `role="meter"` + aria attributes on MacroRing, `role="progressbar"` + aria on MacroBar, `aria-expanded` on MealCard toggle, `aria-label` on Dashboard Settings button and FAB, `aria-label="Main navigation"` on BottomNav, `aria-hidden` on decorative icons
-- PWA manifest enhancements: `categories`, app shortcuts (Log Meal, Dashboard), fixed icon `purpose` to separate `any` and `maskable` entries
+- Existing users auto-migrated to skip onboarding via `migrateSettings()` called in `main.tsx`.
+- **PWA maskable icon**: `public/icons/icon-maskable-512x512.png` — icon at 75% scale on 512×512 dark background, keeping content within the W3C safe zone. Manifest uses this dedicated file for `purpose: maskable`.
+- **Chat history persistence**: messages saved to `localStorage` (`dtk_chat_history`), restored on re-open. Max 100 messages; `setup` messages excluded. Trash icon in header clears history with confirmation.
+- **LLM-powered nutrition Q&A**: free-form questions in chat ("how am I doing today?", "is my protein high enough?") are automatically classified and routed to `askNutritionQuestion`. Context includes today's goals and consumed macros, last 7 days of daily totals, and latest logged body weight.
+- `classifyIntent(userInput, lang)` — lightweight Gemini call (64 token output) returning `'log' | 'question'`.
+- `askNutritionQuestion(question, lang, context)` — plain-text coaching response via Gemini.
+- `NutritionContext` interface with `recentDays` and `latestWeight` fields.
+- New `'answer'` chat role — distinct bubble style with `whitespace-pre-wrap`.
+- **"Uff, what is an API key?" explainer modal**: a help icon + link next to the API key field in Settings and in the Chat setup card opens a friendly bottom-sheet explaining what an API key is, 3 numbered steps, and a direct link to Google AI Studio. Available in all 7 languages.
+- **Edit and delete meal actions**: pencil + trash icons on hover (desktop) and after 300ms long-press (mobile). Available on Dashboard meal cards and History rows.
+- **Edit Meal dialog**: inline description/notes editing that saves to IndexedDB without re-parsing.
+- Articles section (`/articles`) with 3 evidence-based nutrition guides.
+- SEO meta tags, JSON-LD structured data, `robots.txt`, `sitemap.xml`.
+- Accessibility improvements on MacroRing, MacroBar, MealCard, BottomNav, FAB.
 
 ### Changed
-- Migrated from `gemini-2.0-flash` (retired 2026-03-03) to `gemini-2.5-flash`
-- Tightened rate-limit error detection to avoid false positives
-- Back button added to Settings screen
-- Improved fallback error message to surface raw API error text for easier debugging
-- Aesthetic polish: full animation system across all pages and components — page fade-in on navigation, MacroRing glow (green when near goal, amber when over), MacroBar staggered entrance with near-goal fill glow, BottomNav active indicator dot + icon scale, MealCard fade-in-up entrance with collapse animation on delete and desktop hover shimmer sweep, Dashboard FAB ping when no meals logged, meal card and macro bar staggered entrances, History sparkline bars animate from zero on mount with per-bar stagger, DaySummary cards stagger in
+- **"Clear all data" → archive instead of delete**: settings and chat history are renamed to `dtk_archive_<timestamp>_*` keys (recoverable) instead of permanently deleted. IndexedDB is cleared and the user is returned to onboarding.
+- Chat page header shows "Nutrition Assistant" and placeholder updated to "Log a meal or ask a question...".
+- Migrated from `gemini-2.0-flash` (retired 2026-03-03) to `gemini-2.5-flash`.
+- `maxOutputTokens` raised to 4096 to prevent truncated JSON from thinking model.
+- Back button added to Settings screen.
+- Animation polish across all pages and components.
+
+### Fixed
+- FAB on Dashboard no longer overflows outside the centered `max-w-md` column on desktop.
+- BottomNav shown on Chat page; content adjusted with `pb-20`.
 
 ---
 
