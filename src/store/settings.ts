@@ -11,6 +11,7 @@ const DEFAULT_SETTINGS: UserSettings = {
     carbs: 250,
   },
   language: 'en',
+  onboardingComplete: false,
 };
 
 export function getSettings(): UserSettings {
@@ -39,4 +40,19 @@ export function getGoals(): MacroGoals {
 
 export function getApiKey(): string {
   return getSettings().geminiApiKey;
+}
+
+// Migration: existing users have settings but no onboardingComplete key.
+// Mark them as done so they don't see the onboarding flow.
+export function migrateSettings(): void {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return; // No settings at all — truly new user, onboarding will run
+    const parsed = JSON.parse(raw);
+    if (parsed.onboardingComplete === undefined) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...parsed, onboardingComplete: true }));
+    }
+  } catch {
+    // Ignore errors — worst case existing user sees onboarding once
+  }
 }

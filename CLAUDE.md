@@ -83,7 +83,8 @@ diet-tracker/
         ├── History.tsx     ← Week selector + daily breakdown
         ├── Analytics.tsx   ← Nutrition/Body tabs, Daily/Monthly toggle, Recharts
         ├── Measurements.tsx ← Log drawer + Recharts chart + entries list
-        └── Settings.tsx    ← API key + goals form + language + export + clear
+        ├── Settings.tsx    ← API key + goals form + language + export + clear
+        └── Onboarding.tsx  ← 6-step first-time wizard (welcome, nutrition, stats, activity/goal, results+sliders, done)
 ```
 
 ## Routing
@@ -98,8 +99,11 @@ diet-tracker/
 | `/measurements` | Measurements | yes |
 | `/analytics` | Analytics | yes |
 | `/settings` | Settings | no |
+| `/onboarding` | Onboarding | no |
 
-`HIDE_NAV_ROUTES = ['/chat', '/settings']` in `App.tsx`.
+`HIDE_NAV_ROUTES = ['/settings', '/onboarding']` in `App.tsx`.
+
+First-time users are redirected to `/onboarding` by a guard in `AppShell` that checks `getSettings().onboardingComplete`. Existing users are silently migrated by `migrateSettings()` called in `main.tsx` before the React render.
 
 ## Data Layer
 
@@ -117,9 +121,11 @@ db.version(1).stores({
 
 ### localStorage (settings)
 
-Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs / language: 'en'.
+Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs / language: 'en' / `onboardingComplete: false`.
 
 `getSettings()` always merges stored values over defaults (safe to add new fields to `DEFAULT_SETTINGS`).
+
+`migrateSettings()` (called in `main.tsx`) detects existing users by checking if `dtk_settings` exists but lacks `onboardingComplete`, and sets it to `true` to skip onboarding.
 
 ## Gemini Integration
 
@@ -214,8 +220,11 @@ Vite splits into 4 chunks for cache efficiency:
 npm test
 ```
 
-38 tests in `src/lib/nutrition.test.ts` (20) and `src/lib/date.test.ts` (18).
-Date tests use `vi.useFakeTimers()` pinned to `2026-03-04` for determinism.
+64 tests across 3 files:
+- `src/lib/nutrition.test.ts` — 20 tests
+- `src/lib/date.test.ts` — 18 tests (pinned to 2026-03-04 via `vi.useFakeTimers`)
+- `src/lib/goalCalculator.test.ts` — 26 tests for BMR/TDEE/macro calculation
+
 New test files go alongside source in `src/**/*.test.ts`.
 
 ## Known Decisions / History
@@ -228,6 +237,32 @@ New test files go alongside source in `src/**/*.test.ts`.
 - Rate limit error detection: must check `err.message` text, not just `err.status` — Gemini SDK embeds HTTP status in message
 - `sharp` is already available in node_modules (pulled in transitively) — no need to install separately for icon generation
 - `maxOutputTokens: 1024` caused PARSE_ERROR for gemini-2.5-flash when coaching context was included — raised to 2048, then raised again to 4096 after truncation observed even on simple queries ("banana")
+- Onboarding redirect guard calls `getSettings()` directly in `AppShell` (not via React state) — only for the initial redirect decision; existing users have `onboardingComplete: true` after migration
+- PWA maskable icon uses a separate `icon-maskable-512x512.png` (icon at 75% scale, centered on dark background) rather than reusing the regular icon — ensures content stays within the W3C safe zone circle for all Android launcher shapes
+
+## Onboarding & Goal Calculator
+
+### Onboarding Flow (`src/pages/Onboarding.tsx`)
+6-step wizard shown to first-time users:
+0. Welcome — app pitch + language picker
+1. Nutrition Primer — protein/fat/carbs explained with macro split visual, link to articles
+2. Body Stats — sex, age, weight (kg), height (cm) with metric hints
+3. Activity & Goal — 5 activity cards + 3 goal cards
+4. Results + Sliders — calorie target, protein slider, fat slider, carbs derived automatically
+5. Done — recap + save
+
+After completing step 5, `saveSettings({ goals, onboardingComplete: true, onboardingProfile })` is called and user is redirected to `/`.
+
+### Goal Calculator (`src/lib/goalCalculator.ts`)
+Pure functions (no side effects):
+- `calculateBMR(p)` — Mifflin-St Jeor formula
+- `calculateTDEE(p)` — BMR × activity multiplier
+- `calculateCalorieTarget(p)` — TDEE ± goal offset, min 1200 kcal
+- `calculateMacroGoals(p)` — protein 1.8–2.0g/kg, fat 28%, carbs remainder
+- `derivedCarbs(calories, protein, fat)` — reactive carbs for slider UI
+- `fatSliderBounds(calories, protein)` — min 20% of cals, max 45% limited by MIN_CARBS_G
+- `proteinSliderBounds(weightKg)` — 0.8–2.5g/kg
+- `MIN_CARBS_G = 20` — absolute minimum carbs exported as constant
 
 ## Definition of Done (follow for every feature/fix)
 

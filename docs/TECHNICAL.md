@@ -93,11 +93,37 @@ interface UserSettings {
   geminiApiKey: string;
   goals: MacroGoals;   // { calories, protein, fat, carbs }
   language: AppLanguage;
+  onboardingComplete?: boolean;       // false for new users; true after onboarding or migration
+  onboardingProfile?: OnboardingProfile; // stored for future reference
+}
+
+interface OnboardingProfile {
+  sex: 'male' | 'female';
+  age: number;
+  weightKg: number;
+  heightCm: number;
+  activityMultiplier: 1.2 | 1.375 | 1.55 | 1.725 | 1.9;
+  goal: 'lose' | 'maintain' | 'gain';
 }
 
 // Defaults
-{ calories: 2000, protein: 150, fat: 65, carbs: 250, language: 'en' }
+{ calories: 2000, protein: 150, fat: 65, carbs: 250, language: 'en', onboardingComplete: false }
 ```
+
+`migrateSettings()` in `src/store/settings.ts` is called at app startup (in `main.tsx`). If `dtk_settings` exists in localStorage but lacks `onboardingComplete`, it is set to `true` so existing users don't see the onboarding flow.
+
+### Goal Calculator (`src/lib/goalCalculator.ts`)
+
+Pure functions for calculating macro goals from an `OnboardingProfile`:
+
+- **`calculateBMR(p)`** — Mifflin-St Jeor formula: `10W + 6.25H - 5A + 5` (male) / `-161` (female)
+- **`calculateTDEE(p)`** — `BMR × activityMultiplier`
+- **`calculateCalorieTarget(p)`** — `TDEE - 400` (lose, min 1200) / `TDEE + 250` (gain) / `TDEE` (maintain)
+- **`calculateMacroGoals(p)`** — protein 1.8–2.0g/kg (capped at 40% of cals), fat 28% of cals, carbs remainder
+- **`derivedCarbs(calories, protein, fat)`** — `(calories - protein*4 - fat*9) / 4`, min `MIN_CARBS_G`
+- **`fatSliderBounds(calories, protein)`** — min=20% of cals÷9, max=45% of cals÷9 limited by `MIN_CARBS_G`
+- **`proteinSliderBounds(weightKg)`** — min=0.8g/kg, max=2.5g/kg
+- **`MIN_CARBS_G = 20`** — exported constant
 
 Reads always merge stored data over defaults, so new fields added to `DEFAULT_SETTINGS` are automatically available for existing users.
 

@@ -49,10 +49,21 @@ export interface MacroGoals {
 
 export type AppLanguage = 'en' | 'ru' | 'cs' | 'de' | 'fr' | 'es' | 'uk';
 
+export interface OnboardingProfile {
+  sex: 'male' | 'female';
+  age: number;
+  weightKg: number;
+  heightCm: number;
+  activityMultiplier: 1.2 | 1.375 | 1.55 | 1.725 | 1.9;
+  goal: 'lose' | 'maintain' | 'gain';
+}
+
 export interface UserSettings {
   geminiApiKey: string;
   goals: MacroGoals;
   language: AppLanguage;
+  onboardingComplete?: boolean;
+  onboardingProfile?: OnboardingProfile;
 }
 
 export type MeasurementKey = 'weight' | 'waist' | 'chest' | 'hips' | 'arm' | 'thigh';
