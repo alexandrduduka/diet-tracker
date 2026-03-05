@@ -222,6 +222,13 @@ export interface Translations {
   // Clear data archive
   clearAllDataArchiveDesc: string;
   archiveEverything: string;
+
+  // Body profile in Settings
+  bodyProfile: string;
+  recalcMacrosBanner: string;
+  recalcMacrosBtn: string;
+  recalcMacrosDone: string;
+  profileNotSet: string;
 }
 
 const en: Translations = {
@@ -430,6 +437,12 @@ const en: Translations = {
 
   clearAllDataArchiveDesc: 'Your data will be archived (not permanently deleted) and you will be returned to the setup screen. You can contact support to recover archived data.',
   archiveEverything: 'Archive & reset',
+
+  bodyProfile: 'Body Profile',
+  recalcMacrosBanner: 'Your weight changed — recalculate macros?',
+  recalcMacrosBtn: 'Recalculate',
+  recalcMacrosDone: 'Macros updated!',
+  profileNotSet: 'No profile yet — complete onboarding to enable this.',
 };
 
 const ru: Translations = {
@@ -638,6 +651,12 @@ const ru: Translations = {
 
   clearAllDataArchiveDesc: 'Данные будут заархивированы (не удалены навсегда), и вы вернётесь к экрану настройки. Архивные данные можно восстановить.',
   archiveEverything: 'Архивировать и сбросить',
+
+  bodyProfile: 'Физические параметры',
+  recalcMacrosBanner: 'Вес изменился — пересчитать макросы?',
+  recalcMacrosBtn: 'Пересчитать',
+  recalcMacrosDone: 'Макросы обновлены!',
+  profileNotSet: 'Профиль не настроен — пройдите онбординг для активации.',
 };
 
 const cs: Translations = {
@@ -846,6 +865,12 @@ const cs: Translations = {
 
   clearAllDataArchiveDesc: 'Vaše data budou archivována (ne trvale smazána) a vrátíte se na obrazovku nastavení.',
   archiveEverything: 'Archivovat a resetovat',
+
+  bodyProfile: 'Tělesný profil',
+  recalcMacrosBanner: 'Vaše hmotnost se změnila — přepočítat makra?',
+  recalcMacrosBtn: 'Přepočítat',
+  recalcMacrosDone: 'Makra aktualizována!',
+  profileNotSet: 'Profil není nastaven — dokončete onboarding pro aktivaci.',
 };
 
 const de: Translations = {
@@ -1054,6 +1079,12 @@ const de: Translations = {
 
   clearAllDataArchiveDesc: 'Ihre Daten werden archiviert (nicht dauerhaft gelöscht) und Sie kehren zum Einrichtungsbildschirm zurück.',
   archiveEverything: 'Archivieren & zurücksetzen',
+
+  bodyProfile: 'Körperprofil',
+  recalcMacrosBanner: 'Gewicht geändert — Makros neu berechnen?',
+  recalcMacrosBtn: 'Neu berechnen',
+  recalcMacrosDone: 'Makros aktualisiert!',
+  profileNotSet: 'Kein Profil vorhanden — Onboarding abschließen, um dies zu aktivieren.',
 };
 
 const fr: Translations = {
@@ -1262,6 +1293,12 @@ const fr: Translations = {
 
   clearAllDataArchiveDesc: 'Vos données seront archivées (pas définitivement supprimées) et vous reviendrez à l\'écran de configuration.',
   archiveEverything: 'Archiver et réinitialiser',
+
+  bodyProfile: 'Profil corporel',
+  recalcMacrosBanner: 'Poids modifié — recalculer les macros ?',
+  recalcMacrosBtn: 'Recalculer',
+  recalcMacrosDone: 'Macros mis à jour !',
+  profileNotSet: 'Aucun profil — terminez l\'onboarding pour activer ceci.',
 };
 
 const es: Translations = {
@@ -1470,6 +1507,12 @@ const es: Translations = {
 
   clearAllDataArchiveDesc: 'Tus datos serán archivados (no eliminados permanentemente) y volverás a la pantalla de configuración.',
   archiveEverything: 'Archivar y restablecer',
+
+  bodyProfile: 'Perfil corporal',
+  recalcMacrosBanner: 'Peso cambiado — ¿recalcular macros?',
+  recalcMacrosBtn: 'Recalcular',
+  recalcMacrosDone: '¡Macros actualizados!',
+  profileNotSet: 'Sin perfil — completa el onboarding para activar esto.',
 };
 
 const uk: Translations = {
@@ -1678,6 +1721,12 @@ const uk: Translations = {
 
   clearAllDataArchiveDesc: 'Ваші дані будуть заархівовані (не видалені назавжди), і ви повернетеся до екрана налаштування.',
   archiveEverything: 'Архівувати та скинути',
+
+  bodyProfile: 'Фізичний профіль',
+  recalcMacrosBanner: 'Вага змінилася — перерахувати макроси?',
+  recalcMacrosBtn: 'Перерахувати',
+  recalcMacrosDone: 'Макроси оновлено!',
+  profileNotSet: 'Профіль не налаштовано — завершіть онбординг для активації.',
 };
 
 export const TRANSLATIONS: Record<AppLanguage, Translations> = { en, ru, cs, de, fr, es, uk };

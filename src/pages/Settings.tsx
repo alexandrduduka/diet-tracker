@@ -3,13 +3,14 @@ import { Eye, EyeOff, ExternalLink, Check, HelpCircle, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getSettings, saveSettings } from '../store/settings';
 import { trackApiKeySaved, trackGoalsUpdated, trackLanguageChanged, trackDataExported } from '../lib/analytics';
+import { calculateMacroGoals } from '../lib/goalCalculator';
 import { db } from '../db';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { useLang } from '../store/langContext';
 import { LANGUAGE_LABELS } from '../lib/i18n';
-import type { AppLanguage } from '../types';
+import type { AppLanguage, OnboardingProfile } from '../types';
 import type { Translations } from '../lib/i18n';
 
 function ApiKeyExplainerModal({ t, onClose }: { t: Translations; onClose: () => void }) {
@@ -72,6 +73,16 @@ export function Settings() {
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [showApiKeyExplainer, setShowApiKeyExplainer] = useState(false);
 
+  // Body profile state
+  const [profileDraft, setProfileDraft] = useState<OnboardingProfile | undefined>(
+    () => getSettings().onboardingProfile
+  );
+  const [savedWeight, setSavedWeight] = useState<number | undefined>(
+    () => getSettings().onboardingProfile?.weightKg
+  );
+  const [showRecalcBanner, setShowRecalcBanner] = useState(false);
+  const [recalcDone, setRecalcDone] = useState(false);
+
   const GOAL_FIELDS: { key: GoalKey; label: string; unit: string }[] = [
     { key: 'calories', label: t.calories, unit: 'kcal' },
     { key: 'protein', label: t.protein, unit: 'g' },
@@ -88,10 +99,37 @@ export function Settings() {
     };
     if (settings.geminiApiKey) trackApiKeySaved();
     trackGoalsUpdated();
-    saveSettings({ ...settings, goals, language: lang });
+    saveSettings({ ...settings, goals, language: lang, onboardingProfile: profileDraft });
     window.dispatchEvent(new Event('dtk:settings-changed'));
+
+    // Check if weight changed significantly
+    if (profileDraft && savedWeight !== undefined) {
+      const weightDiff = Math.abs(profileDraft.weightKg - savedWeight);
+      if (weightDiff >= 2) {
+        setShowRecalcBanner(true);
+        setRecalcDone(false);
+      }
+    }
+    setSavedWeight(profileDraft?.weightKg);
+
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+  }
+
+  function handleRecalcMacros() {
+    if (!profileDraft) return;
+    const newGoals = calculateMacroGoals(profileDraft);
+    setGoalStrings({
+      calories: String(newGoals.calories),
+      protein: String(newGoals.protein),
+      carbs: String(newGoals.carbs),
+      fat: String(newGoals.fat),
+    });
+    saveSettings({ onboardingProfile: profileDraft, goals: newGoals });
+    window.dispatchEvent(new Event('dtk:settings-changed'));
+    setShowRecalcBanner(false);
+    setRecalcDone(true);
+    setTimeout(() => setRecalcDone(false), 3000);
   }
 
   function handleLangChange(l: AppLanguage) {
@@ -209,6 +247,148 @@ export function Settings() {
           </div>
           <p className="text-xs text-[#5a5a44]">{t.keyStoredLocally}</p>
         </section>
+
+        {/* Body Profile */}
+        <section className="space-y-4">
+          <h2 className="text-xs font-semibold text-[#9a9680] uppercase tracking-wide">{t.bodyProfile}</h2>
+          {profileDraft ? (
+            <div className="space-y-3">
+              {/* Weight & Height */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs text-[#9a9680]">{t.onboardingWeight}</label>
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      inputMode="decimal"
+                      value={profileDraft.weightKg}
+                      onChange={(e) => setProfileDraft((p) => p ? { ...p, weightKg: Number(e.target.value) || 0 } : p)}
+                      className="pr-8"
+                      min={30}
+                      max={300}
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#5a5a44] pointer-events-none">kg</span>
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs text-[#9a9680]">{t.onboardingHeight}</label>
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      inputMode="numeric"
+                      value={profileDraft.heightCm}
+                      onChange={(e) => setProfileDraft((p) => p ? { ...p, heightCm: Number(e.target.value) || 0 } : p)}
+                      className="pr-8"
+                      min={100}
+                      max={250}
+                    />
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#5a5a44] pointer-events-none">cm</span>
+                  </div>
+                </div>
+              </div>
+              {/* Age */}
+              <div className="flex items-center gap-3">
+                <label className="text-sm text-[#c8c4b0] w-32 shrink-0">{t.onboardingAge}</label>
+                <div className="relative flex-1">
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    value={profileDraft.age}
+                    onChange={(e) => setProfileDraft((p) => p ? { ...p, age: Number(e.target.value) || 0 } : p)}
+                    className="pr-10"
+                    min={10}
+                    max={99}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#5a5a44] pointer-events-none">yrs</span>
+                </div>
+              </div>
+              {/* Sex */}
+              <div className="flex items-center gap-3">
+                <label className="text-sm text-[#c8c4b0] w-32 shrink-0">{t.onboardingBodyStatsTitle.split(' ')[0]}</label>
+                <div className="flex gap-2 flex-1">
+                  {(['male', 'female'] as const).map((sex) => (
+                    <button
+                      key={sex}
+                      onClick={() => setProfileDraft((p) => p ? { ...p, sex } : p)}
+                      className={`flex-1 py-2 rounded-xl text-sm font-medium transition-colors ${
+                        profileDraft.sex === sex
+                          ? 'bg-[#7cb87a] text-[#18180f]'
+                          : 'bg-[#2e2e22] text-[#9a9680] hover:text-[#c8c4b0]'
+                      }`}
+                    >
+                      {sex === 'male' ? t.onboardingMale : t.onboardingFemale}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* Activity */}
+              <div className="space-y-1.5">
+                <label className="text-xs text-[#9a9680]">{t.onboardingActivityTitle}</label>
+                <div className="space-y-1">
+                  {([
+                    { value: 1.2, label: t.onboardingActivitySedentary },
+                    { value: 1.375, label: t.onboardingActivityLight },
+                    { value: 1.55, label: t.onboardingActivityModerate },
+                    { value: 1.725, label: t.onboardingActivityActive },
+                    { value: 1.9, label: t.onboardingActivityVeryActive },
+                  ] as { value: OnboardingProfile['activityMultiplier']; label: string }[]).map(({ value, label }) => (
+                    <button
+                      key={value}
+                      onClick={() => setProfileDraft((p) => p ? { ...p, activityMultiplier: value } : p)}
+                      className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-colors ${
+                        profileDraft.activityMultiplier === value
+                          ? 'bg-[#7cb87a]/20 text-[#7cb87a] border border-[#7cb87a]/40'
+                          : 'bg-[#2e2e22] text-[#9a9680] hover:text-[#c8c4b0]'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {/* Goal */}
+              <div className="space-y-1.5">
+                <label className="text-xs text-[#9a9680]">{t.onboardingGoalTitle}</label>
+                <div className="flex gap-2">
+                  {(['lose', 'maintain', 'gain'] as const).map((goal) => (
+                    <button
+                      key={goal}
+                      onClick={() => setProfileDraft((p) => p ? { ...p, goal } : p)}
+                      className={`flex-1 py-2 rounded-xl text-sm font-medium transition-colors ${
+                        profileDraft.goal === goal
+                          ? 'bg-[#7cb87a] text-[#18180f]'
+                          : 'bg-[#2e2e22] text-[#9a9680] hover:text-[#c8c4b0]'
+                      }`}
+                    >
+                      {goal === 'lose' ? t.onboardingGoalLose : goal === 'maintain' ? t.onboardingGoalMaintain : t.onboardingGoalGain}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p className="text-xs text-[#5a5a44]">{t.profileNotSet}</p>
+          )}
+        </section>
+
+        {/* Macro recalc banner */}
+        {showRecalcBanner && profileDraft && (
+          <div className="flex items-center gap-3 bg-[#2a2a1a] border border-[#4a4a28] rounded-xl px-4 py-3">
+            <p className="flex-1 text-xs text-[#c8c4b0]">{t.recalcMacrosBanner}</p>
+            <button
+              onClick={handleRecalcMacros}
+              className="text-xs font-medium text-[#7cb87a] hover:text-[#8fce8d] shrink-0"
+            >
+              {t.recalcMacrosBtn}
+            </button>
+            <button onClick={() => setShowRecalcBanner(false)} className="text-[#5a5a44] hover:text-[#9a9680] ml-1" aria-label="Dismiss">
+              <X className="w-4 h-4" aria-hidden="true" />
+            </button>
+          </div>
+        )}
+        {recalcDone && (
+          <p className="text-xs text-center text-[#7cb87a]">{t.recalcMacrosDone}</p>
+        )}
 
         {/* Macro Goals */}
         <section className="space-y-4">

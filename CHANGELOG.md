@@ -9,6 +9,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Past-day navigation on Dashboard**: left/right arrow buttons in the Dashboard header let you browse any previous day's meals and macros. Swipe left/right on mobile to change days. Past days show the full calorie ring and macro bars for that day vs. goals. Edit and delete work on past meals; the FAB (add meal) is hidden for past days. A "Today" pill appears when viewing a past day for quick return.
+- **Body profile in Settings**: the onboarding profile (weight, height, age, sex, activity level, goal) is now editable inline in the Settings page. When the saved weight changes by ≥ 2 kg, a banner appears offering to recalculate macros using the same Mifflin-St Jeor / TDEE formula as onboarding.
 - **Nav rework — 5-tab bottom nav**: Today / Log & Ask / Charts / Learn / Settings. Removed dedicated Body and History tabs; Settings is now a first-class nav item.
 - **History tab inside Charts (Analytics)**: History week view is now accessible as a third tab inside the Analytics screen alongside Nutrition and Body. The `/history` route still works as a standalone page.
 - **Body measurement nudge on Dashboard**: amber dismissable banner appears when the last logged body measurement is more than 14 days ago (or never). Links to `/measurements`. Dismissed state persists for the session (sessionStorage).
