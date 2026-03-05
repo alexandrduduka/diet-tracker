@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X, Pencil, Trash2 } from 'lucide-react';
+import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X, Pencil, Trash2, HelpCircle } from 'lucide-react';
 import { parseMealDescription, classifyIntent, askNutritionQuestion, type ParsedMeal, type MealContext, type NutritionContext, type ImageAttachment } from '../lib/gemini';
 import { sumMacros, recalculateCalories } from '../lib/nutrition';
 import type { FoodItem } from '../types';
@@ -89,6 +89,7 @@ export function Chat() {
   const [setupKey, setSetupKey] = useState('');
   const [showSetupKey, setShowSetupKey] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [showApiKeyExplainer, setShowApiKeyExplainer] = useState(false);
 
   // Mic state
   const [isListening, setIsListening] = useState(false);
@@ -431,6 +432,43 @@ export function Chat() {
         </div>
       )}
 
+      {/* API key explainer modal */}
+      {showApiKeyExplainer && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
+          <div className="absolute inset-0 bg-black/70" onClick={() => setShowApiKeyExplainer(false)} />
+          <div className="relative bg-[#242419] rounded-t-3xl sm:rounded-2xl border-t sm:border border-[#3a3a2a] px-5 pt-5 pb-8 sm:pb-6 max-w-md w-full mx-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-base font-semibold text-[#f0ede4]">{t.apiKeyExplainTitle}</h2>
+              <button onClick={() => setShowApiKeyExplainer(false)} className="text-[#9a9680] hover:text-[#f0ede4] p-1">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-sm text-[#c8c4b0] mb-4 leading-relaxed">{t.apiKeyExplainBody}</p>
+            <div className="space-y-3 mb-5">
+              {([t.apiKeyExplainStep1, t.apiKeyExplainStep2, t.apiKeyExplainStep3] as string[]).map((step, si) => (
+                <div key={si} className="flex gap-3 items-start">
+                  <span className="w-6 h-6 rounded-full bg-[#7cb87a]/20 border border-[#7cb87a]/40 text-[#7cb87a] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                    {si + 1}
+                  </span>
+                  <p className="text-sm text-[#9a9680] leading-relaxed">{step}</p>
+                </div>
+              ))}
+            </div>
+            <a
+              href="https://aistudio.google.com/app/apikey"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-[#7cb87a] text-[#18180f] font-medium text-sm hover:bg-[#8fce8d] active:bg-[#6aa368] mb-3"
+            >
+              {t.apiKeyOpenStudio} <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+            <button onClick={() => setShowApiKeyExplainer(false)} className="w-full py-2 text-sm text-[#9a9680] hover:text-[#f0ede4]">
+              {t.apiKeyExplainGotIt}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 no-scrollbar">
         {messages.map((msg, i) => {
@@ -479,7 +517,16 @@ export function Chat() {
               <div key={i} className="flex gap-2">
                 <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
                 <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-4 max-w-[95%] w-full text-sm space-y-3">
-                  <p className="font-semibold text-[#f0ede4]">{t.apiKeySetupTitle}</p>
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold text-[#f0ede4]">{t.apiKeySetupTitle}</p>
+                    <button
+                      onClick={() => setShowApiKeyExplainer(true)}
+                      className="inline-flex items-center gap-1 text-xs text-[#9a9680] hover:text-[#c8c4b0]"
+                    >
+                      <HelpCircle className="w-3 h-3" />
+                      {t.apiKeyWhatIsThis}
+                    </button>
+                  </div>
                   <p className="text-[#9a9680] text-xs">{t.apiKeySetupFree}</p>
                   <a
                     href="https://aistudio.google.com/app/apikey"
