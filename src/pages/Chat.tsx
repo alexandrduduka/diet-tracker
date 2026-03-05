@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X, Pencil } from 'lucide-react';
 import { parseMealDescription, type ParsedMeal, type MealContext, type ImageAttachment } from '../lib/gemini';
-import { sumMacros } from '../lib/nutrition';
+import { sumMacros, recalculateCalories } from '../lib/nutrition';
 import type { FoodItem } from '../types';
 import { db } from '../db';
 import { getTodayKey } from '../lib/date';
@@ -408,14 +408,24 @@ export function Chat() {
                               />
                             </div>
                             <div className="grid grid-cols-4 gap-1.5">
-                              {(['calories', 'protein', 'carbs', 'fat'] as const).map((key) => (
+                              <div className="space-y-0.5">
+                                <label className="text-[9px] text-[#5a5a44] uppercase tracking-wide block">kcal</label>
+                                <div className="flex h-[30px] w-full items-center rounded-lg border border-[#3a3a2a] bg-[#1a1a12] px-2 text-xs text-[#5a5a44] select-none">
+                                  {recalculateCalories(food.macros)}
+                                </div>
+                              </div>
+                              {(['protein', 'carbs', 'fat'] as const).map((key) => (
                                 <div key={key} className="space-y-0.5">
-                                  <label className="text-[9px] text-[#5a5a44] uppercase tracking-wide block">{key === 'calories' ? 'kcal' : key[0].toUpperCase()}</label>
+                                  <label className="text-[9px] text-[#5a5a44] uppercase tracking-wide block">{key[0].toUpperCase()}</label>
                                   <input
                                     type="number"
                                     className="w-full bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-xs text-[#f0ede4] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
                                     value={food.macros[key]}
-                                    onChange={(e) => setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, macros: { ...f.macros, [key]: Number(e.target.value) || 0 } } : f))}
+                                    onChange={(e) => {
+                                      const updated = { ...food.macros, [key]: Number(e.target.value) || 0 };
+                                      updated.calories = recalculateCalories(updated);
+                                      setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, macros: updated } : f));
+                                    }}
                                   />
                                 </div>
                               ))}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { db } from '../db';
 import type { MealEntry } from '../types';
 import type { Translations } from '../lib/i18n';
+import { recalculateCalories } from '../lib/nutrition';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -16,11 +17,17 @@ interface EditMealDialogProps {
 export function EditMealDialog({ meal, open, onClose, t }: EditMealDialogProps) {
   const [rawInput, setRawInput] = useState(meal.rawInput);
   const [notes, setNotes] = useState(meal.notes ?? '');
-  const [calories, setCalories] = useState(String(meal.totalMacros.calories));
   const [protein, setProtein] = useState(String(meal.totalMacros.protein));
   const [carbs, setCarbs] = useState(String(meal.totalMacros.carbs));
   const [fat, setFat] = useState(String(meal.totalMacros.fat));
   const [saving, setSaving] = useState(false);
+
+  const derivedCalories = recalculateCalories({
+    calories: 0,
+    protein: Number(protein) || 0,
+    carbs: Number(carbs) || 0,
+    fat: Number(fat) || 0,
+  });
 
   async function handleSave() {
     if (!meal.id || !rawInput.trim()) return;
@@ -29,7 +36,7 @@ export function EditMealDialog({ meal, open, onClose, t }: EditMealDialogProps) 
       rawInput: rawInput.trim(),
       notes: notes.trim() || undefined,
       totalMacros: {
-        calories: Number(calories) || 0,
+        calories: derivedCalories,
         protein: Number(protein) || 0,
         carbs: Number(carbs) || 0,
         fat: Number(fat) || 0,
@@ -60,12 +67,9 @@ export function EditMealDialog({ meal, open, onClose, t }: EditMealDialogProps) 
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-1">
                 <label className="text-[10px] text-[#5a5a44] uppercase tracking-wide">{t.calories}</label>
-                <Input
-                  type="number"
-                  value={calories}
-                  onChange={(e) => setCalories(e.target.value)}
-                  placeholder="0"
-                />
+                <div className="flex h-9 w-full items-center rounded-xl border border-[#3a3a2a] bg-[#1a1a12] px-3 text-sm text-[#5a5a44] select-none">
+                  {derivedCalories} kcal
+                </div>
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] text-[#7cb87a] uppercase tracking-wide">{t.protein} (g)</label>
