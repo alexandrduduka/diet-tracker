@@ -49,6 +49,11 @@ export function validateAndFixCalories(macros: MacroNutrients): MacroNutrients {
   return macros;
 }
 
+/** Round a single nutrient value for display: calories → integer, everything else → 1 decimal place. */
+export function fmt(value: number, isCalories = false): number {
+  return isCalories ? Math.round(value) : Math.round(value * 10) / 10;
+}
+
 export function roundMacros(macros: MacroNutrients): MacroNutrients {
   return {
     calories: Math.round(macros.calories),

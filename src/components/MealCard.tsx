@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp, Trash2, Pencil } from 'lucide-react';
 import { db } from '../db';
 import type { MealEntry } from '../types';
 import { formatTime } from '../lib/date';
+import { fmt } from '../lib/nutrition';
 import { useLang } from '../store/langContext';
 import { EditMealDialog } from './EditMealDialog';
 
@@ -72,7 +73,7 @@ export function MealCard({ meal, animationDelay = 0 }: MealCardProps) {
           <p className="text-xs text-[#5a5a44] mt-0.5">{formatTime(new Date(meal.timestamp))}</p>
         </div>
         <div className="flex items-center gap-2 ml-3 shrink-0">
-          <span className="text-sm font-semibold text-[#d4a24c]">{meal.totalMacros.calories} kcal</span>
+          <span className="text-sm font-semibold text-[#d4a24c]">{fmt(meal.totalMacros.calories, true)} kcal</span>
 
           {/* Edit/Delete — fade in on desktop hover OR after mobile long-press */}
           <div
@@ -110,8 +111,8 @@ export function MealCard({ meal, animationDelay = 0 }: MealCardProps) {
                   <p className="text-xs text-[#5a5a44]">{food.quantity}</p>
                 </div>
                 <div className="text-right text-xs text-[#9a9680] shrink-0 ml-3">
-                  <p>{food.macros.calories} kcal</p>
-                  <p>P:{food.macros.protein}g F:{food.macros.fat}g C:{food.macros.carbs}g</p>
+                  <p>{fmt(food.macros.calories, true)} kcal</p>
+                  <p>P:{fmt(food.macros.protein)}g F:{fmt(food.macros.fat)}g C:{fmt(food.macros.carbs)}g</p>
                 </div>
               </div>
             ))}
@@ -120,9 +121,9 @@ export function MealCard({ meal, animationDelay = 0 }: MealCardProps) {
           {/* Totals row */}
           <div className="flex justify-between text-xs text-[#9a9680] border-t border-[#3a3a2a] pt-2">
             <div className="flex gap-3">
-              <span>P: <span className="text-[#c8c4b0]">{meal.totalMacros.protein}g</span></span>
-              <span>F: <span className="text-[#c8c4b0]">{meal.totalMacros.fat}g</span></span>
-              <span>C: <span className="text-[#c8c4b0]">{meal.totalMacros.carbs}g</span></span>
+              <span>P: <span className="text-[#c8c4b0]">{fmt(meal.totalMacros.protein)}g</span></span>
+              <span>F: <span className="text-[#c8c4b0]">{fmt(meal.totalMacros.fat)}g</span></span>
+              <span>C: <span className="text-[#c8c4b0]">{fmt(meal.totalMacros.carbs)}g</span></span>
             </div>
             <span className={CONFIDENCE_COLOR[meal.llmConfidence]}>
               {meal.llmConfidence === 'manual' ? 'manual' : `${meal.llmConfidence} confidence`}

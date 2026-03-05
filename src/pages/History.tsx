@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Pencil, Trash2 } fro
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db';
 import { getWeekKeys, getWeekLabel, formatDayLabel, formatShortDay, getTodayKey } from '../lib/date';
-import { addMacros, zeroMacros } from '../lib/nutrition';
+import { addMacros, zeroMacros, fmt } from '../lib/nutrition';
 import { useGoals } from '../hooks/useGoals';
 import { useLang } from '../store/langContext';
 import type { MealEntry, MacroNutrients } from '../types';
@@ -61,7 +61,7 @@ function HistoryMealRow({ meal, t }: { meal: MealEntry; t: Translations }) {
               <Trash2 className="w-3 h-3" />
             </button>
           </div>
-          <span className="text-[#9a9680] text-xs">{meal.totalMacros.calories} kcal</span>
+          <span className="text-[#9a9680] text-xs">{fmt(meal.totalMacros.calories, true)} kcal</span>
         </div>
       </div>
       <EditMealDialog meal={meal} open={editOpen} onClose={() => setEditOpen(false)} t={t} />
@@ -111,7 +111,7 @@ function DaySummary({ dayKey, meals, goals, t, animationDelay = 0 }: { dayKey: s
         </div>
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <p className="text-sm font-semibold text-[#d4a24c]">{totals.calories} kcal</p>
+            <p className="text-sm font-semibold text-[#d4a24c]">{fmt(totals.calories, true)} kcal</p>
             <p className="text-xs text-[#5a5a44]">{caloriesPct}{t.ofGoal}</p>
           </div>
           {expanded ? <ChevronUp className="w-4 h-4 text-[#9a9680]" /> : <ChevronDown className="w-4 h-4 text-[#9a9680]" />}
@@ -121,9 +121,9 @@ function DaySummary({ dayKey, meals, goals, t, animationDelay = 0 }: { dayKey: s
       {expanded && (
         <div className="px-4 pb-4 border-t border-[#3a3a2a] pt-3 space-y-2">
           <div className="flex gap-4 text-sm mb-3">
-            <span className="text-[#9a9680]">P: <span className="text-[#7cb87a] font-medium">{totals.protein}g</span></span>
-            <span className="text-[#9a9680]">C: <span className="text-[#d4a24c] font-medium">{totals.carbs}g</span></span>
-            <span className="text-[#9a9680]">F: <span className="text-[#c17a5a] font-medium">{totals.fat}g</span></span>
+            <span className="text-[#9a9680]">P: <span className="text-[#7cb87a] font-medium">{fmt(totals.protein)}g</span></span>
+            <span className="text-[#9a9680]">C: <span className="text-[#d4a24c] font-medium">{fmt(totals.carbs)}g</span></span>
+            <span className="text-[#9a9680]">F: <span className="text-[#c17a5a] font-medium">{fmt(totals.fat)}g</span></span>
           </div>
           {meals.map((meal) => (
             <HistoryMealRow key={meal.id ?? meal.rawInput} meal={meal} t={t} />

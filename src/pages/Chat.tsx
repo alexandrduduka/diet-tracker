@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X, Pencil, Trash2, HelpCircle } from 'lucide-react';
 import { parseMealDescription, classifyIntent, askNutritionQuestion, type ParsedMeal, type MealContext, type NutritionContext, type ImageAttachment } from '../lib/gemini';
 import { trackMealLogStarted, trackMealSaved, trackMealDiscarded, trackMealEdited, trackNutritionQuestion, trackChatCleared, trackApiKeySaved } from '../lib/analytics';
-import { sumMacros, recalculateCalories } from '../lib/nutrition';
+import { sumMacros, recalculateCalories, fmt } from '../lib/nutrition';
 import type { FoodItem } from '../types';
 import { db } from '../db';
 import { getTodayKey, getLastNDayKeys } from '../lib/date';
@@ -681,8 +681,8 @@ export function Chat() {
                               <p className="text-xs text-[#5a5a44]">{food.quantity}</p>
                             </div>
                             <div className="text-right text-xs text-[#9a9680] shrink-0 ml-4">
-                              <p className="text-[#d4a24c] font-medium">{food.macros.calories} kcal</p>
-                              <p>P:{food.macros.protein}g C:{food.macros.carbs}g F:{food.macros.fat}g</p>
+                              <p className="text-[#d4a24c] font-medium">{fmt(food.macros.calories, true)} kcal</p>
+                              <p>P:{fmt(food.macros.protein)}g C:{fmt(food.macros.carbs)}g F:{fmt(food.macros.fat)}g</p>
                             </div>
                           </div>
                         ))}
@@ -692,8 +692,8 @@ export function Chat() {
                     <div className="mt-3 pt-3 border-t border-[#3a3a2a] flex justify-between text-sm">
                       <span className="text-[#9a9680]">{t.total}</span>
                       <div className="text-right">
-                        <span className="text-[#d4a24c] font-semibold">{total.calories} kcal</span>
-                        <p className="text-xs text-[#5a5a44]">P:{total.protein}g F:{total.fat}g C:{total.carbs}g</p>
+                        <span className="text-[#d4a24c] font-semibold">{fmt(total.calories, true)} kcal</span>
+                        <p className="text-xs text-[#5a5a44]">P:{fmt(total.protein)}g F:{fmt(total.fat)}g C:{fmt(total.carbs)}g</p>
                       </div>
                     </div>
                     {msg.parsed.notes && !editingResult && (
