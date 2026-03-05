@@ -34,6 +34,7 @@ export interface Translations {
   chatSuggestionHowAmIDoing: string;
   chatSuggestionProtein: string;
   chatSuggestionSummary: string;
+  chatSuggestionWeightLoss: string;
   describeWhatYouAte: string;
   analyzing: string;
   gotIt: string;
@@ -254,6 +255,7 @@ const en: Translations = {
   chatSuggestionHowAmIDoing: 'How am I doing today? 📊',
   chatSuggestionProtein: 'Is my protein high enough?',
   chatSuggestionSummary: 'Summarise this week',
+  chatSuggestionWeightLoss: 'When will I finally lose weight? ⚖️',
   describeWhatYouAte: 'Describe what you ate...',
   analyzing: 'Analyzing...',
   gotIt: 'Got it! Here\'s what I found:',
@@ -461,6 +463,7 @@ const ru: Translations = {
   chatSuggestionHowAmIDoing: 'Как я питаюсь сегодня? 📊',
   chatSuggestionProtein: 'Достаточно ли у меня белка?',
   chatSuggestionSummary: 'Итоги недели',
+  chatSuggestionWeightLoss: 'Когда я наконец похудею? ⚖️',
   describeWhatYouAte: 'Опишите, что вы ели...',
   analyzing: 'Анализирую...',
   gotIt: 'Понял! Вот что нашёл:',
@@ -668,6 +671,7 @@ const cs: Translations = {
   chatSuggestionHowAmIDoing: 'Jak se dnes stravuji? 📊',
   chatSuggestionProtein: 'Mám dostatek bílkovin?',
   chatSuggestionSummary: 'Shrnutí tohoto týdne',
+  chatSuggestionWeightLoss: 'Kdy konečně zhubnu? ⚖️',
   describeWhatYouAte: 'Popište, co jste jedli...',
   analyzing: 'Analyzuji...',
   gotIt: 'Rozumím! Tady je, co jsem našel:',
@@ -875,6 +879,7 @@ const de: Translations = {
   chatSuggestionHowAmIDoing: 'Wie läuft es heute? 📊',
   chatSuggestionProtein: 'Nehme ich genug Protein zu mir?',
   chatSuggestionSummary: 'Zusammenfassung dieser Woche',
+  chatSuggestionWeightLoss: 'Wann nehme ich endlich ab? ⚖️',
   describeWhatYouAte: 'Beschreiben Sie, was Sie gegessen haben...',
   analyzing: 'Analysiere...',
   gotIt: 'Verstanden! Hier ist, was ich gefunden habe:',
@@ -1082,6 +1087,7 @@ const fr: Translations = {
   chatSuggestionHowAmIDoing: 'Comment je m\'en sors aujourd\'hui ? 📊',
   chatSuggestionProtein: 'Mon apport en protéines est-il suffisant ?',
   chatSuggestionSummary: 'Résumé de cette semaine',
+  chatSuggestionWeightLoss: 'Quand vais-je enfin maigrir ? ⚖️',
   describeWhatYouAte: 'Décrivez ce que vous avez mangé...',
   analyzing: 'Analyse en cours...',
   gotIt: 'Compris ! Voici ce que j\'ai trouvé :',
@@ -1289,6 +1295,7 @@ const es: Translations = {
   chatSuggestionHowAmIDoing: '¿Cómo voy hoy? 📊',
   chatSuggestionProtein: '¿Tomo suficiente proteína?',
   chatSuggestionSummary: 'Resumen de esta semana',
+  chatSuggestionWeightLoss: '¿Cuándo voy a adelgazar de una vez? ⚖️',
   describeWhatYouAte: 'Describe lo que comiste...',
   analyzing: 'Analizando...',
   gotIt: '¡Entendido! Esto es lo que encontré:',
@@ -1496,6 +1503,7 @@ const uk: Translations = {
   chatSuggestionHowAmIDoing: 'Як я харчуюся сьогодні? 📊',
   chatSuggestionProtein: 'Чи достатньо у мене білка?',
   chatSuggestionSummary: 'Підсумок тижня',
+  chatSuggestionWeightLoss: 'Коли я нарешті схудну? ⚖️',
   describeWhatYouAte: 'Опишіть, що ви їли...',
   analyzing: 'Аналізую...',
   gotIt: 'Зрозумів! Ось що знайшов:',

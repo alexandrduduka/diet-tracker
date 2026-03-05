@@ -759,7 +759,7 @@ export function Chat() {
               {/* Suggestion chips — shown only on a fresh chat */}
               {messages.length === 1 && messages[0].role === 'assistant' && (
                 <div className="flex gap-2 pb-1 overflow-x-auto no-scrollbar">
-                  {([t.chatSuggestionLogMeal, t.chatSuggestionHowAmIDoing, t.chatSuggestionProtein, t.chatSuggestionSummary] as string[]).map((s) => (
+                  {([t.chatSuggestionLogMeal, t.chatSuggestionHowAmIDoing, t.chatSuggestionProtein, t.chatSuggestionSummary, t.chatSuggestionWeightLoss] as string[]).map((s) => (
                     <button
                       key={s}
                       onClick={() => setInput(s)}

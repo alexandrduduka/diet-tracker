@@ -12,7 +12,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Nav rework — 5-tab bottom nav**: Today / Log & Ask / Charts / Learn / Settings. Removed dedicated Body and History tabs; Settings is now a first-class nav item.
 - **History tab inside Charts (Analytics)**: History week view is now accessible as a third tab inside the Analytics screen alongside Nutrition and Body. The `/history` route still works as a standalone page.
 - **Body measurement nudge on Dashboard**: amber dismissable banner appears when the last logged body measurement is more than 14 days ago (or never). Links to `/measurements`. Dismissed state persists for the session (sessionStorage).
-- **Suggestion chips in Chat**: when the chat is fresh (first open or after clearing history), a horizontal scrollable row of 4 tappable chips appears above the input bar — *"2 eggs and toast 🍳"*, *"How am I doing today? 📊"*, *"Is my protein high enough?"*, *"Summarise this week"*. Tapping a chip prefills the text input without auto-sending.
+- **Suggestion chips in Chat**: when the chat is fresh (first open or after clearing history), a horizontal scrollable row of 5 tappable chips appears above the input bar — *"2 eggs and toast 🍳"*, *"How am I doing today? 📊"*, *"Is my protein high enough?"*, *"Summarise this week"*, *"When will I finally lose weight? ⚖️"*. Tapping a chip prefills the text input without auto-sending.
 - **API key explainer modal redesign**: replaced numbered text steps with a JSX mockup of the Google AI Studio UI (browser chrome + API keys page + copy action) plus a quota info card showing the free-tier limit (1,500 req/day) with a link to view usage in AI Studio.
 - **Onboarding Done screen polish** (step 6): full-width layout with side-by-side hero icon+title, daily target card with macro split pill bar, 3-column macro grid cards, and an encouragement note.
 - **Onboarding default activity**: default activity multiplier changed from Moderate (1.55) to Lightly active (1.375) — closer to the average sedentary/office worker.
@@ -21,7 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - Settings page now shows the bottom nav bar (was hidden before — now it's a main nav tab).
 - `HIDE_NAV_ROUTES` reduced to `['/onboarding']` only.
-- **App icon redesigned**: replaced abstract teardrop with a "seed sprouting into a progress arc" — an amber seed at the bottom of a gap in a green circular arc, with a leaf bud at the arc tip. Communicates growth + nutrition tracking, works for all diets. All PNG variants regenerated (192px, 512px, 180px apple-touch, 512px maskable).
+- **App icon redesigned**: replaced abstract teardrop with a measuring cup partially filled with green liquid, with a small leaf motif on the cup body and graduation marks. Communicates measuring/tracking food, works for all diets. All PNG variants regenerated (192px, 512px, 180px apple-touch, 512px maskable).
 - **Chat tab icon**: changed from Bot to `PenLine` (pen with line) — better conveys both logging and asking.
 
 - **Google Analytics 4** (G-CX3LDP2Y41): page-view tracking on every HashRouter navigation plus custom events — `meal_saved`, `meal_discarded`, `meal_edited`, `meal_log_started` (method: text/photo/voice), `nutrition_question_asked`, `chat_history_cleared`, `api_key_saved`, `goals_updated`, `language_changed`, `data_exported`, `onboarding_completed`, `measurement_logged`, `article_opened`. IP anonymization enabled; no PII sent.
