@@ -246,3 +246,22 @@ The app shell (all HTML/CSS/JS) is cached by the service worker on first load, s
 **App doesn't install on iOS** — installation requires Safari. Chrome and other browsers on iOS don't support PWA installation.
 
 **Data is gone after clearing browser history** — clearing browser data removes IndexedDB storage. Use the Export function in Settings regularly if you want to keep a backup.
+
+---
+
+## Learn (Articles)
+
+The **Learn** tab (book icon in the bottom navigation) contains evidence-based nutrition guides.
+
+### Available articles
+
+| Article | Topics |
+|---|---|
+| How to Calculate Your Daily Calorie Needs | BMR (Mifflin-St Jeor formula), TDEE activity multipliers, goal adjustments |
+| Understanding Macros: Protein, Carbs & Fat | Calorie density, protein targets by activity level, fat and carb roles |
+| Evidence-Based Dietary Strategies That Work | Calorie balance, Mediterranean diet, high-protein diets, adherence behaviours |
+| Sport & Active Lifestyle: What Exercise Actually Does | Steps vs gym, hormonal benefits, muscle mass and BMR, bodyweight training, injury risk |
+
+All articles are available in all 7 app languages and update automatically when you change the language in Settings.
+
+Each article opens a detail page with visualisation components: key-stat rows and horizontal bar comparisons alongside text, tables, and callout boxes.
