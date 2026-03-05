@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Pencil, Trash2 } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db';
 import { getWeekKeys, getWeekLabel, formatDayLabel, formatShortDay, getTodayKey } from '../lib/date';
@@ -8,6 +8,66 @@ import { useGoals } from '../hooks/useGoals';
 import { useLang } from '../store/langContext';
 import type { MealEntry, MacroNutrients } from '../types';
 import type { Translations } from '../lib/i18n';
+import { EditMealDialog } from '../components/EditMealDialog';
+
+function HistoryMealRow({ meal, t }: { meal: MealEntry; t: Translations }) {
+  const [showActions, setShowActions] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function handleDelete() {
+    if (!meal.id) return;
+    setDeleting(true);
+    setTimeout(() => db.meals.delete(meal.id!), 280);
+  }
+  function handlePointerDown() {
+    longPressTimer.current = setTimeout(() => setShowActions(true), 300);
+  }
+  function handlePointerUp() {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+  }
+  function handlePointerLeave() {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+    setShowActions(false);
+  }
+
+  return (
+    <>
+      <div
+        className={`group relative flex justify-between items-center text-sm py-1.5 border-b border-[#3a3a2a] last:border-0 ${deleting ? 'animate-collapse' : ''}`}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerLeave}
+        onContextMenu={(e) => e.preventDefault()}
+      >
+        <p className="text-[#c8c4b0] truncate flex-1">{meal.rawInput}</p>
+        <div className="flex items-center gap-1 ml-3 shrink-0">
+          <div
+            className={`flex items-center gap-0.5 transition-opacity duration-150 opacity-0 group-hover:opacity-100 ${showActions ? '!opacity-100' : ''}`}
+          >
+            <button
+              onClick={() => setEditOpen(true)}
+              className="p-1 rounded text-[#9a9680] hover:text-[#f0ede4]"
+              aria-label="Edit meal"
+            >
+              <Pencil className="w-3 h-3" />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="p-1 rounded text-[#9a9680] hover:text-[#c17a5a]"
+              aria-label="Delete meal"
+            >
+              <Trash2 className="w-3 h-3" />
+            </button>
+          </div>
+          <span className="text-[#9a9680] text-xs">{meal.totalMacros.calories} kcal</span>
+        </div>
+      </div>
+      <EditMealDialog meal={meal} open={editOpen} onClose={() => setEditOpen(false)} t={t} />
+    </>
+  );
+}
 
 function DaySummary({ dayKey, meals, goals, t, animationDelay = 0 }: { dayKey: string; meals: MealEntry[]; goals: MacroNutrients; t: Translations; animationDelay?: number }) {
   const [expanded, setExpanded] = useState(false);
@@ -65,11 +125,8 @@ function DaySummary({ dayKey, meals, goals, t, animationDelay = 0 }: { dayKey: s
             <span className="text-[#9a9680]">C: <span className="text-[#d4a24c] font-medium">{totals.carbs}g</span></span>
             <span className="text-[#9a9680]">F: <span className="text-[#c17a5a] font-medium">{totals.fat}g</span></span>
           </div>
-          {meals.map((meal, i) => (
-            <div key={i} className="flex justify-between items-center text-sm py-1.5 border-b border-[#3a3a2a] last:border-0">
-              <p className="text-[#c8c4b0] truncate flex-1">{meal.rawInput}</p>
-              <span className="text-[#9a9680] shrink-0 ml-3">{meal.totalMacros.calories} kcal</span>
-            </div>
+          {meals.map((meal) => (
+            <HistoryMealRow key={meal.id ?? meal.rawInput} meal={meal} t={t} />
           ))}
         </div>
       )}

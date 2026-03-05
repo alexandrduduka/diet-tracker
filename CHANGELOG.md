@@ -8,6 +8,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- Edit and delete actions on meal items: pencil + trash icons appear on hover (desktop) and after a 300ms long-press (mobile), keeping the UI clean by default. Available on both Dashboard meal cards and History day-summary meal rows.
+- Edit Meal dialog: tap the pencil icon to edit the meal description and notes inline. Saves to IndexedDB without re-parsing with LLM.
+
 ### Fixed
 - FAB (+ button) on Dashboard no longer overflows outside the centered max-w-md column on desktop — wrapped in a `max-w-md mx-auto` constraint div
 - BottomNav now shown on the Log (Chat) page; page content adjusted with `pb-20` so the input bar stays above the nav

@@ -61,6 +61,8 @@ export interface Translations {
   notes: string;
   optionalNotes: string;
   saving: string;
+  editMeal: string;
+  mealDescription: string;
 
   // Measurement labels
   weight: string;
@@ -193,6 +195,8 @@ const en: Translations = {
   notes: 'Notes',
   optionalNotes: 'Optional notes',
   saving: 'Saving...',
+  editMeal: 'Edit Meal',
+  mealDescription: 'Meal description',
 
   weight: 'Weight',
   waist: 'Waist',
@@ -312,6 +316,8 @@ const ru: Translations = {
   notes: 'Заметки',
   optionalNotes: 'Заметки (необязательно)',
   saving: 'Сохраняю...',
+  editMeal: 'Редактировать приём',
+  mealDescription: 'Описание приёма',
 
   weight: 'Вес',
   waist: 'Талия',
@@ -431,6 +437,8 @@ const cs: Translations = {
   notes: 'Poznámky',
   optionalNotes: 'Poznámky (volitelné)',
   saving: 'Ukládám...',
+  editMeal: 'Upravit jídlo',
+  mealDescription: 'Popis jídla',
 
   weight: 'Hmotnost',
   waist: 'Pas',
@@ -550,6 +558,8 @@ const de: Translations = {
   notes: 'Notizen',
   optionalNotes: 'Notizen (optional)',
   saving: 'Speichern...',
+  editMeal: 'Mahlzeit bearbeiten',
+  mealDescription: 'Mahlzeitbeschreibung',
 
   weight: 'Gewicht',
   waist: 'Taille',
@@ -669,6 +679,8 @@ const fr: Translations = {
   notes: 'Notes',
   optionalNotes: 'Notes (optionnel)',
   saving: 'Enregistrement...',
+  editMeal: 'Modifier le repas',
+  mealDescription: 'Description du repas',
 
   weight: 'Poids',
   waist: 'Taille',
@@ -788,6 +800,8 @@ const es: Translations = {
   notes: 'Notas',
   optionalNotes: 'Notas (opcional)',
   saving: 'Guardando...',
+  editMeal: 'Editar comida',
+  mealDescription: 'Descripción de la comida',
 
   weight: 'Peso',
   waist: 'Cintura',
@@ -907,6 +921,8 @@ const uk: Translations = {
   notes: 'Нотатки',
   optionalNotes: 'Нотатки (необов\'язково)',
   saving: 'Зберігаю...',
+  editMeal: 'Редагувати прийом',
+  mealDescription: 'Опис прийому',
 
   weight: 'Вага',
   waist: 'Талія',

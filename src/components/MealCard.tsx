@@ -1,8 +1,10 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { ChevronDown, ChevronUp, Trash2, Pencil } from 'lucide-react';
 import { db } from '../db';
 import type { MealEntry } from '../types';
 import { formatTime } from '../lib/date';
+import { useLang } from '../store/langContext';
+import { EditMealDialog } from './EditMealDialog';
 
 interface MealCardProps {
   meal: MealEntry;
@@ -17,8 +19,12 @@ const CONFIDENCE_COLOR = {
 };
 
 export function MealCard({ meal, animationDelay = 0 }: MealCardProps) {
+  const { t } = useLang();
   const [expanded, setExpanded] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [showActions, setShowActions] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function handleDelete() {
     if (!meal.id) return;
@@ -26,22 +32,69 @@ export function MealCard({ meal, animationDelay = 0 }: MealCardProps) {
     setTimeout(() => db.meals.delete(meal.id!), 280);
   }
 
+  function handlePointerDown() {
+    longPressTimer.current = setTimeout(() => setShowActions(true), 300);
+  }
+
+  function handlePointerUp() {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+  }
+
+  function handlePointerLeave() {
+    if (longPressTimer.current) clearTimeout(longPressTimer.current);
+    setShowActions(false);
+  }
+
+  function handleExpandClick() {
+    if (showActions) {
+      setShowActions(false);
+      return;
+    }
+    setExpanded((e) => !e);
+  }
+
   return (
     <div
-      className={`rounded-2xl border border-[#3a3a2a] bg-[#242419] overflow-hidden card-hover animate-fade-in-up ${deleting ? 'animate-collapse' : ''}`}
+      className={`group relative rounded-2xl border border-[#3a3a2a] bg-[#242419] overflow-hidden card-hover animate-fade-in-up ${deleting ? 'animate-collapse' : ''}`}
       style={{ animationDelay: `${animationDelay}ms` }}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerLeave={handlePointerLeave}
+      onContextMenu={(e) => e.preventDefault()}
     >
       <button
         className="w-full flex items-center justify-between p-4 text-left active:bg-[#2e2e22]"
-        onClick={() => setExpanded((e) => !e)}
+        onClick={handleExpandClick}
         aria-expanded={expanded}
       >
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-[#f0ede4] truncate">{meal.rawInput}</p>
           <p className="text-xs text-[#5a5a44] mt-0.5">{formatTime(new Date(meal.timestamp))}</p>
         </div>
-        <div className="flex items-center gap-3 ml-3 shrink-0">
+        <div className="flex items-center gap-2 ml-3 shrink-0">
           <span className="text-sm font-semibold text-[#d4a24c]">{meal.totalMacros.calories} kcal</span>
+
+          {/* Edit/Delete — fade in on desktop hover OR after mobile long-press */}
+          <div
+            className={`flex items-center gap-0.5 transition-opacity duration-150 opacity-0 group-hover:opacity-100 ${showActions ? '!opacity-100' : ''}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setEditOpen(true)}
+              className="p-1.5 rounded-lg text-[#9a9680] hover:text-[#f0ede4] hover:bg-[#3a3a2a]"
+              aria-label="Edit meal"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="p-1.5 rounded-lg text-[#9a9680] hover:text-[#c17a5a] hover:bg-[#3a3a2a]"
+              aria-label="Delete meal"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           {expanded ? <ChevronUp className="w-4 h-4 text-[#9a9680]" /> : <ChevronDown className="w-4 h-4 text-[#9a9680]" />}
         </div>
       </button>
@@ -79,18 +132,10 @@ export function MealCard({ meal, animationDelay = 0 }: MealCardProps) {
           {meal.notes && (
             <p className="text-xs text-[#9a9680] italic">{meal.notes}</p>
           )}
-
-          {/* Delete */}
-          <button
-            onClick={handleDelete}
-            disabled={deleting}
-            className="flex items-center gap-1.5 text-xs text-[#c17a5a] hover:text-[#e09070] disabled:opacity-50"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-            Delete meal
-          </button>
         </div>
       )}
+
+      <EditMealDialog meal={meal} open={editOpen} onClose={() => setEditOpen(false)} t={t} />
     </div>
   );
 }
