@@ -44,7 +44,7 @@ function HistoryMealRow({ meal, t }: { meal: MealEntry; t: Translations }) {
         <p className="text-[#c8c4b0] truncate flex-1">{meal.rawInput}</p>
         <div className="flex items-center gap-1 ml-3 shrink-0">
           <div
-            className={`flex items-center gap-0.5 transition-opacity duration-150 opacity-0 group-hover:opacity-100 ${showActions ? '!opacity-100' : ''}`}
+            className={`flex items-center gap-0.5 transition-opacity duration-150 opacity-0 group-hover:opacity-100 ${showActions ? '!opacity-100 pointer-events-auto' : 'pointer-events-none'}`}
           >
             <button
               onClick={() => setEditOpen(true)}
