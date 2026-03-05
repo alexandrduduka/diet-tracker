@@ -140,13 +140,20 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 - Error types thrown: `'NO_API_KEY'` | `'RATE_LIMIT'` | `'INVALID_API_KEY'` | `'PARSE_ERROR'` | `'API_ERROR: ...'`
 - `maxOutputTokens` must stay ≥ 4096 — gemini-2.5-flash uses thinking tokens internally; lower values cause truncated JSON → PARSE_ERROR (confirmed: 2048 caused truncation even on simple queries like "banana")
 - On PARSE_ERROR, `parseMealDescription` automatically retries once with a corrective prompt appended asking the model to complete the truncated JSON
+- `classifyIntent(userInput, lang)` — lightweight JSON call (`maxOutputTokens: 64`) that returns `'log' | 'question'`. Used by Chat page before routing to meal-parsing or Q&A.
+- `askNutritionQuestion(question, lang, context)` — plain-text response (no `responseMimeType`) with a coaching system prompt. Uses `NutritionContext` which extends `MealContext` with `recentDays` (last 7 days totals) and `latestWeight`.
+- `NutritionContext` extends `MealContext` with `recentDays?: Array<{dayKey, calories, protein, fat, carbs}>` and `latestWeight?: number`.
 
 ## Chat Page — Key Behaviours
 
 - **No API key**: shows inline setup wizard card instead of error. Card opens `aistudio.google.com/app/apikey`, accepts key inline, and retries the original message automatically.
 - **After save**: if `parsed.message` is present, appends a `'coach'` bubble and keeps the input open (no navigation). If no message, navigates to `/`.
-- **ChatMessage roles**: `'assistant' | 'user' | 'result' | 'error' | 'setup' | 'coach'`
-- `'assistant'` and `'coach'` render identically (green avatar bubble).
+- **ChatMessage roles**: `'assistant' | 'user' | 'result' | 'error' | 'setup' | 'coach' | 'answer'`
+- `'assistant'` and `'coach'` render identically (green avatar bubble, `bg-[#2e2e22]`).
+- `'answer'` renders with a distinct background (`bg-[#242419]` + border) and `whitespace-pre-wrap` for multi-line coaching answers.
+- **Intent classification**: on each text-only send, `classifyIntent()` (64 token JSON call) determines `'log'` vs `'question'`. Photos always route to `'log'`. Failure falls back to `'log'`.
+- **Q&A mode**: when intent is `'question'`, `askNutritionQuestion()` is called with full `NutritionContext` (today goals/consumed + last 7 days totals + latest weight). Response renders as `'answer'` bubble.
+- **Chat history persistence**: messages persist to `localStorage` key `dtk_chat_history` on every change. Restored on load. Max 100 messages; `'setup'` messages are never persisted. Trash icon in header opens a clear-history confirmation dialog.
 - **Mic button**: uses Web Speech API (`window.SpeechRecognition || window.webkitSpeechRecognition`). Hidden when not supported. Recognition language matches the app language. Transcript is appended to the text input. Tap again or it ends automatically to stop listening.
 - **Camera / photo button**: `<input type="file" accept="image/*" capture="environment">` — opens camera on mobile, file picker on desktop. Image is read as DataURL, split into base64 + mimeType, stored in `attachedImage` state, and sent to Gemini as `ImageAttachment`. Thumbnail preview shown above input bar with a remove button. Can be sent with or without accompanying text.
 

@@ -86,20 +86,20 @@ The main screen shows your nutrition progress for today.
 
 ---
 
-### Chat (Log Meal)
+### Chat (Nutrition Assistant)
 
-The meal logging screen. Describe what you ate by typing, speaking, or taking a photo — the AI returns a structured breakdown plus personalised coaching feedback.
+The intelligent chat screen. You can both **log meals** and **ask nutrition questions** — the app automatically detects which one you mean and responds accordingly. Your full conversation history is preserved across sessions.
 
 **Input methods:**
 
 | Method | How to use |
 |---|---|
-| **Type** | Type your meal description in the text box and tap Send |
-| **Voice** | Tap the mic icon, speak your meal, tap again to stop — the transcript fills the text box |
-| **Photo** | Tap the camera icon to take a photo or choose from your library — the image is sent to Gemini for food recognition |
+| **Type** | Type your meal description or question in the text box and tap Send |
+| **Voice** | Tap the mic icon, speak, tap again to stop — the transcript fills the text box |
+| **Photo** | Tap the camera icon to take a photo or choose from your library — always treated as meal logging |
 | **Photo + text** | Attach a photo and add a text description for best accuracy |
 
-**How to describe meals:**
+**Logging meals:**
 
 | Input | What happens |
 |---|---|
@@ -109,13 +109,25 @@ The meal logging screen. Describe what you ate by typing, speaking, or taking a 
 | `"homemade stew"` | Low confidence — estimated from generic recipe |
 | `"30g ham, 60g oatmeal"` | Two items parsed as separate entries in one meal |
 
-After the AI responds, you see:
-- Each food item with name, quantity, and macros
-- Total calories and macros for the meal
-- Confidence level and any notes/assumptions
-- **Save** and **Discard** buttons
+After the AI responds you see each food item with macros, a total, and Save / Discard buttons. Tapping **Save** adds the meal to today's log and shows a coaching message about your remaining budget.
 
-Tapping **Save** adds the meal to today's log. A coaching message then appears showing how this meal fits your remaining daily budget — the input bar stays open so you can log another meal straight away without navigating back to the Dashboard.
+**Asking questions:**
+
+The AI recognises when you're asking a question rather than logging a meal. Example questions:
+
+- *"How am I doing today?"* — shows today's progress vs. goals
+- *"Summarise what I ate this week"* — uses your last 7 days of logs
+- *"Why am I losing weight so slowly?"* — coaching advice based on your data
+- *"Is my protein high enough?"* — analyses your current intake vs. goal
+- *"When should I expect to see results?"* — evidence-based timeline
+
+Answers appear as a distinct bubble (slightly darker background) and stay in the conversation history.
+
+**Chat history:**
+
+- Conversation is saved automatically and restored when you re-open the chat
+- Tap the trash icon in the header to clear the history (confirmation required)
+- Up to 100 messages are retained
 
 **Coaching** — the AI knows your daily goals and what you've already eaten today. After each meal it tells you how many calories remain, whether you're on track for protein, and gives encouragement or a gentle warning if you're approaching a limit.
 

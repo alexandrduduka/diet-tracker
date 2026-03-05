@@ -216,6 +216,34 @@ This corrects common LLM rounding errors where the stated calorie count doesn't 
 
 Rate limit detection checks both `err.status` (numeric) and `err.message` text for `'resource_exhausted'` and `'quota exceeded'` — the Gemini SDK embeds HTTP status in the message string rather than always exposing it as a numeric property.
 
+### Intent classification — `classifyIntent(userInput, lang)`
+
+Before routing a text message to `parseMealDescription`, the Chat page calls `classifyIntent`. This is a lightweight Gemini call:
+- Model: `gemini-2.5-flash`, `maxOutputTokens: 64`, `temperature: 0.1`, `responseMimeType: 'application/json'`
+- Returns `{ intent: "log" | "question" }` JSON
+- Lean-question bias: defaults to `'question'` when unsure
+- On any error, returns `'log'` as a safe fallback
+- Photos always bypass classification and go directly to meal-logging
+
+### Open-ended Q&A — `askNutritionQuestion(question, lang, context)`
+
+When intent is `'question'`, this function is called:
+- Model: `gemini-2.5-flash`, `temperature: 0.5`, `maxOutputTokens: 1024`, plain-text response (no `responseMimeType`)
+- System prompt is a coaching persona with full `NutritionContext`:
+  - Today's goals and consumed/remaining macros
+  - Recent 7 days of daily totals (only days that have logged data)
+  - Latest logged body weight (from the most recent `measurements` record in the last 30 days)
+- Responds in the app language, concise (3–6 sentences), uses specific numbers from context
+
+### `NutritionContext` interface
+
+```typescript
+interface NutritionContext extends MealContext {
+  recentDays?: Array<{ dayKey: string; calories: number; protein: number; fat: number; carbs: number }>;
+  latestWeight?: number; // kg
+}
+```
+
 ### API key setup wizard
 
 When `NO_API_KEY` is thrown, instead of a generic error the Chat page appends a `{ role: 'setup', retryText }` message. This renders as an assistant-style card with:

@@ -9,6 +9,13 @@ export interface MealContext {
   consumed: { calories: number; protein: number; fat: number; carbs: number };
 }
 
+export interface NutritionContext extends MealContext {
+  /** Recent daily totals (last 7 days), newest first */
+  recentDays?: Array<{ dayKey: string; calories: number; protein: number; fat: number; carbs: number }>;
+  /** Latest body measurement, if any */
+  latestWeight?: number; // kg
+}
+
 function buildSystemPrompt(lang: AppLanguage, context?: MealContext): string {
   const langInstruction = getGeminiLanguageInstruction(lang);
 
@@ -182,5 +189,133 @@ export async function parseMealDescription(userInput: string, lang: AppLanguage 
       console.error('[Gemini] PARSE_ERROR after retry. Original raw:', rawText);
       throw new Error('PARSE_ERROR');
     }
+  }
+}
+
+// ─── Intent classification ────────────────────────────────────────────────────
+
+/**
+ * Quickly classifies whether a user message is a meal-logging intent or a
+ * general nutrition/coaching question.  Returns 'log' | 'question'.
+ *
+ * Uses a lightweight JSON prompt so the main model call can be skipped when
+ * the user is clearly asking a question.
+ */
+export async function classifyIntent(
+  userInput: string,
+  lang: AppLanguage = 'en',
+): Promise<'log' | 'question'> {
+  const key = getApiKey();
+  if (!key) throw new Error('NO_API_KEY');
+
+  const client = new GoogleGenerativeAI(key);
+  const model = client.getGenerativeModel({
+    model: 'gemini-2.5-flash',
+    generationConfig: {
+      responseMimeType: 'application/json',
+      temperature: 0.1,
+      maxOutputTokens: 64,
+    },
+    systemInstruction: `Classify the user message as either a meal-logging request or a nutrition/health question.
+Return ONLY a JSON object: {"intent": "log"} or {"intent": "question"}.
+- "log": user is describing food they ate or want to log (e.g. "I had a banana and coffee", "150g chicken breast", "🍕")
+- "question": user is asking a question or requesting analysis/advice (e.g. "how am I doing today?", "why am I losing weight slowly?", "summarise what I ate", "is my protein high enough?")
+Lean towards "question" when the message is a question or does not contain food items.${getGeminiLanguageInstruction(lang)}`,
+  });
+
+  try {
+    const result = await model.generateContent(userInput);
+    const raw = result.response.text().trim();
+    const cleaned = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
+    const parsed = JSON.parse(cleaned);
+    return parsed.intent === 'log' ? 'log' : 'question';
+  } catch {
+    // On any failure, default to 'log' so the normal meal-parsing path handles it
+    return 'log';
+  }
+}
+
+// ─── Open-ended nutrition Q&A ────────────────────────────────────────────────
+
+function buildQASystemPrompt(lang: AppLanguage, context: NutritionContext): string {
+  const langNames: Record<AppLanguage, string> = {
+    en: 'English', ru: 'Russian', cs: 'Czech', de: 'German', fr: 'French', es: 'Spanish', uk: 'Ukrainian',
+  };
+  const langName = langNames[lang] ?? 'English';
+  const langInstruction = getGeminiLanguageInstruction(lang);
+
+  const remaining = {
+    calories: Math.max(0, context.goals.calories - context.consumed.calories),
+    protein: Math.max(0, context.goals.protein - context.consumed.protein),
+    fat: Math.max(0, context.goals.fat - context.consumed.fat),
+    carbs: Math.max(0, context.goals.carbs - context.consumed.carbs),
+  };
+
+  let recentBlock = '';
+  if (context.recentDays && context.recentDays.length > 0) {
+    const rows = context.recentDays
+      .map((d) => `  ${d.dayKey}: ${d.calories} kcal | P:${d.protein}g C:${d.carbs}g F:${d.fat}g`)
+      .join('\n');
+    recentBlock = `\n\nRecent daily totals (newest first):\n${rows}`;
+  }
+
+  let weightBlock = '';
+  if (context.latestWeight) {
+    weightBlock = `\n\nLatest logged body weight: ${context.latestWeight} kg`;
+  }
+
+  return `You are a friendly, knowledgeable nutrition coach. Answer the user's questions about nutrition, diet, and health progress in ${langName}.
+
+User's current daily context:
+- Daily goal: ${context.goals.calories} kcal | P:${context.goals.protein}g C:${context.goals.carbs}g F:${context.goals.fat}g
+- Consumed today: ${context.consumed.calories} kcal | P:${context.consumed.protein}g C:${context.consumed.carbs}g F:${context.consumed.fat}g
+- Remaining today: ${remaining.calories} kcal | P:${remaining.protein}g C:${remaining.carbs}g F:${remaining.fat}g${recentBlock}${weightBlock}
+
+Guidelines:
+- Be concise but thorough (3–6 sentences usually ideal, more when summarising).
+- Use specific numbers from the context when relevant.
+- Be encouraging and positive, but honest — if something is off-track, say so gently.
+- Respond in plain text (no markdown). Speak directly to the user as "you".
+- Answer in ${langName}.${langInstruction}`;
+}
+
+/**
+ * Ask the nutrition coach a free-form question.
+ * Returns a plain-text answer (not JSON).
+ */
+export async function askNutritionQuestion(
+  question: string,
+  lang: AppLanguage = 'en',
+  context: NutritionContext,
+): Promise<string> {
+  const key = getApiKey();
+  if (!key) throw new Error('NO_API_KEY');
+
+  const client = new GoogleGenerativeAI(key);
+  const model = client.getGenerativeModel({
+    model: 'gemini-2.5-flash',
+    generationConfig: {
+      temperature: 0.5,
+      maxOutputTokens: 1024,
+    },
+    systemInstruction: buildQASystemPrompt(lang, context),
+  });
+
+  try {
+    const result = await model.generateContent(question);
+    return result.response.text().trim();
+  } catch (err: any) {
+    const status = err?.status ?? err?.statusCode ?? err?.httpErrorCode;
+    const msg = (err?.message ?? '').toLowerCase();
+    if (status === 429 || msg.includes('resource_exhausted') || (msg.includes('quota') && msg.includes('exceeded'))) {
+      throw new Error('RATE_LIMIT');
+    }
+    if (status === 400 && (msg.includes('api key') || msg.includes('api_key') || msg.includes('invalid key') || msg.includes('invalid argument'))) {
+      throw new Error('INVALID_API_KEY');
+    }
+    if (status === 403 || msg.includes('api_key_invalid') || msg.includes('permission_denied')) {
+      throw new Error('INVALID_API_KEY');
+    }
+    throw new Error(`API_ERROR: ${err?.message ?? 'Unknown error'}`);
   }
 }

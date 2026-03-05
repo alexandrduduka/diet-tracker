@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X, Pencil } from 'lucide-react';
-import { parseMealDescription, type ParsedMeal, type MealContext, type ImageAttachment } from '../lib/gemini';
+import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X, Pencil, Trash2 } from 'lucide-react';
+import { parseMealDescription, classifyIntent, askNutritionQuestion, type ParsedMeal, type MealContext, type NutritionContext, type ImageAttachment } from '../lib/gemini';
 import { sumMacros, recalculateCalories } from '../lib/nutrition';
 import type { FoodItem } from '../types';
 import { db } from '../db';
-import { getTodayKey } from '../lib/date';
+import { getTodayKey, getLastNDayKeys } from '../lib/date';
 import { useOnlineStatus } from '../components/OfflineBanner';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
@@ -12,6 +12,10 @@ import { Input } from '../components/ui/input';
 import { useLang } from '../store/langContext';
 import { saveSettings, getGoals } from '../store/settings';
 import { useTodayMeals } from '../hooks/useTodayMeals';
+import { useLiveQuery } from 'dexie-react-hooks';
+
+const CHAT_HISTORY_KEY = 'dtk_chat_history';
+const MAX_PERSISTED_MESSAGES = 100;
 
 type ChatMessage =
   | { role: 'assistant'; text: string }
@@ -19,7 +23,8 @@ type ChatMessage =
   | { role: 'result'; parsed: ParsedMeal }
   | { role: 'error'; text: string }
   | { role: 'setup'; retryText: string }
-  | { role: 'coach'; text: string };
+  | { role: 'coach'; text: string }
+  | { role: 'answer'; text: string };
 
 // Extend browser types for SpeechRecognition (not in all TS libs)
 declare global {
@@ -29,12 +34,51 @@ declare global {
   }
 }
 
+function loadPersistedMessages(): ChatMessage[] {
+  try {
+    const raw = localStorage.getItem(CHAT_HISTORY_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as ChatMessage[];
+    // Filter out transient states that don't make sense when reloaded
+    return parsed.filter((m) => m.role !== 'setup');
+  } catch {
+    return [];
+  }
+}
+
+function persistMessages(messages: ChatMessage[]) {
+  try {
+    // Keep only the most recent messages to avoid unbounded growth
+    const toSave = messages.slice(-MAX_PERSISTED_MESSAGES);
+    // Don't persist 'setup' messages
+    const filtered = toSave.filter((m) => m.role !== 'setup');
+    localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(filtered));
+  } catch {
+    // Ignore storage quota errors
+  }
+}
+
 export function Chat() {
   const { t, lang } = useLang();
   const todayMeals = useTodayMeals();
-  const [messages, setMessages] = useState<ChatMessage[]>(() => [
-    { role: 'assistant', text: t.chatWelcome },
-  ]);
+
+  // Recent 7 days of nutrition data for coaching context
+  const last7DayKeys = getLastNDayKeys(7);
+  const recentMeals = useLiveQuery(
+    () => db.meals.where('dayKey').anyOf(last7DayKeys).toArray(),
+    []
+  );
+  // Latest weight measurement
+  const latestWeightRecord = useLiveQuery(
+    () => db.measurements.where('dayKey').anyOf(getLastNDayKeys(30)).reverse().first(),
+    []
+  );
+
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    const persisted = loadPersistedMessages();
+    if (persisted.length > 0) return persisted;
+    return [{ role: 'assistant', text: t.chatWelcome }];
+  });
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [pendingMeal, setPendingMeal] = useState<ParsedMeal | null>(null);
@@ -44,6 +88,7 @@ export function Chat() {
   const [manualFields, setManualFields] = useState({ name: '', calories: '', protein: '', fat: '', carbs: '' });
   const [setupKey, setSetupKey] = useState('');
   const [showSetupKey, setShowSetupKey] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   // Mic state
   const [isListening, setIsListening] = useState(false);
@@ -59,7 +104,17 @@ export function Chat() {
   const navigate = useNavigate();
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Update welcome message when language changes
+  // Persist messages on change (but not on initial load)
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    persistMessages(messages);
+  }, [messages]);
+
+  // Update welcome message when language changes — only if the chat is a fresh default state
   useEffect(() => {
     setMessages((m) => {
       if (m.length === 1 && m[0].role === 'assistant') {
@@ -81,6 +136,49 @@ export function Chat() {
       }
     };
   }, []);
+
+  function buildNutritionContext(): NutritionContext {
+    const goals = getGoals();
+    const consumed = todayMeals
+      ? todayMeals.reduce(
+          (acc, m) => ({
+            calories: acc.calories + m.totalMacros.calories,
+            protein: acc.protein + m.totalMacros.protein,
+            fat: acc.fat + m.totalMacros.fat,
+            carbs: acc.carbs + m.totalMacros.carbs,
+          }),
+          { calories: 0, protein: 0, fat: 0, carbs: 0 }
+        )
+      : { calories: 0, protein: 0, fat: 0, carbs: 0 };
+
+    // Aggregate last 7 days totals
+    const recentDays: NutritionContext['recentDays'] = [];
+    if (recentMeals) {
+      const byDay: Record<string, { calories: number; protein: number; fat: number; carbs: number }> = {};
+      for (const key of last7DayKeys) {
+        byDay[key] = { calories: 0, protein: 0, fat: 0, carbs: 0 };
+      }
+      for (const meal of recentMeals) {
+        const b = byDay[meal.dayKey];
+        if (b) {
+          b.calories += meal.totalMacros.calories;
+          b.protein += meal.totalMacros.protein;
+          b.fat += meal.totalMacros.fat;
+          b.carbs += meal.totalMacros.carbs;
+        }
+      }
+      for (const key of last7DayKeys) {
+        const d = byDay[key];
+        if (d.calories > 0) {
+          recentDays.push({ dayKey: key, ...d });
+        }
+      }
+    }
+
+    const latestWeight = latestWeightRecord?.weight ?? undefined;
+
+    return { goals, consumed, recentDays, latestWeight };
+  }
 
   function toggleMic() {
     if (!speechSupported) {
@@ -132,22 +230,29 @@ export function Chat() {
     const reader = new FileReader();
     reader.onload = (ev) => {
       const dataUrl = ev.target?.result as string;
-      // dataUrl = "data:<mimeType>;base64,<data>"
       const commaIdx = dataUrl.indexOf(',');
-      const meta = dataUrl.slice(0, commaIdx); // "data:image/jpeg;base64"
+      const meta = dataUrl.slice(0, commaIdx);
       const base64 = dataUrl.slice(commaIdx + 1);
       const mimeType = meta.split(':')[1].split(';')[0];
       setAttachedImage({ base64, mimeType });
       setImagePreview(dataUrl);
     };
     reader.readAsDataURL(file);
-    // Reset input so same file can be re-selected
     e.target.value = '';
   }
 
   function removePhoto() {
     setAttachedImage(null);
     setImagePreview(null);
+  }
+
+  function clearHistory() {
+    localStorage.removeItem(CHAT_HISTORY_KEY);
+    setPendingMeal(null);
+    setEditingResult(false);
+    setShowManual(false);
+    setShowClearConfirm(false);
+    setMessages([{ role: 'assistant', text: t.chatWelcome }]);
   }
 
   async function handleSend() {
@@ -162,22 +267,27 @@ export function Chat() {
     setLoading(true);
 
     try {
-      const goals = getGoals();
-      const consumed = todayMeals
-        ? todayMeals.reduce(
-            (acc, m) => ({
-              calories: acc.calories + m.totalMacros.calories,
-              protein: acc.protein + m.totalMacros.protein,
-              fat: acc.fat + m.totalMacros.fat,
-              carbs: acc.carbs + m.totalMacros.carbs,
-            }),
-            { calories: 0, protein: 0, fat: 0, carbs: 0 }
-          )
-        : { calories: 0, protein: 0, fat: 0, carbs: 0 };
-      const context: MealContext = { goals, consumed };
-      const parsed = await parseMealDescription(userText, lang, context, imageSnapshot ?? undefined);
-      setPendingMeal(parsed);
-      setMessages((m) => [...m, { role: 'result', parsed }]);
+      const nutritionCtx = buildNutritionContext();
+      const mealCtx: MealContext = { goals: nutritionCtx.goals, consumed: nutritionCtx.consumed };
+
+      // With a photo, always treat as meal log. Otherwise, classify intent.
+      let intent: 'log' | 'question' = 'log';
+      if (!imageSnapshot && userText) {
+        try {
+          intent = await classifyIntent(userText, lang);
+        } catch {
+          intent = 'log';
+        }
+      }
+
+      if (intent === 'question') {
+        const answer = await askNutritionQuestion(userText, lang, nutritionCtx);
+        setMessages((m) => [...m, { role: 'answer', text: answer }]);
+      } else {
+        const parsed = await parseMealDescription(userText, lang, mealCtx, imageSnapshot ?? undefined);
+        setPendingMeal(parsed);
+        setMessages((m) => [...m, { role: 'result', parsed }]);
+      }
     } catch (err: any) {
       let errMsg = `Something went wrong: ${err?.message ?? 'unknown'}. You can log manually below.`;
       const msg: string = err?.message ?? '';
@@ -225,7 +335,6 @@ export function Chat() {
     if (!trimmed) return;
     saveSettings({ geminiApiKey: trimmed });
     window.dispatchEvent(new Event('dtk:settings-changed'));
-    // Remove the setup card and re-send the original message
     setMessages((m) => m.filter((msg) => msg.role !== 'setup'));
     setSetupKey('');
     setInput('');
@@ -279,8 +388,35 @@ export function Chat() {
         <button onClick={() => navigate('/')} className="text-[#9a9680] hover:text-[#f0ede4] p-1">
           ←
         </button>
-        <h1 className="text-lg font-semibold text-[#f0ede4]">{t.logMeal}</h1>
+        <h1 className="text-lg font-semibold text-[#f0ede4] flex-1">{t.chatTitle}</h1>
+        {/* Clear history button */}
+        {messages.length > 1 && (
+          <button
+            onClick={() => setShowClearConfirm(true)}
+            title={t.chatClearHistory}
+            className="text-[#9a9680] hover:text-[#f0ede4] p-1"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        )}
       </div>
+
+      {/* Clear history confirmation dialog */}
+      {showClearConfirm && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-6">
+          <div className="bg-[#2e2e22] border border-[#3a3a2a] rounded-2xl p-5 w-full max-w-sm space-y-4">
+            <p className="text-[#f0ede4] font-medium">{t.chatClearHistoryConfirm}</p>
+            <div className="flex gap-3">
+              <Button size="sm" variant="outline" onClick={() => setShowClearConfirm(false)} className="flex-1">
+                {t.cancel}
+              </Button>
+              <Button size="sm" onClick={clearHistory} className="flex-1 bg-[#c17a5a] hover:bg-[#d4895e] border-[#c17a5a]">
+                {t.delete}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 no-scrollbar">
@@ -290,6 +426,14 @@ export function Chat() {
               <div key={i} className="flex gap-2">
                 <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
                 <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm text-[#c8c4b0]">{msg.text}</div>
+              </div>
+            );
+          }
+          if (msg.role === 'answer') {
+            return (
+              <div key={i} className="flex gap-2">
+                <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
+                <div className="bg-[#242419] border border-[#3a3a2a] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm text-[#c8c4b0] whitespace-pre-wrap">{msg.text}</div>
               </div>
             );
           }
@@ -465,7 +609,7 @@ export function Chat() {
                         <Button size="sm" onClick={() => { const mealToSave = editingResult ? { ...msg.parsed, foods: editedFoods } : msg.parsed; setEditingResult(false); saveMeal(mealToSave); }} className="flex-1 gap-1.5">
                           <CheckCircle className="w-4 h-4" /> {t.saveBtn}
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => { setPendingMeal(null); setEditingResult(false); setMessages([{ role: 'assistant', text: t.chatWelcome }]); }} className="flex-1 gap-1.5">
+                        <Button size="sm" variant="outline" onClick={() => { setPendingMeal(null); setEditingResult(false); }} className="flex-1 gap-1.5">
                           <XCircle className="w-4 h-4" /> {t.discard}
                         </Button>
                       </div>
@@ -561,7 +705,7 @@ export function Chat() {
                 {/* Text input */}
                 <input
                   className="flex-1 bg-[#2e2e22] border border-[#3a3a2a] rounded-xl px-4 py-3 text-sm text-[#f0ede4] placeholder:text-[#5a5a44] focus:outline-none focus:ring-2 focus:ring-[#7cb87a]/60"
-                  placeholder={t.describeWhatYouAte}
+                  placeholder={t.chatInputPlaceholder}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
