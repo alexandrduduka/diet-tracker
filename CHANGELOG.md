@@ -26,7 +26,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **"Uff, what is an API key?" explainer modal**: a help icon + link next to the API key field in Settings and in the Chat setup card opens a friendly bottom-sheet explaining what an API key is, 3 numbered steps, and a direct link to Google AI Studio. Available in all 7 languages.
 - **Edit and delete meal actions**: pencil + trash icons on hover (desktop) and after 300ms long-press (mobile). Available on Dashboard meal cards and History rows.
 - **Edit Meal dialog**: inline description/notes editing that saves to IndexedDB without re-parsing.
-- Articles section (`/articles`) with 3 evidence-based nutrition guides.
+- **Articles fully internationalised**: all 4 articles are now available in all 7 app languages (en, ru, uk, cs, de, fr, es). Titles, excerpts, tags, and full content are translated. Language switches instantly without page reload.
+- **New article** "Sport & Active Lifestyle: What Exercise Actually Does" — covers why exercise doesn't replace diet but matters for hormonal balance, muscle mass (permanent BMR boost), sleep, and mental health; 7–10k daily steps; bodyweight training for beginners.
+- Two new article section types: `stat-row` (3-column key-figure grid with amber values) and `visual-bar` (horizontal bar comparison chart with colour-coded bars). Reworked all 3 existing articles to be shorter and more direct.
+- Articles section (`/articles`) with evidence-based nutrition guides.
 - SEO meta tags, JSON-LD structured data, `robots.txt`, `sitemap.xml`.
 - Accessibility improvements on MacroRing, MacroBar, MealCard, BottomNav, FAB.
 

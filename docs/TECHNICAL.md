@@ -391,3 +391,42 @@ Current coverage (64 tests):
 - `src/lib/nutrition.test.ts` — 20 tests covering all nutrition math functions
 - `src/lib/date.test.ts` — 18 tests for day key generation and formatting (pinned to 2026-03-04 via `vi.useFakeTimers`)
 - `src/lib/goalCalculator.test.ts` — 26 tests for BMR, TDEE, calorie target, macro goals, slider bounds
+- `src/lib/goalCalculator.test.ts` — BMR/TDEE/macro calculation
+
+## Articles System
+
+Static educational content lives in `src/lib/articles.ts`. Articles are **not fetched from a server** — they are compiled into the JS bundle.
+
+### Data model
+
+```typescript
+Article {
+  slug: string;
+  readTimeMinutes: number;
+  emoji: string;
+  translations: Partial<Record<AppLanguage, ArticleTranslation>>;
+}
+
+ArticleTranslation {
+  title: string;
+  excerpt: string;
+  tags: string[];
+  content: ArticleSection[];
+}
+```
+
+`ArticleSection` union covers: `h2`, `p`, `ul`, `formula`, `table`, `callout`, `stat-row`, `visual-bar`.
+
+### Helpers
+
+- `getLocalizedArticle(slug, lang)` — returns a flat `LocalizedArticle` (falls back to `'en'`)
+- `getLocalizedArticles(lang)` — returns all articles localised for `lang`
+
+### Current articles (4)
+
+| Slug | Languages |
+|---|---|
+| `how-to-calculate-daily-calories` | en, ru, uk, cs, de, fr, es |
+| `understanding-macros` | en, ru, uk, cs, de, fr, es |
+| `evidence-based-diet-strategies` | en, ru, uk, cs, de, fr, es |
+| `sport-and-active-lifestyle` | en, ru, uk, cs, de, fr, es |

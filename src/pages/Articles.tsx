@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
-import { ARTICLES } from '../lib/articles';
+import { getLocalizedArticles } from '../lib/articles';
 import { useLang } from '../store/langContext';
 
 export function Articles() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const articles = getLocalizedArticles(lang);
 
   return (
     <div className="flex flex-col min-h-full pb-24">
@@ -15,7 +16,7 @@ export function Articles() {
 
       {/* Article cards */}
       <div className="px-4 space-y-4">
-        {ARTICLES.map((article, i) => (
+        {articles.map((article, i) => (
           <Link
             key={article.slug}
             to={`/articles/${article.slug}`}

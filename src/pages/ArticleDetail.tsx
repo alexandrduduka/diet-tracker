@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getArticleBySlug, type ArticleSection } from '../lib/articles';
+import { getLocalizedArticle, type ArticleSection } from '../lib/articles';
 import { useLang } from '../store/langContext';
 
 function renderSection(section: ArticleSection, i: number) {
@@ -32,7 +32,7 @@ function renderSection(section: ArticleSection, i: number) {
       return (
         <div key={i} className="rounded-xl bg-[#2e2e22] border border-[#3a3a2a] p-4 space-y-1.5">
           <p className="text-xs font-semibold text-[#9a9680] uppercase tracking-wide">{section.label}</p>
-          <p className="text-sm font-mono text-[#d4a24c] leading-relaxed">{section.formula}</p>
+          <p className="text-sm font-mono text-[#d4a24c] leading-relaxed whitespace-pre">{section.formula}</p>
           {section.note && (
             <p className="text-xs text-[#9a9680] italic">{section.note}</p>
           )}
@@ -74,13 +74,46 @@ function renderSection(section: ArticleSection, i: number) {
           <p className="text-sm text-[#c8c4b0] leading-relaxed">{section.text}</p>
         </div>
       );
+    case 'stat-row':
+      return (
+        <div key={i} className="grid grid-cols-3 gap-2 rounded-xl bg-[#2e2e22] border border-[#3a3a2a] p-3">
+          {section.stats.map((stat, j) => (
+            <div key={j} className="text-center px-1">
+              <p className="text-base font-bold text-[#d4a24c] leading-tight">{stat.value}</p>
+              <p className="text-[10px] text-[#9a9680] leading-snug mt-0.5">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      );
+    case 'visual-bar':
+      return (
+        <div key={i} className="rounded-xl bg-[#2e2e22] border border-[#3a3a2a] p-4 space-y-3">
+          {section.bars.map((bar, j) => {
+            const pct = bar.max > 0 ? Math.min(100, (bar.value / bar.max) * 100) : 0;
+            return (
+              <div key={j} className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-[#c8c4b0]">{bar.label}</span>
+                  {bar.suffix && <span className="text-xs font-medium text-[#9a9680]">{bar.suffix}</span>}
+                </div>
+                <div className="h-2 rounded-full bg-[#3a3a2a] overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{ width: `${pct}%`, backgroundColor: bar.color, minWidth: pct > 0 ? '4px' : '0' }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
   }
 }
 
 export function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const { t } = useLang();
-  const article = slug ? getArticleBySlug(slug) : undefined;
+  const { t, lang } = useLang();
+  const article = slug ? getLocalizedArticle(slug, lang) : undefined;
 
   useEffect(() => {
     if (article) {
