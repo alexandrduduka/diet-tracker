@@ -57,12 +57,12 @@ diet-tracker/
     │   ├── settings.ts      ← localStorage wrapper (STORAGE_KEY='dtk_settings')
     │   └── langContext.tsx  ← React context + useLang() hook
     ├── lib/
-    │   ├── gemini.ts        ← Gemini 2.0 Flash client, structured JSON prompt
-    │   ├── nutrition.ts     ← sumMacros, validateAndFixCalories, roundMacros, etc.
+    │   ├── gemini.ts        ← Gemini 2.5 Flash client, structured JSON prompt
+    │   ├── nutrition.ts     ← sumMacros, validateAndFixCalories, roundMacros, fmt, etc.
     │   ├── date.ts          ← getTodayKey, getWeekKeys, getLast12MonthBuckets, etc.
     │   ├── i18n.ts          ← All UI strings in 7 languages + getGeminiLanguageInstruction()
     │   ├── utils.ts         ← cn() (clsx + tailwind-merge)
-    │   ├── nutrition.test.ts ← 20 Vitest tests
+    │   ├── nutrition.test.ts ← 23 Vitest tests (includes fmt)
     │   └── date.test.ts     ← 18 Vitest tests (pinned to 2026-03-04 via vi.useFakeTimers)
     ├── hooks/
     │   ├── useTodayMeals.ts        ← useLiveQuery for today's meals
@@ -156,7 +156,7 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 - **Chat history persistence**: messages persist to `localStorage` key `dtk_chat_history` on every change. Restored on load. Max 100 messages; `'setup'` messages are never persisted. Trash icon in header opens a clear-history confirmation dialog.
 - **Mic button**: uses Web Speech API (`window.SpeechRecognition || window.webkitSpeechRecognition`). Hidden when not supported. Recognition language matches the app language. Transcript is appended to the text input. Tap again or it ends automatically to stop listening.
 - **Camera / photo button**: `<input type="file" accept="image/*" capture="environment">` — opens camera on mobile, file picker on desktop. Image is read as DataURL, split into base64 + mimeType, stored in `attachedImage` state, and sent to Gemini as `ImageAttachment`. Thumbnail preview shown above input bar with a remove button. Can be sent with or without accompanying text.
-- **Suggestion chips**: shown above the input bar when `messages.length === 1 && messages[0].role === 'assistant'` (fresh/cleared chat only). 4 chips sourced from `t.chatSuggestion*` keys. Tapping sets `input` state without auto-sending. Chips disappear naturally once any message is sent.
+- **Suggestion chips**: always visible in the input bar (5 chips sourced from `t.chatSuggestion*` keys). Tapping sets `input` state without auto-sending. Chips persist throughout the conversation.
 - **Body nudge**: Dashboard shows dismissable amber banner (sessionStorage key `dtk_body_nudge_dismissed`) when `useAllMeasurements()[0]` is older than 14 days or measurements array is empty.
 
 ## Internationalization
@@ -196,7 +196,7 @@ Chart styling pattern:
 - `vite-plugin-pwa` with Workbox
 - App shell: cache-first
 - `generativelanguage.googleapis.com`: `NetworkOnly` (Gemini must be online)
-- Icons: `icon.svg` (source SVG, teardrop/flame design), regenerate PNGs with `sharp` if changed
+- Icons: `icon.svg` (source SVG: measuring cup with green liquid + white label sticker + amber wheat ear), regenerate PNGs with `sharp` if changed
 - Manifest: standalone, theme `#7cb87a`, background `#18180f`
 
 ## Regenerating PNG Icons
@@ -229,8 +229,8 @@ Vite splits into 4 chunks for cache efficiency:
 npm test
 ```
 
-64 tests across 3 files:
-- `src/lib/nutrition.test.ts` — 20 tests
+67 tests across 3 files:
+- `src/lib/nutrition.test.ts` — 23 tests (includes `fmt` display helper)
 - `src/lib/date.test.ts` — 18 tests (pinned to 2026-03-04 via `vi.useFakeTimers`)
 - `src/lib/goalCalculator.test.ts` — 26 tests for BMR/TDEE/macro calculation
 
@@ -251,7 +251,7 @@ New test files go alongside source in `src/**/*.test.ts`.
 - Injected via standard Clarity snippet in `index.html` (free heatmaps + session recordings)
 
 ## Persistent Logo
-- A fixed `<header>` rendered in `AppShell` (above `<main>`) shows the icon PNG + "Diet Tracker" wordmark
+- A fixed `<header>` rendered in `AppShell` (above `<main>`) shows the icon PNG + "Eat Me" wordmark
 - `z-50`, `pointer-events-none`, opacity-muted so it never interferes with content
 - Visible on all routes including `/settings` and `/onboarding`
 - Height: 32px (`h-8`); pages with `pt-12` have enough top padding that content never clips behind it

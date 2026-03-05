@@ -2,7 +2,7 @@
 
 ## Overview
 
-Diet Tracker is a personal nutrition tracking app that runs entirely in your browser as a Progressive Web App (PWA). It uses Google's Gemini AI to parse meal descriptions into structured nutrition data — just describe what you ate and the app calculates calories, protein, fat, and carbs automatically.
+Eat Me is a personal nutrition tracking app that runs entirely in your browser as a Progressive Web App (PWA). It uses Google's Gemini AI to parse meal descriptions into structured nutrition data — just describe what you ate and the app calculates calories, protein, fat, and carbs automatically.
 
 There is no sign-up, no cloud sync, and no subscription. Your data stays on your device.
 
@@ -92,7 +92,7 @@ The main screen shows your nutrition progress for today.
 
 The intelligent chat screen. You can both **log meals** and **ask nutrition questions** — the app automatically detects which one you mean and responds accordingly. Your full conversation history is preserved across sessions.
 
-**Suggestion chips** — on a fresh chat (first open or after clearing history), a horizontal row of quick-start prompts appears above the input bar: *"2 eggs and toast 🍳"*, *"How am I doing today? 📊"*, *"Is my protein high enough?"*, and *"Summarise this week"*. Tapping any chip prefills the text input; you can edit before sending. Chips disappear once the conversation starts.
+**Suggestion chips** — a horizontal scrollable row of 5 quick-start prompts is always visible above the input bar: *"2 eggs and toast 🍳"*, *"How am I doing today? 📊"*, *"Is my protein high enough?"*, *"Summarise this week"*, and *"When will I finally lose weight? ⚖️"*. Tapping any chip prefills the text input without auto-sending. Chips stay visible throughout the conversation.
 
 **Input methods:**
 
@@ -234,7 +234,7 @@ The app shell (all HTML/CSS/JS) is cached by the service worker on first load, s
 - All data (meals, measurements) is stored in **IndexedDB** in your browser. It does not leave your device except for Gemini API calls.
 - Gemini API calls send your **meal description text** to Google's API. Review Google's privacy policy at https://ai.google.dev/terms for details.
 - Your **API key** is stored in `localStorage` and is only included in requests to `generativelanguage.googleapis.com`.
-- No cookies, no analytics, no third-party tracking.
+- Anonymous usage analytics are collected via Google Analytics 4 (event names only — no meal content, no PII) and Microsoft Clarity (session heatmaps). Both are anonymised; no personal data is included.
 
 **Clearing data:** Settings → Clear All Data archives IndexedDB records (renames localStorage keys) and returns you to onboarding. Clearing browser site data also removes everything including the API key and any archived backups.
 

@@ -8,6 +8,7 @@ import {
   recalculateCalories,
   validateAndFixCalories,
   roundMacros,
+  fmt,
 } from './nutrition';
 import type { FoodItem } from '../types';
 
@@ -128,5 +129,24 @@ describe('roundMacros', () => {
     expect(result.protein).toBe(10.5);
     expect(result.fat).toBe(5.1);
     expect(result.carbs).toBe(20.8);
+  });
+});
+
+describe('fmt', () => {
+  it('rounds calories (isCalories=true) to nearest integer', () => {
+    expect(fmt(154.7, true)).toBe(155);
+    expect(fmt(100.4, true)).toBe(100);
+    expect(fmt(200, true)).toBe(200);
+  });
+
+  it('rounds macros (isCalories=false) to 1 decimal place', () => {
+    expect(fmt(10.45)).toBe(10.5);
+    expect(fmt(5.123)).toBe(5.1);
+    expect(fmt(20.789)).toBe(20.8);
+    expect(fmt(30)).toBe(30);
+  });
+
+  it('defaults isCalories to false', () => {
+    expect(fmt(12.35)).toBe(12.4);
   });
 });

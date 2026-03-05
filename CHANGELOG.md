@@ -70,6 +70,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 - FAB on Dashboard no longer overflows outside the centered `max-w-md` column on desktop.
 - BottomNav shown on Chat page; content adjusted with `pb-20`.
+- **Accidental deletion on mobile**: edit/delete action buttons were `opacity-0` but still had active pointer events, causing invisible taps on mobile (no hover state) to fire delete immediately. Fixed by adding `pointer-events-none` when hidden and `pointer-events-auto` only after long-press reveals the actions. Applies to both `MealCard` and `HistoryMealRow`.
+
+### Changed (this session)
+- **App icon updated**: the label on the measuring cup now shows a dark amber wheat ear (колосок) on a white paper sticker (`#f5f0e8`), replacing the green leaf motif that was invisible against the green liquid fill. All PNG variants regenerated.
+- **API key modal copy rewrite**: all 7 languages updated with warmer, friendlier language — *"One quick setup step — then it just works"*, *"100% free. No credit card, no account in this app, no catch."*, and an explainer body line *"Seriously, your mom could do it."* CTA changed from "Got it" to *"OK, I'll try it!"*.
+- `fmt()` helper added to `src/lib/nutrition.ts` — centralises display rounding: calories → integer, all other macros → 1 decimal place. Used across `MealCard`, `History`, and `Chat` result cards.
 
 ---
 

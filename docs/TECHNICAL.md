@@ -135,7 +135,7 @@ Reads always merge stored data over defaults, so new fields added to `DEFAULT_SE
 
 ### Model
 
-`gemini-2.5-flash` with `responseMimeType: 'application/json'`, `maxOutputTokens: 2048`.
+`gemini-2.5-flash` with `responseMimeType: 'application/json'`, `maxOutputTokens: 4096`.
 
 - `temperature: 0.1` when no coaching context is provided
 - `temperature: 0.4` when `MealContext` is provided (allows more natural coaching phrasing)
@@ -271,6 +271,7 @@ The same explainer modal is available in `Settings.tsx` via a help icon next to 
 | `recalculateCalories(macros)` | `round(protein*4 + carbs*4 + fat*9)` |
 | `validateAndFixCalories(macros)` | Replace calories if off by >10% |
 | `roundMacros(macros)` | Calories → integer; protein/fat/carbs → 1 decimal place |
+| `fmt(value, isCalories?)` | Display helper — calories → `Math.round`, macros → 1 decimal (`Math.round(v*10)/10`). Used at all display sites; stored values remain full-precision. |
 
 ---
 
@@ -323,7 +324,7 @@ The file also exports `getGeminiLanguageInstruction(lang)` which appends a langu
 | `/articles` | `Articles` |
 | `/articles/:slug` | `ArticleDetail` |
 
-`HIDE_NAV_ROUTES = ['/settings', '/onboarding']`. New users are redirected to `/onboarding` by a guard in `AppShell`; existing users skip it via `migrateSettings()`.
+`HIDE_NAV_ROUTES = ['/onboarding']`. Settings is a main nav tab. New users are redirected to `/onboarding` by a guard in `AppShell`; existing users skip it via `migrateSettings()`.
 
 ---
 
@@ -387,11 +388,10 @@ npm run test:watch # watch mode
 
 Test files live alongside source in `src/**/*.test.ts`.
 
-Current coverage (64 tests):
-- `src/lib/nutrition.test.ts` — 20 tests covering all nutrition math functions
+Current coverage (67 tests):
+- `src/lib/nutrition.test.ts` — 23 tests covering all nutrition math functions including `fmt`
 - `src/lib/date.test.ts` — 18 tests for day key generation and formatting (pinned to 2026-03-04 via `vi.useFakeTimers`)
 - `src/lib/goalCalculator.test.ts` — 26 tests for BMR, TDEE, calorie target, macro goals, slider bounds
-- `src/lib/goalCalculator.test.ts` — BMR/TDEE/macro calculation
 
 ## Articles System
 
