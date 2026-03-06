@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X, Pencil, Trash2, HelpCircle, ChevronDown } from 'lucide-react';
-import { parseMealDescription, classifyIntent, askNutritionQuestion, type ParsedMeal, type MealContext, type NutritionContext, type ImageAttachment } from '../lib/gemini';
-import { trackMealLogStarted, trackMealSaved, trackMealDiscarded, trackMealEdited, trackNutritionQuestion, trackChatCleared, trackApiKeySaved } from '../lib/analytics';
+import { parseMealDescription, classifyIntent, askNutritionQuestion, analyzeBodyPhoto, type ParsedMeal, type MealContext, type NutritionContext, type ImageAttachment, type BodyAnalysisResult } from '../lib/gemini';
+import { trackMealLogStarted, trackMealSaved, trackMealDiscarded, trackMealEdited, trackNutritionQuestion, trackChatCleared, trackApiKeySaved, trackBodyPhotoAnalysed } from '../lib/analytics';
 import { sumMacros, recalculateCalories, fmt } from '../lib/nutrition';
 import type { FoodItem } from '../types';
 import { db } from '../db';
@@ -11,10 +11,10 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useLang } from '../store/langContext';
-import { saveSettings, getGoals } from '../store/settings';
+import { saveSettings, getGoals, getSettings } from '../store/settings';
 import { useTodayMeals } from '../hooks/useTodayMeals';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { TutorialHint } from '../components/TutorialHint';
+import { Hotspot } from '../components/Hotspot';
 
 const CHAT_HISTORY_KEY = 'dtk_chat_history';
 const MAX_PERSISTED_MESSAGES = 100;
@@ -31,7 +31,95 @@ type ChatMessage =
   | { role: 'error'; text: string }
   | { role: 'setup'; retryText: string }
   | { role: 'coach'; text: string }
-  | { role: 'answer'; text: string };
+  | { role: 'answer'; text: string }
+  | { role: 'body-analysis'; result: BodyAnalysisResult; saved?: boolean };
+
+function BodyAnalysisCard({
+  result,
+  saved,
+  isInteractive,
+  onSave,
+  onDiscard,
+}: {
+  result: BodyAnalysisResult;
+  saved?: boolean;
+  isInteractive: boolean;
+  onSave: (weight: number | undefined) => void;
+  onDiscard: () => void;
+}) {
+  const { t } = useLang();
+  const [localSaved, setLocalSaved] = useState(false);
+  const [weightInput, setWeightInput] = useState(() => result.estimatedWeight ?? '');
+  const isSaved = saved || localSaved;
+
+  return (
+    <div className="flex gap-2">
+      <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
+      <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[95%] w-full text-sm space-y-3">
+        <p className="font-semibold text-[#f0ede4]">{t.bodyAnalysisTitle}</p>
+        <div className="space-y-1.5">
+          {result.estimatedWeight && (
+            <div className="flex justify-between">
+              <span className="text-[#9a9680]">{t.weight}</span>
+              <span className="text-[#f0ede4] font-medium">{result.estimatedWeight}</span>
+            </div>
+          )}
+          {result.bodyFatPercentageRange && (
+            <div className="flex justify-between">
+              <span className="text-[#9a9680]">{t.bodyFatLabel}</span>
+              <span className="text-[#f0ede4] font-medium">{result.bodyFatPercentageRange}</span>
+            </div>
+          )}
+          {result.bmiCategory && (
+            <div className="flex justify-between">
+              <span className="text-[#9a9680]">{t.bmiLabel}</span>
+              <span className="text-[#f0ede4] font-medium">{result.bmiCategory}</span>
+            </div>
+          )}
+        </div>
+        {result.notes && (
+          <p className="text-xs text-[#c8c4b0] leading-relaxed">{result.notes}</p>
+        )}
+        <p className="text-[10px] text-[#5a5a44] italic leading-relaxed">{result.disclaimer}</p>
+        {isInteractive && !isSaved && (
+          <div className="space-y-2 pt-1">
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-[#9a9680] shrink-0">{t.weight} (kg)</label>
+              <input
+                type="text"
+                value={weightInput}
+                onChange={(e) => setWeightInput(e.target.value)}
+                className="flex-1 bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-xs text-[#f0ede4] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
+                placeholder="e.g. 75"
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[#7cb87a] text-[#18180f] font-medium text-xs hover:bg-[#8fce8d] active:bg-[#6aa368]"
+                onClick={() => {
+                  const parsedW = parseFloat(weightInput.replace(/[^0-9.]/g, ''));
+                  onSave(isNaN(parsedW) ? undefined : parsedW);
+                  setLocalSaved(true);
+                }}
+              >
+                <CheckCircle className="w-3.5 h-3.5" /> {t.bodyAnalysisLogMeasurements}
+              </button>
+              <button
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-[#3a3a2a] bg-[#2e2e22] text-[#9a9680] font-medium text-xs hover:text-[#f0ede4] hover:border-[#5a5a44]"
+                onClick={onDiscard}
+              >
+                <XCircle className="w-3.5 h-3.5" /> {t.bodyAnalysisDiscard}
+              </button>
+            </div>
+          </div>
+        )}
+        {isSaved && (
+          <p className="text-xs text-[#7cb87a] font-medium">{t.bodyAnalysisSaved}</p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // Extend browser types for SpeechRecognition (not in all TS libs)
 declare global {
@@ -125,6 +213,7 @@ export function Chat() {
   // Photo state
   const [attachedImage, setAttachedImage] = useState<ImageAttachment | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [pendingBodyAnalysis, setPendingBodyAnalysis] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
   const isOnline = useOnlineStatus();
@@ -282,6 +371,7 @@ export function Chat() {
   function removePhoto() {
     setAttachedImage(null);
     setImagePreview(null);
+    setPendingBodyAnalysis(false);
   }
 
   function clearHistory() {
@@ -302,13 +392,25 @@ export function Chat() {
     const userText = input.trim();
     const imageSnapshot = attachedImage;
     const previewSnapshot = imagePreview;
+    const isBodyAnalysis = pendingBodyAnalysis && !!imageSnapshot;
     setInput('');
     setAttachedImage(null);
     setImagePreview(null);
+    setPendingBodyAnalysis(false);
     setMessages((m) => [...m, { role: 'user', text: userText || '📷', image: previewSnapshot ?? undefined }]);
     setLoading(true);
 
     try {
+      // Body photo analysis takes priority over meal logging
+      if (isBodyAnalysis) {
+        trackBodyPhotoAnalysed();
+        const profile = getSettings().onboardingProfile ?? null;
+        const result = await analyzeBodyPhoto(imageSnapshot!, profile, lang);
+        setMessages((m) => [...m, { role: 'body-analysis', result }]);
+        setLoading(false);
+        return;
+      }
+
       const nutritionCtx = buildNutritionContext();
       const mealCtx: MealContext = { goals: nutritionCtx.goals, consumed: nutritionCtx.consumed };
 
@@ -607,6 +709,26 @@ export function Chat() {
         </div>
       );
     }
+    if (msg.role === 'body-analysis') {
+      return (
+        <BodyAnalysisCard
+          key={key}
+          result={msg.result}
+          saved={msg.saved}
+          isInteractive={isInteractive}
+          onSave={async (weight) => {
+            await db.measurements.add({
+              timestamp: new Date(),
+              dayKey: getTodayKey(),
+              weight,
+              notes: `AI body estimate: ${msg.result.notes}`,
+            });
+            setMessages((m) => m.map((mm, mi) => mi === i ? { ...mm, saved: true } as ChatMessage : mm));
+          }}
+          onDiscard={() => setMessages((m) => m.filter((_, mi) => mi !== i))}
+        />
+      );
+    }
     return null;
   }
 
@@ -710,15 +832,6 @@ export function Chat() {
         </div>
       )}
 
-      {/* Tutorial hint */}
-      <TutorialHint
-        storageKey="dtk_hint_chat"
-        title={t.tutorialChatTitle}
-        body={t.tutorialChatBody}
-        dismissLabel={t.tutorialDismiss}
-        emoji="🍽️"
-      />
-
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 no-scrollbar">
 
@@ -799,7 +912,20 @@ export function Chat() {
                     {s}
                   </button>
                 ))}
+                <button
+                  onClick={() => {
+                    setPendingBodyAnalysis(true);
+                    photoInputRef.current?.click();
+                  }}
+                  className="shrink-0 px-3 py-1.5 rounded-full bg-[#2e2e22] border border-[#3a3a2a] text-xs text-[#c8c4b0] hover:border-[#7cb87a] hover:text-[#f0ede4] transition-colors whitespace-nowrap"
+                >
+                  {t.chatSuggestionBodyPhoto}
+                </button>
               </div>
+              {/* Body analysis mode indicator */}
+              {pendingBodyAnalysis && !imagePreview && (
+                <p className="text-xs text-[#d4a24c] text-center">{t.bodyAnalysisModeHint}</p>
+              )}
 
               {/* Photo preview */}
               {imagePreview && (
@@ -833,14 +959,16 @@ export function Chat() {
                 />
 
                 {/* Camera button */}
-                <button
-                  onClick={() => photoInputRef.current?.click()}
-                  disabled={loading}
-                  title={t.takePhotoOrChoose}
-                  className="w-11 h-11 rounded-xl border border-[#3a3a2a] bg-[#2e2e22] flex items-center justify-center text-[#9a9680] hover:text-[#7cb87a] hover:border-[#7cb87a]/50 disabled:opacity-40 shrink-0 transition-colors"
-                >
-                  <Camera className="w-4 h-4" />
-                </button>
+                <Hotspot storageKey="dtk_hotspot_camera" label={t.hotspotCameraLabel} tooltipSide="top" delay={800}>
+                  <button
+                    onClick={() => photoInputRef.current?.click()}
+                    disabled={loading}
+                    title={t.takePhotoOrChoose}
+                    className="w-11 h-11 rounded-xl border border-[#3a3a2a] bg-[#2e2e22] flex items-center justify-center text-[#9a9680] hover:text-[#7cb87a] hover:border-[#7cb87a]/50 disabled:opacity-40 shrink-0 transition-colors"
+                  >
+                    <Camera className="w-4 h-4" />
+                  </button>
+                </Hotspot>
 
                 {/* Text input */}
                 <input
@@ -854,18 +982,20 @@ export function Chat() {
 
                 {/* Mic button — only shown when speech is supported */}
                 {speechSupported && (
-                  <button
-                    onClick={toggleMic}
-                    disabled={loading}
-                    title={isListening ? t.micListening : t.micTapToSpeak}
-                    className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 disabled:opacity-40 transition-colors ${
-                      isListening
-                        ? 'bg-[#7cb87a] text-[#18180f] animate-pulse'
-                        : 'border border-[#3a3a2a] bg-[#2e2e22] text-[#9a9680] hover:text-[#7cb87a] hover:border-[#7cb87a]/50'
-                    }`}
-                  >
-                    {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                  </button>
+                  <Hotspot storageKey="dtk_hotspot_mic" label={t.hotspotMicLabel} tooltipSide="top" delay={2400}>
+                    <button
+                      onClick={toggleMic}
+                      disabled={loading}
+                      title={isListening ? t.micListening : t.micTapToSpeak}
+                      className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 disabled:opacity-40 transition-colors ${
+                        isListening
+                          ? 'bg-[#7cb87a] text-[#18180f] animate-pulse'
+                          : 'border border-[#3a3a2a] bg-[#2e2e22] text-[#9a9680] hover:text-[#7cb87a] hover:border-[#7cb87a]/50'
+                      }`}
+                    >
+                      {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                    </button>
+                  </Hotspot>
                 )}
 
                 {/* Send button */}

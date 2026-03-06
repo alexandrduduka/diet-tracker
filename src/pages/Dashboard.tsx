@@ -12,7 +12,7 @@ import { MacroBar } from '../components/MacroBar';
 import { MealCard } from '../components/MealCard';
 import { OfflineBanner } from '../components/OfflineBanner';
 import { useLang } from '../store/langContext';
-import { TutorialHint } from '../components/TutorialHint';
+import { Hotspot } from '../components/Hotspot';
 import { PwaInstallBanner } from '../components/PwaInstallBanner';
 
 export function Dashboard() {
@@ -81,15 +81,6 @@ export function Dashboard() {
       onTouchEnd={handleTouchEnd}
     >
       <OfflineBanner />
-
-      {/* Tutorial hint */}
-      <TutorialHint
-        storageKey="dtk_hint_dashboard"
-        title={t.tutorialDashboardTitle}
-        body={t.tutorialDashboardBody}
-        dismissLabel={t.tutorialDismiss}
-        emoji="📊"
-      />
 
       {/* PWA install nudge */}
       <PwaInstallBanner />
@@ -209,16 +200,18 @@ export function Dashboard() {
       {/* FAB — only shown for today */}
       {isToday && (
         <div className="sticky bottom-24 flex justify-end pr-4 mt-4">
-          <button
-            onClick={() => navigate('/chat')}
-            aria-label="Log a meal"
-            className="w-14 h-14 rounded-full bg-[#7cb87a] shadow-lg shadow-[#7cb87a]/30 flex items-center justify-center active:scale-95 transition-transform hover:bg-[#8fce8d] relative"
-          >
-            {meals?.length === 0 && (
-              <span className="absolute inset-0 rounded-full bg-[#7cb87a]/40 animate-ping" />
-            )}
-            <Plus className="w-6 h-6 text-[#18180f] relative z-10" aria-hidden="true" />
-          </button>
+          <Hotspot storageKey="dtk_hotspot_fab" label={t.hotspotFabLabel} tooltipSide="top" delay={800}>
+            <button
+              onClick={() => navigate('/chat')}
+              aria-label="Log a meal"
+              className="w-14 h-14 rounded-full bg-[#7cb87a] shadow-lg shadow-[#7cb87a]/30 flex items-center justify-center active:scale-95 transition-transform hover:bg-[#8fce8d] relative"
+            >
+              {meals?.length === 0 && (
+                <span className="absolute inset-0 rounded-full bg-[#7cb87a]/40 animate-ping" />
+              )}
+              <Plus className="w-6 h-6 text-[#18180f] relative z-10" aria-hidden="true" />
+            </button>
+          </Hotspot>
         </div>
       )}
     </div>

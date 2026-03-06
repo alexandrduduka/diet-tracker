@@ -254,6 +254,22 @@ export interface Translations {
   // Article personalized section
   articleForYouTitle: string;
   articleNoProfile: string;
+
+  // Hotspot contextual hints
+  hotspotFabLabel: string;
+  hotspotCameraLabel: string;
+  hotspotMicLabel: string;
+  hotspotGotIt: string;
+
+  // Body photo analysis in Chat
+  chatSuggestionBodyPhoto: string;
+  bodyAnalysisTitle: string;
+  bodyAnalysisLogMeasurements: string;
+  bodyAnalysisDiscard: string;
+  bodyAnalysisModeHint: string;
+  bodyAnalysisSaved: string;
+  bodyFatLabel: string;
+  bmiLabel: string;
 }
 
 const en: Translations = {
@@ -489,6 +505,20 @@ const en: Translations = {
 
   articleForYouTitle: 'What this means for you',
   articleNoProfile: 'Complete the body profile in Settings to get personalised insights.',
+
+  hotspotFabLabel: 'Tap to log a meal',
+  hotspotCameraLabel: 'Snap a meal photo',
+  hotspotMicLabel: 'Try voice logging',
+  hotspotGotIt: 'Got it',
+
+  chatSuggestionBodyPhoto: '📸 Body check',
+  bodyAnalysisTitle: 'Body composition estimate',
+  bodyAnalysisLogMeasurements: 'Save measurements',
+  bodyAnalysisDiscard: 'Discard',
+  bodyAnalysisModeHint: 'Body check mode — attach a selfie',
+  bodyAnalysisSaved: 'Measurements saved ✓',
+  bodyFatLabel: 'Body fat',
+  bmiLabel: 'BMI category',
 };
 
 const ru: Translations = {
@@ -724,6 +754,20 @@ const ru: Translations = {
 
   articleForYouTitle: 'Что это значит для вас',
   articleNoProfile: 'Заполните физический профиль в Настройках, чтобы получить персональные советы.',
+
+  hotspotFabLabel: 'Нажмите, чтобы записать',
+  hotspotCameraLabel: 'Сфотографируйте блюдо',
+  hotspotMicLabel: 'Попробуйте голосовой ввод',
+  hotspotGotIt: 'Понятно',
+
+  chatSuggestionBodyPhoto: '📸 Моё тело',
+  bodyAnalysisTitle: 'Оценка состава тела',
+  bodyAnalysisLogMeasurements: 'Сохранить измерения',
+  bodyAnalysisDiscard: 'Отклонить',
+  bodyAnalysisModeHint: 'Режим анализа тела — прикрепите фото',
+  bodyAnalysisSaved: 'Измерения сохранены ✓',
+  bodyFatLabel: 'Жировая масса',
+  bmiLabel: 'Категория ИМТ',
 };
 
 const cs: Translations = {
@@ -959,6 +1003,20 @@ const cs: Translations = {
 
   articleForYouTitle: 'Co to znamená pro vás',
   articleNoProfile: 'Vyplňte tělesný profil v Nastavení a získejte personalizovaná doporučení.',
+
+  hotspotFabLabel: 'Klepněte pro záznam',
+  hotspotCameraLabel: 'Vyfoťte jídlo',
+  hotspotMicLabel: 'Vyzkoušejte hlasový vstup',
+  hotspotGotIt: 'Rozumím',
+
+  chatSuggestionBodyPhoto: '📸 Tělesná analýza',
+  bodyAnalysisTitle: 'Odhad složení těla',
+  bodyAnalysisLogMeasurements: 'Uložit měření',
+  bodyAnalysisDiscard: 'Zahodit',
+  bodyAnalysisModeHint: 'Režim analýzy těla — přiložte foto',
+  bodyAnalysisSaved: 'Měření uložena ✓',
+  bodyFatLabel: 'Tělesný tuk',
+  bmiLabel: 'Kategorie BMI',
 };
 
 const de: Translations = {
@@ -1194,6 +1252,20 @@ const de: Translations = {
 
   articleForYouTitle: 'Was das für dich bedeutet',
   articleNoProfile: 'Fülle das Körperprofil in den Einstellungen aus, um personalisierte Einblicke zu erhalten.',
+
+  hotspotFabLabel: 'Tippen zum Loggen',
+  hotspotCameraLabel: 'Mahlzeit fotografieren',
+  hotspotMicLabel: 'Spracheingabe ausprobieren',
+  hotspotGotIt: 'Verstanden',
+
+  chatSuggestionBodyPhoto: '📸 Körpercheck',
+  bodyAnalysisTitle: 'Körperzusammensetzung',
+  bodyAnalysisLogMeasurements: 'Messungen speichern',
+  bodyAnalysisDiscard: 'Verwerfen',
+  bodyAnalysisModeHint: 'Körper-Analyse — Foto anhängen',
+  bodyAnalysisSaved: 'Messungen gespeichert ✓',
+  bodyFatLabel: 'Körperfett',
+  bmiLabel: 'BMI-Kategorie',
 };
 
 const fr: Translations = {
@@ -1429,6 +1501,20 @@ const fr: Translations = {
 
   articleForYouTitle: 'Ce que cela signifie pour vous',
   articleNoProfile: 'Complétez le profil corporel dans les Paramètres pour obtenir des conseils personnalisés.',
+
+  hotspotFabLabel: 'Appuyer pour enregistrer',
+  hotspotCameraLabel: 'Photographier un repas',
+  hotspotMicLabel: 'Essayez la saisie vocale',
+  hotspotGotIt: 'Compris',
+
+  chatSuggestionBodyPhoto: '📸 Bilan corporel',
+  bodyAnalysisTitle: 'Estimation corporelle',
+  bodyAnalysisLogMeasurements: 'Enregistrer les mesures',
+  bodyAnalysisDiscard: 'Ignorer',
+  bodyAnalysisModeHint: 'Analyse corporelle — joindre une photo',
+  bodyAnalysisSaved: 'Mesures enregistrées ✓',
+  bodyFatLabel: 'Graisse corporelle',
+  bmiLabel: 'Catégorie IMC',
 };
 
 const es: Translations = {
@@ -1664,6 +1750,20 @@ const es: Translations = {
 
   articleForYouTitle: 'Qué significa esto para ti',
   articleNoProfile: 'Completa el perfil corporal en Ajustes para obtener recomendaciones personalizadas.',
+
+  hotspotFabLabel: 'Toca para registrar',
+  hotspotCameraLabel: 'Fotografía tu comida',
+  hotspotMicLabel: 'Prueba el registro por voz',
+  hotspotGotIt: 'Entendido',
+
+  chatSuggestionBodyPhoto: '📸 Chequeo corporal',
+  bodyAnalysisTitle: 'Estimación corporal',
+  bodyAnalysisLogMeasurements: 'Guardar medidas',
+  bodyAnalysisDiscard: 'Descartar',
+  bodyAnalysisModeHint: 'Análisis corporal — adjunta una foto',
+  bodyAnalysisSaved: 'Medidas guardadas ✓',
+  bodyFatLabel: 'Grasa corporal',
+  bmiLabel: 'Categoría IMC',
 };
 
 const uk: Translations = {
@@ -1899,6 +1999,20 @@ const uk: Translations = {
 
   articleForYouTitle: 'Що це означає для вас',
   articleNoProfile: 'Заповніть фізичний профіль у Налаштуваннях, щоб отримати персональні поради.',
+
+  hotspotFabLabel: 'Натисніть, щоб записати',
+  hotspotCameraLabel: 'Сфотографуйте страву',
+  hotspotMicLabel: 'Спробуйте голосовий ввід',
+  hotspotGotIt: 'Зрозуміло',
+
+  chatSuggestionBodyPhoto: '📸 Моє тіло',
+  bodyAnalysisTitle: 'Оцінка складу тіла',
+  bodyAnalysisLogMeasurements: 'Зберегти вимірювання',
+  bodyAnalysisDiscard: 'Відхилити',
+  bodyAnalysisModeHint: 'Режим аналізу тіла — прикріпіть фото',
+  bodyAnalysisSaved: 'Вимірювання збережено ✓',
+  bodyFatLabel: 'Жирова маса',
+  bmiLabel: 'Категорія ІМТ',
 };
 
 export const TRANSLATIONS: Record<AppLanguage, Translations> = { en, ru, cs, de, fr, es, uk };

@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getApiKey } from '../store/settings';
-import type { FoodItem, AppLanguage } from '../types';
+import type { FoodItem, AppLanguage, OnboardingProfile } from '../types';
 import { validateAndFixCalories, roundMacros } from './nutrition';
 import { getGeminiLanguageInstruction } from './i18n';
 
@@ -317,6 +317,94 @@ export async function askNutritionQuestion(
     }
     if (status === 403 || msg.includes('api_key_invalid') || msg.includes('permission_denied')) {
       throw new Error('INVALID_API_KEY');
+    }
+    throw new Error(`API_ERROR: ${err?.message ?? 'Unknown error'}`);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Body photo analysis
+// ---------------------------------------------------------------------------
+
+export interface BodyAnalysisResult {
+  estimatedWeight?: string;
+  bodyFatPercentageRange?: string;
+  bmiCategory?: string;
+  notes: string;
+  disclaimer: string;
+}
+
+export async function analyzeBodyPhoto(
+  image: ImageAttachment,
+  profile: OnboardingProfile | null,
+  lang: AppLanguage
+): Promise<BodyAnalysisResult> {
+  const key = getApiKey();
+  if (!key) throw new Error('NO_API_KEY');
+
+  const langInstruction = getGeminiLanguageInstruction(lang);
+
+  let profileBlock = '';
+  if (profile) {
+    profileBlock = `\nUser's known profile: sex=${profile.sex}, age=${profile.age}, weight=${profile.weightKg}kg, height=${profile.heightCm}cm.`;
+  }
+
+  const systemPrompt = `You are a body composition estimation assistant. You will be shown a photo of a person.
+Provide rough visual estimates only. Always include a clear medical disclaimer.
+${profileBlock}
+
+Return ONLY a JSON object in this exact shape:
+{
+  "estimatedWeight": "optional string, e.g. '72–78 kg' — omit the field entirely if impossible to estimate",
+  "bodyFatPercentageRange": "optional string, e.g. '18–22%' — omit if impossible",
+  "bmiCategory": "optional string: one of 'Underweight', 'Normal weight', 'Overweight', 'Obese' — omit if impossible",
+  "notes": "2–3 sentences describing what you observe in plain language, including uncertainty",
+  "disclaimer": "1–2 sentence disclaimer: these are rough visual estimates only, not a substitute for medical assessment"
+}
+
+Rules:
+- If the photo does not clearly show a person, set notes to explain that and omit all numeric/category fields.
+- Never refuse — always provide your best estimate with appropriate uncertainty language.
+- Do not include any text outside the JSON object.
+${langInstruction}`;
+
+  const client = new GoogleGenerativeAI(key);
+  const model = client.getGenerativeModel({
+    model: 'gemini-2.5-flash',
+    generationConfig: {
+      responseMimeType: 'application/json',
+      temperature: 0.2,
+      maxOutputTokens: 1024,
+    },
+    systemInstruction: systemPrompt,
+  });
+
+  try {
+    const parts = [
+      { inlineData: { data: image.base64, mimeType: image.mimeType } },
+      { text: 'Analyse this photo and return the JSON.' },
+    ];
+    const result = await model.generateContent(parts);
+    const raw = result.response.text().trim();
+    const parsed = JSON.parse(raw) as BodyAnalysisResult;
+    if (!parsed.notes) parsed.notes = 'Unable to provide an estimate from this image.';
+    if (!parsed.disclaimer) parsed.disclaimer = 'These are rough visual estimates only and are not a substitute for professional medical assessment.';
+    return parsed;
+  } catch (err: any) {
+    const status = err?.status ?? err?.statusCode ?? err?.httpErrorCode;
+    const msg = (err?.message ?? '').toLowerCase();
+    if (!getApiKey()) throw new Error('NO_API_KEY');
+    if (status === 429 || msg.includes('resource_exhausted') || (msg.includes('quota') && msg.includes('exceeded'))) {
+      throw new Error('RATE_LIMIT');
+    }
+    if (status === 400 && (msg.includes('api key') || msg.includes('api_key') || msg.includes('invalid key') || msg.includes('invalid argument'))) {
+      throw new Error('INVALID_API_KEY');
+    }
+    if (status === 403 || msg.includes('api_key_invalid') || msg.includes('permission_denied')) {
+      throw new Error('INVALID_API_KEY');
+    }
+    if (msg.includes('json') || msg.includes('parse') || err instanceof SyntaxError) {
+      throw new Error('PARSE_ERROR');
     }
     throw new Error(`API_ERROR: ${err?.message ?? 'Unknown error'}`);
   }

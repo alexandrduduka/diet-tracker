@@ -9,6 +9,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Hotspot contextual hints** (`src/components/Hotspot.tsx`): replaced the full-page `TutorialHint` banner cards with a lightweight wrapper component that renders an `animate-ping` pulsing ring + tooltip bubble directly adjacent to the target UI element. Dismissed once via localStorage per `storageKey`. Placed on Dashboard FAB (800 ms delay), Chat camera button (800 ms), and Chat mic button (2400 ms, staggered). `TutorialHint` component deleted.
+- **Body photo analysis in Chat**: new "📸 Body check" chip in the chat suggestion row. Tapping opens the camera; after attaching a photo and sending, Gemini analyses the image for estimated weight range, body fat %, and BMI category. Result renders as an inline card (`body-analysis` message role) with a pre-filled weight input and Save / Discard buttons. Saving writes directly to `db.measurements`. Fully i18n-aware in all 7 languages.
+- **`analyzeBodyPhoto()` in gemini.ts**: new function (`responseMimeType: 'application/json'`, `temperature: 0.2`, `maxOutputTokens: 1024`) accepting `ImageAttachment` + optional `OnboardingProfile`. Returns `BodyAnalysisResult` with `estimatedWeight`, `bodyFatPercentageRange`, `bmiCategory`, `notes`, `disclaimer`.
+- **12 new i18n strings** across all 7 languages: `hotspotFabLabel`, `hotspotCameraLabel`, `hotspotMicLabel`, `hotspotGotIt`, `chatSuggestionBodyPhoto`, `bodyAnalysisTitle`, `bodyAnalysisLogMeasurements`, `bodyAnalysisDiscard`, `bodyAnalysisModeHint`, `bodyAnalysisSaved`, `bodyFatLabel`, `bmiLabel`.
+- **`trackBodyPhotoAnalysed()`** analytics event fired when a body photo analysis request is sent.
+
+### Removed
+- **`TutorialHint` component** (`src/components/TutorialHint.tsx`): replaced by the new `Hotspot` component. Associated i18n keys (`tutorialChatTitle`, `tutorialChatBody`, `tutorialDashboardTitle`, `tutorialDashboardBody`, `tutorialArticlesTitle`, `tutorialArticlesBody`, `tutorialDismiss`) remain in `i18n.ts` for backward compatibility but are no longer rendered.
+
+### Added
 - **App renamed to "Eat Right"**: updated in HTML title, Open Graph / Twitter meta tags, PWA manifest, `apple-mobile-web-app-title`, JSON-LD structured data, App.tsx header, ArticleDetail document.title, and all 7 onboarding welcome strings.
 - **Chat day-change hiding**: when the app is opened on a new day, previous-day chat messages are automatically hidden behind a collapsible "Show history" button. A "New day" separator is rendered above the fresh session. Persisted chat format upgraded from `ChatMessage[]` to `{ messages, dayKey }` (backward-compatible — old plain-array format is migrated silently).
 - **Tutorial hint cards** (`src/components/TutorialHint.tsx`): animated, dismiss-once hint cards shown on first visit to Dashboard, Chat, and Articles. Appear after a 600 ms delay with a fade+scale entrance animation. Dismissed permanently via localStorage (`dtk_hint_dashboard`, `dtk_hint_chat`, `dtk_hint_articles`). 7-language i18n strings added.

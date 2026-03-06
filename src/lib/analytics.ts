@@ -116,3 +116,12 @@ export function trackMeasurementLogged() {
 export function trackArticleOpened(slug: string) {
   gtag('event', 'article_opened', { article_slug: slug });
 }
+
+// ---------------------------------------------------------------------------
+// Body analysis
+// ---------------------------------------------------------------------------
+
+/** User submitted a body photo for AI body composition analysis. */
+export function trackBodyPhotoAnalysed() {
+  gtag('event', 'body_photo_analysed');
+}

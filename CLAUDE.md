@@ -71,6 +71,7 @@ diet-tracker/
     │   └── useNutritionHistory.ts  ← daily/monthly nutrition aggregation
     ├── components/
     │   ├── BottomNav.tsx    ← 5-tab nav (Today / Log & Ask / Charts / Learn / Settings)
+    │   ├── Hotspot.tsx      ← contextual hint wrapper (animate-ping ring + tooltip, localStorage dismiss-once)
     │   ├── MacroRing.tsx    ← SVG donut for calories
     │   ├── MacroBar.tsx     ← progress bar per macro vs goal
     │   ├── MealCard.tsx     ← single meal display + delete
@@ -148,9 +149,10 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 
 - **No API key**: shows inline setup wizard card instead of error. Card opens `aistudio.google.com/app/apikey`, accepts key inline, and retries the original message automatically. The "Uff, what is an API key?" link opens a modal with a JSX visual mockup of AI Studio, a quota note (1,500 req/day free), and a link to view usage.
 - **After save**: if `parsed.message` is present, appends a `'coach'` bubble and keeps the input open (no navigation). If no message, navigates to `/`.
-- **ChatMessage roles**: `'assistant' | 'user' | 'result' | 'error' | 'setup' | 'coach' | 'answer'`
+- **ChatMessage roles**: `'assistant' | 'user' | 'result' | 'error' | 'setup' | 'coach' | 'answer' | 'body-analysis'`
 - `'assistant'` and `'coach'` render identically (green avatar bubble, `bg-[#2e2e22]`).
 - `'answer'` renders with a distinct background (`bg-[#242419]` + border) and `whitespace-pre-wrap` for multi-line coaching answers.
+- `'body-analysis'` renders as a `BodyAnalysisCard` sub-component (defined above `Chat`) with result rows (estimated weight, body fat %, BMI category), notes, disclaimer, and (when `isInteractive && !saved`) an editable weight input + Save / Discard buttons. Save calls `db.measurements.add()` inline. The `saved` flag is persisted in the ChatMessage union so old-day messages show read-only.
 - **Intent classification**: on each text-only send, `classifyIntent()` (64 token JSON call) determines `'log'` vs `'question'`. Photos always route to `'log'`. Failure falls back to `'log'`.
 - **Q&A mode**: when intent is `'question'`, `askNutritionQuestion()` is called with full `NutritionContext` (today goals/consumed + last 7 days totals + latest weight). Response renders as `'answer'` bubble.
 - **Chat history persistence**: messages persist to `localStorage` key `dtk_chat_history` in format `{ messages: ChatMessage[], dayKey: string }` on every change. Restored on load. Max 100 messages; `'setup'` messages are never persisted. Trash icon in header opens a clear-history confirmation dialog.
@@ -158,9 +160,12 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 - **Message render helper**: `renderChatMessage(msg, i, keyOffset, isInteractive)` extracts the render logic so old messages can be rendered in the collapsed section. `isInteractive: false` skips setup/result bubbles (since they no longer apply to past-day messages).
 - **Mic button**: uses Web Speech API (`window.SpeechRecognition || window.webkitSpeechRecognition`). Hidden when not supported. Recognition language matches the app language. Transcript is appended to the text input. Tap again or it ends automatically to stop listening.
 - **Camera / photo button**: `<input type="file" accept="image/*" capture="environment">` — opens camera on mobile, file picker on desktop. Image is read as DataURL, split into base64 + mimeType, stored in `attachedImage` state, and sent to Gemini as `ImageAttachment`. Thumbnail preview shown above input bar with a remove button. Can be sent with or without accompanying text.
-- **Suggestion chips**: always visible in the input bar (5 chips sourced from `t.chatSuggestion*` keys). Tapping sets `input` state without auto-sending. Chips persist throughout the conversation.
+- **Suggestion chips**: always visible in the input bar (6 chips sourced from `t.chatSuggestion*` keys). The first 5 set `input` state without auto-sending. The 6th chip (`chatSuggestionBodyPhoto`) sets `pendingBodyAnalysis = true` and immediately triggers `photoInputRef.current?.click()`. Chips persist throughout the conversation.
+- **Body photo analysis**: when `pendingBodyAnalysis && !!imageSnapshot` in `handleSend`, routes to `analyzeBodyPhoto()` instead of meal-parse flow. Result appended as `{ role: 'body-analysis', result: BodyAnalysisResult }`. `pendingBodyAnalysis` is cleared on every send and when `removePhoto()` is called. A mode indicator hint (`bodyAnalysisModeHint`) is shown when pending but no image is yet attached.
 - **Body nudge**: Dashboard shows dismissable amber banner (sessionStorage key `dtk_body_nudge_dismissed`) when `useAllMeasurements()[0]` is older than 14 days or measurements array is empty.
-- **Tutorial hints** (`TutorialHint` component): dismiss-once animated hint cards shown on Dashboard (`dtk_hint_dashboard`), Chat (`dtk_hint_chat`), and Articles (`dtk_hint_articles`). Appear 600 ms after mount with fade+scale animation. Dismissed permanently to localStorage.
+- **Hotspot contextual hints** (`Hotspot` component): replaces deleted `TutorialHint`. Wraps a UI element to show an `animate-ping` pulsing ring + tooltip bubble after a configurable `delay` ms. Dismissed once via `localStorage[storageKey] = '1'`. Placements: Dashboard FAB (`dtk_hotspot_fab`, 800 ms), Chat camera button (`dtk_hotspot_camera`, 800 ms), Chat mic button (`dtk_hotspot_mic`, 2400 ms). Tooltip side configurable ('top' | 'bottom').
+- **Camera button Hotspot**: wraps the camera `<button>` inside `<Hotspot storageKey="dtk_hotspot_camera" label={t.hotspotCameraLabel} tooltipSide="top" delay={800}>`.
+- **Mic button Hotspot**: wraps the inner mic `<button>` (inside the `{speechSupported && ...}` guard) with `<Hotspot storageKey="dtk_hotspot_mic" label={t.hotspotMicLabel} tooltipSide="top" delay={2400}>`.
 - **PWA install banner** (`PwaInstallBanner` component): amber banner shown on Dashboard. Fires 4 s after mount if `beforeinstallprompt` is available (Chrome/Android) or iOS Safari detected (no native prompt). Dismissed to `dtk_pwa_install_dismissed` localStorage key.
 
 ## Internationalization
