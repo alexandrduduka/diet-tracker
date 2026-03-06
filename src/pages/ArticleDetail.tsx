@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { getLocalizedArticle, type ArticleSection } from '../lib/articles';
 import { useLang } from '../store/langContext';
 import { trackArticleOpened } from '../lib/analytics';
+import { getSettings } from '../store/settings';
+import { calculateBMR, calculateTDEE, calculateCalorieTarget, calculateMacroGoals } from '../lib/goalCalculator';
 
 function renderSection(section: ArticleSection, i: number) {
   switch (section.type) {
@@ -111,6 +113,61 @@ function renderSection(section: ArticleSection, i: number) {
   }
 }
 
+function buildPersonalizedInsights(slug: string, lang: string): { label: string; value: string }[] | null {
+  const settings = getSettings();
+  const profile = settings.onboardingProfile;
+  if (!profile) return null;
+
+  try {
+    const bmr = Math.round(calculateBMR(profile));
+    const tdee = Math.round(calculateTDEE(profile));
+    const target = Math.round(calculateCalorieTarget(profile));
+    const macros = calculateMacroGoals(profile);
+    const { weightKg } = profile;
+
+    // Article-specific insights
+    if (slug === 'how-to-calculate-daily-calories') {
+      return [
+        { label: lang === 'ru' || lang === 'uk' ? 'Ваш БМР' : 'Your BMR', value: `${bmr} kcal` },
+        { label: lang === 'ru' || lang === 'uk' ? 'TDEE (с активностью)' : 'TDEE (with activity)', value: `${tdee} kcal` },
+        { label: lang === 'ru' || lang === 'uk' ? 'Ваша цель' : 'Your target', value: `${target} kcal` },
+      ];
+    }
+    if (slug === 'understanding-macros') {
+      return [
+        { label: lang === 'ru' || lang === 'uk' ? 'Белок' : 'Protein', value: `${macros.protein}g / day` },
+        { label: lang === 'ru' || lang === 'uk' ? 'Жиры' : 'Fat', value: `${macros.fat}g / day` },
+        { label: lang === 'ru' || lang === 'uk' ? 'Углеводы' : 'Carbs', value: `${macros.carbs}g / day` },
+      ];
+    }
+    if (slug === 'where-to-get-protein') {
+      const dailyProtein = macros.protein;
+      const perKg = (dailyProtein / weightKg).toFixed(1);
+      return [
+        { label: lang === 'ru' || lang === 'uk' ? 'Дневная норма белка' : 'Daily protein target', value: `${dailyProtein}g` },
+        { label: lang === 'ru' || lang === 'uk' ? 'Г/кг веса' : 'g/kg body weight', value: `${perKg} g/kg` },
+        { label: lang === 'ru' || lang === 'uk' ? 'Ваш вес' : 'Your weight', value: `${weightKg} kg` },
+      ];
+    }
+    if (slug === 'how-much-to-eat') {
+      const deficit = tdee - target;
+      return [
+        { label: lang === 'ru' || lang === 'uk' ? 'Ваш TDEE' : 'Your TDEE', value: `${tdee} kcal` },
+        { label: lang === 'ru' || lang === 'uk' ? 'Цель' : 'Your goal', value: `${target} kcal` },
+        { label: lang === 'ru' || lang === 'uk' ? 'Дефицит/профицит' : 'Deficit/surplus', value: deficit > 0 ? `-${deficit} kcal` : `+${Math.abs(deficit)} kcal` },
+      ];
+    }
+    // Generic fallback for any other article
+    return [
+      { label: lang === 'ru' || lang === 'uk' ? 'Калорийная цель' : 'Calorie target', value: `${target} kcal` },
+      { label: lang === 'ru' || lang === 'uk' ? 'Белок' : 'Protein goal', value: `${macros.protein}g` },
+      { label: lang === 'ru' || lang === 'uk' ? 'TDEE' : 'TDEE', value: `${tdee} kcal` },
+    ];
+  } catch {
+    return null;
+  }
+}
+
 export function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { t, lang } = useLang();
@@ -118,11 +175,11 @@ export function ArticleDetail() {
 
   useEffect(() => {
     if (article) {
-      document.title = `${article.title} — Eat Me`;
+      document.title = `${article.title} — Eat Right`;
       if (slug) trackArticleOpened(slug);
     }
     return () => {
-      document.title = 'Eat Me — AI-Powered Nutrition & Calorie Tracker';
+      document.title = 'Eat Right — AI-Powered Nutrition & Calorie Tracker';
     };
   }, [article, slug]);
 
@@ -176,6 +233,27 @@ export function ArticleDetail() {
         {/* Article content */}
         <section className="space-y-4">
           {article.content.map((section, i) => renderSection(section, i))}
+        </section>
+
+        {/* Personalized "What this means for you" section */}
+        <section className="mt-8 mb-2">
+          <h2 className="text-base font-semibold text-[#f0ede4] mb-3">{t.articleForYouTitle}</h2>
+          {slug && buildPersonalizedInsights(slug, lang) ? (
+            <div className="rounded-2xl bg-gradient-to-br from-[#1e2a1a] to-[#1a2015] border border-[#7cb87a]/25 p-4">
+              <div className="grid grid-cols-3 gap-3">
+                {buildPersonalizedInsights(slug, lang)!.map((item, i) => (
+                  <div key={i} className="text-center">
+                    <p className="text-base font-bold text-[#7cb87a] leading-tight">{item.value}</p>
+                    <p className="text-[10px] text-[#9a9680] leading-snug mt-0.5">{item.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-2xl bg-[#2e2e22] border border-[#3a3a2a] p-4">
+              <p className="text-sm text-[#9a9680]">{t.articleNoProfile}</p>
+            </div>
+          )}
         </section>
       </article>
     </div>

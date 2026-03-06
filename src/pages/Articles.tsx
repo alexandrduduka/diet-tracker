@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { getLocalizedArticles } from '../lib/articles';
 import { useLang } from '../store/langContext';
+import { TutorialHint } from '../components/TutorialHint';
 
 export function Articles() {
   const { t, lang } = useLang();
@@ -13,6 +14,15 @@ export function Articles() {
         <h1 className="text-xl font-bold text-[#f0ede4]">{t.articlesTitle}</h1>
         <p className="text-sm text-[#9a9680] mt-1">{t.articlesSubtitle}</p>
       </div>
+
+      {/* Tutorial hint */}
+      <TutorialHint
+        storageKey="dtk_hint_articles"
+        title={t.tutorialArticlesTitle}
+        body={t.tutorialArticlesBody}
+        dismissLabel={t.tutorialDismiss}
+        emoji="📚"
+      />
 
       {/* Article cards */}
       <div className="px-4 space-y-4">

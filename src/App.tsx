@@ -37,12 +37,12 @@ function AppShell() {
         <div className="flex items-center gap-2 select-none">
           <img
             src="/icons/icon-192x192.png"
-            alt="Eat Me"
+            alt="Eat Right"
             className="w-6 h-6 rounded-md opacity-90"
             aria-hidden="true"
           />
           <span className="text-xs font-bold tracking-widest uppercase text-[#9a9680]">
-            Eat Me
+            Eat Right
           </span>
         </div>
       </header>

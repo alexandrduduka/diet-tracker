@@ -12,6 +12,8 @@ import { MacroBar } from '../components/MacroBar';
 import { MealCard } from '../components/MealCard';
 import { OfflineBanner } from '../components/OfflineBanner';
 import { useLang } from '../store/langContext';
+import { TutorialHint } from '../components/TutorialHint';
+import { PwaInstallBanner } from '../components/PwaInstallBanner';
 
 export function Dashboard() {
   const { t } = useLang();
@@ -79,6 +81,18 @@ export function Dashboard() {
       onTouchEnd={handleTouchEnd}
     >
       <OfflineBanner />
+
+      {/* Tutorial hint */}
+      <TutorialHint
+        storageKey="dtk_hint_dashboard"
+        title={t.tutorialDashboardTitle}
+        body={t.tutorialDashboardBody}
+        dismissLabel={t.tutorialDismiss}
+        emoji="📊"
+      />
+
+      {/* PWA install nudge */}
+      <PwaInstallBanner />
 
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-12 pb-4">

@@ -230,6 +230,30 @@ export interface Translations {
   recalcMacrosDone: string;
   profileNotSet: string;
   profileNotSetLink: string;
+
+  // Tutorial hints (shown once, dismissed to localStorage)
+  tutorialChatTitle: string;
+  tutorialChatBody: string;
+  tutorialDashboardTitle: string;
+  tutorialDashboardBody: string;
+  tutorialArticlesTitle: string;
+  tutorialArticlesBody: string;
+  tutorialDismiss: string;
+
+  // Chat day separator
+  chatNewDay: string;
+  chatOldMessagesHidden: string;
+  chatShowOldMessages: string;
+
+  // PWA install nudge
+  pwaInstallTitle: string;
+  pwaInstallBody: string;
+  pwaInstallAction: string;
+  pwaInstallDismiss: string;
+
+  // Article personalized section
+  articleForYouTitle: string;
+  articleNoProfile: string;
 }
 
 const en: Translations = {
@@ -369,7 +393,7 @@ const en: Translations = {
   last30Days: 'last 30 days',
   last12Months: 'last 12 months',
 
-  onboardingWelcomeTitle: 'Welcome to Eat Me',
+  onboardingWelcomeTitle: 'Welcome to Eat Right',
   onboardingWelcomeSubtitle: 'Track your nutrition effortlessly. Describe meals in plain text and AI calculates your calories and macros — or log manually. Everything stays on your device.',
   onboardingGetStarted: 'Get started →',
   onboardingSkip: 'Skip setup',
@@ -445,6 +469,26 @@ const en: Translations = {
   recalcMacrosDone: 'Macros updated!',
   profileNotSet: 'No body profile found.',
   profileNotSetLink: 'Set up your profile',
+
+  tutorialChatTitle: 'Log meals in plain language',
+  tutorialChatBody: 'Just describe what you ate — "2 eggs and toast" or snap a photo. The AI figures out the calories and macros for you.',
+  tutorialDashboardTitle: 'Your nutrition at a glance',
+  tutorialDashboardBody: 'The ring shows today\'s calories. Tap the + button to log a meal. Swipe left to see past days.',
+  tutorialArticlesTitle: 'Learn how nutrition works',
+  tutorialArticlesBody: 'Short, science-backed guides on calories, protein, and more. Tap any card to read.',
+  tutorialDismiss: 'Got it',
+
+  chatNewDay: 'New day',
+  chatOldMessagesHidden: 'Previous day\'s chat is hidden.',
+  chatShowOldMessages: 'Show history',
+
+  pwaInstallTitle: 'Add to Home Screen',
+  pwaInstallBody: 'Use it like an app — no App Store needed. Works offline too.',
+  pwaInstallAction: 'Add',
+  pwaInstallDismiss: 'Not now',
+
+  articleForYouTitle: 'What this means for you',
+  articleNoProfile: 'Complete the body profile in Settings to get personalised insights.',
 };
 
 const ru: Translations = {
@@ -584,7 +628,7 @@ const ru: Translations = {
   last30Days: 'последние 30 дней',
   last12Months: 'последние 12 месяцев',
 
-  onboardingWelcomeTitle: 'Добро пожаловать в Eat Me',
+  onboardingWelcomeTitle: 'Добро пожаловать в Eat Right',
   onboardingWelcomeSubtitle: 'Легко отслеживайте питание. Опишите приём пищи, и ИИ посчитает калории и макронутриенты — или введите вручную. Все данные хранятся на устройстве.',
   onboardingGetStarted: 'Начать →',
   onboardingSkip: 'Пропустить настройку',
@@ -660,6 +704,26 @@ const ru: Translations = {
   recalcMacrosDone: 'Макросы обновлены!',
   profileNotSet: 'Профиль тела не найден.',
   profileNotSetLink: 'Настроить профиль',
+
+  tutorialChatTitle: 'Записывайте приёмы пищи на обычном языке',
+  tutorialChatBody: 'Просто опишите, что ели — «2 яйца и тост» — или сфотографируйте блюдо. ИИ сам посчитает калории и макросы.',
+  tutorialDashboardTitle: 'Питание одним взглядом',
+  tutorialDashboardBody: 'Кольцо показывает калории за сегодня. Кнопка + — записать приём. Смахните влево, чтобы увидеть прошлые дни.',
+  tutorialArticlesTitle: 'Разберитесь в питании',
+  tutorialArticlesBody: 'Короткие материалы о калориях, белках и многом другом. Нажмите на карточку, чтобы прочитать.',
+  tutorialDismiss: 'Понятно',
+
+  chatNewDay: 'Новый день',
+  chatOldMessagesHidden: 'Сообщения прошлого дня скрыты.',
+  chatShowOldMessages: 'Показать историю',
+
+  pwaInstallTitle: 'Добавить на экран',
+  pwaInstallBody: 'Работает как приложение — без App Store. Доступно офлайн.',
+  pwaInstallAction: 'Добавить',
+  pwaInstallDismiss: 'Не сейчас',
+
+  articleForYouTitle: 'Что это значит для вас',
+  articleNoProfile: 'Заполните физический профиль в Настройках, чтобы получить персональные советы.',
 };
 
 const cs: Translations = {
@@ -799,7 +863,7 @@ const cs: Translations = {
   last30Days: 'posledních 30 dní',
   last12Months: 'posledních 12 měsíců',
 
-  onboardingWelcomeTitle: 'Vítejte v Eat Me',
+  onboardingWelcomeTitle: 'Vítejte v Eat Right',
   onboardingWelcomeSubtitle: 'Sledujte výživu snadno. Popište jídlo a AI spočítá kalorie a makra — nebo zadejte ručně. Vše zůstává v zařízení.',
   onboardingGetStarted: 'Začít →',
   onboardingSkip: 'Přeskočit nastavení',
@@ -875,6 +939,26 @@ const cs: Translations = {
   recalcMacrosDone: 'Makra aktualizována!',
   profileNotSet: 'Profil těla nenalezen.',
   profileNotSetLink: 'Nastavit profil',
+
+  tutorialChatTitle: 'Zaznamenávejte jídla přirozeným jazykem',
+  tutorialChatBody: 'Stačí popsat, co jste jedli — "2 vejce a toast" — nebo vyfoťte jídlo. AI spočítá kalorie a makra za vás.',
+  tutorialDashboardTitle: 'Výživa na první pohled',
+  tutorialDashboardBody: 'Kruh ukazuje dnešní kalorie. Tlačítko + slouží k záznamu jídla. Přejetím doleva zobrazíte předchozí dny.',
+  tutorialArticlesTitle: 'Pochopte výživu',
+  tutorialArticlesBody: 'Krátké průvodce o kaloriích, bílkovinách a dalším. Klepněte na kartu a začtěte se.',
+  tutorialDismiss: 'Rozumím',
+
+  chatNewDay: 'Nový den',
+  chatOldMessagesHidden: 'Zprávy předchozího dne jsou skryty.',
+  chatShowOldMessages: 'Zobrazit historii',
+
+  pwaInstallTitle: 'Přidat na plochu',
+  pwaInstallBody: 'Funguje jako aplikace — bez App Store. Funguje i offline.',
+  pwaInstallAction: 'Přidat',
+  pwaInstallDismiss: 'Teď ne',
+
+  articleForYouTitle: 'Co to znamená pro vás',
+  articleNoProfile: 'Vyplňte tělesný profil v Nastavení a získejte personalizovaná doporučení.',
 };
 
 const de: Translations = {
@@ -1014,7 +1098,7 @@ const de: Translations = {
   last30Days: 'letzte 30 Tage',
   last12Months: 'letzte 12 Monate',
 
-  onboardingWelcomeTitle: 'Willkommen bei Eat Me',
+  onboardingWelcomeTitle: 'Willkommen bei Eat Right',
   onboardingWelcomeSubtitle: 'Verfolgen Sie Ihre Ernährung mühelos. Beschreiben Sie Mahlzeiten in natürlicher Sprache und die KI berechnet Kalorien und Makros — oder manuell eingeben. Alles bleibt auf Ihrem Gerät.',
   onboardingGetStarted: 'Loslegen →',
   onboardingSkip: 'Einrichtung überspringen',
@@ -1090,6 +1174,26 @@ const de: Translations = {
   recalcMacrosDone: 'Makros aktualisiert!',
   profileNotSet: 'Kein Körperprofil gefunden.',
   profileNotSetLink: 'Profil einrichten',
+
+  tutorialChatTitle: 'Mahlzeiten in natürlicher Sprache erfassen',
+  tutorialChatBody: 'Beschreib einfach, was du gegessen hast — "2 Eier und Toast" — oder mach ein Foto. Die KI berechnet Kalorien und Makros für dich.',
+  tutorialDashboardTitle: 'Deine Ernährung auf einen Blick',
+  tutorialDashboardBody: 'Der Ring zeigt die heutigen Kalorien. Mit + eine Mahlzeit erfassen. Nach links wischen für vergangene Tage.',
+  tutorialArticlesTitle: 'Ernährung verstehen',
+  tutorialArticlesBody: 'Kurze, wissenschaftlich fundierte Artikel über Kalorien, Protein und mehr. Karte antippen zum Lesen.',
+  tutorialDismiss: 'Verstanden',
+
+  chatNewDay: 'Neuer Tag',
+  chatOldMessagesHidden: 'Nachrichten vom Vortag sind ausgeblendet.',
+  chatShowOldMessages: 'Verlauf anzeigen',
+
+  pwaInstallTitle: 'Zum Startbildschirm hinzufügen',
+  pwaInstallBody: 'Funktioniert wie eine App — kein App Store nötig. Auch offline verfügbar.',
+  pwaInstallAction: 'Hinzufügen',
+  pwaInstallDismiss: 'Nicht jetzt',
+
+  articleForYouTitle: 'Was das für dich bedeutet',
+  articleNoProfile: 'Fülle das Körperprofil in den Einstellungen aus, um personalisierte Einblicke zu erhalten.',
 };
 
 const fr: Translations = {
@@ -1229,7 +1333,7 @@ const fr: Translations = {
   last30Days: '30 derniers jours',
   last12Months: '12 derniers mois',
 
-  onboardingWelcomeTitle: 'Bienvenue dans Eat Me',
+  onboardingWelcomeTitle: 'Bienvenue dans Eat Right',
   onboardingWelcomeSubtitle: 'Suivez votre nutrition facilement. Décrivez vos repas en langage naturel et l\'IA calcule calories et macros — ou saisie manuelle. Tout reste sur votre appareil.',
   onboardingGetStarted: 'Commencer →',
   onboardingSkip: 'Passer la configuration',
@@ -1305,6 +1409,26 @@ const fr: Translations = {
   recalcMacrosDone: 'Macros mis à jour !',
   profileNotSet: 'Aucun profil corporel trouvé.',
   profileNotSetLink: 'Configurer le profil',
+
+  tutorialChatTitle: 'Enregistrez vos repas en langage naturel',
+  tutorialChatBody: 'Décrivez simplement ce que vous avez mangé — "2 œufs et toast" — ou prenez une photo. L\'IA calcule les calories et macros pour vous.',
+  tutorialDashboardTitle: 'Votre nutrition en un coup d\'œil',
+  tutorialDashboardBody: 'L\'anneau montre les calories du jour. Le bouton + permet d\'enregistrer un repas. Glissez à gauche pour les jours précédents.',
+  tutorialArticlesTitle: 'Comprendre la nutrition',
+  tutorialArticlesBody: 'Guides courts sur les calories, les protéines et plus encore. Appuyez sur une carte pour lire.',
+  tutorialDismiss: 'Compris',
+
+  chatNewDay: 'Nouveau jour',
+  chatOldMessagesHidden: 'Les messages du jour précédent sont masqués.',
+  chatShowOldMessages: 'Voir l\'historique',
+
+  pwaInstallTitle: 'Ajouter à l\'écran d\'accueil',
+  pwaInstallBody: 'Fonctionne comme une appli — sans App Store. Disponible hors ligne aussi.',
+  pwaInstallAction: 'Ajouter',
+  pwaInstallDismiss: 'Pas maintenant',
+
+  articleForYouTitle: 'Ce que cela signifie pour vous',
+  articleNoProfile: 'Complétez le profil corporel dans les Paramètres pour obtenir des conseils personnalisés.',
 };
 
 const es: Translations = {
@@ -1444,7 +1568,7 @@ const es: Translations = {
   last30Days: 'últimos 30 días',
   last12Months: 'últimos 12 meses',
 
-  onboardingWelcomeTitle: 'Bienvenido a Eat Me',
+  onboardingWelcomeTitle: 'Bienvenido a Eat Right',
   onboardingWelcomeSubtitle: 'Rastrea tu nutrición fácilmente. Describe tus comidas en lenguaje natural y la IA calcula calorías y macros — o ingresa manualmente. Todo permanece en tu dispositivo.',
   onboardingGetStarted: 'Comenzar →',
   onboardingSkip: 'Omitir configuración',
@@ -1520,6 +1644,26 @@ const es: Translations = {
   recalcMacrosDone: '¡Macros actualizados!',
   profileNotSet: 'No se encontró perfil corporal.',
   profileNotSetLink: 'Configurar perfil',
+
+  tutorialChatTitle: 'Registra comidas en lenguaje natural',
+  tutorialChatBody: 'Describe lo que comiste — "2 huevos y tostada" — o toma una foto. La IA calcula las calorías y macros por ti.',
+  tutorialDashboardTitle: 'Tu nutrición de un vistazo',
+  tutorialDashboardBody: 'El anillo muestra las calorías de hoy. El botón + registra una comida. Desliza a la izquierda para ver días anteriores.',
+  tutorialArticlesTitle: 'Aprende sobre nutrición',
+  tutorialArticlesBody: 'Guías cortas sobre calorías, proteínas y más. Toca una tarjeta para leer.',
+  tutorialDismiss: 'Entendido',
+
+  chatNewDay: 'Nuevo día',
+  chatOldMessagesHidden: 'Los mensajes del día anterior están ocultos.',
+  chatShowOldMessages: 'Ver historial',
+
+  pwaInstallTitle: 'Añadir a la pantalla de inicio',
+  pwaInstallBody: 'Funciona como una app — sin App Store. También funciona sin conexión.',
+  pwaInstallAction: 'Añadir',
+  pwaInstallDismiss: 'Ahora no',
+
+  articleForYouTitle: 'Qué significa esto para ti',
+  articleNoProfile: 'Completa el perfil corporal en Ajustes para obtener recomendaciones personalizadas.',
 };
 
 const uk: Translations = {
@@ -1659,7 +1803,7 @@ const uk: Translations = {
   last30Days: 'останні 30 днів',
   last12Months: 'останні 12 місяців',
 
-  onboardingWelcomeTitle: 'Ласкаво просимо до Eat Me',
+  onboardingWelcomeTitle: 'Ласкаво просимо до Eat Right',
   onboardingWelcomeSubtitle: 'Відстежуйте харчування легко. Опишіть їжу, і ШІ порахує калорії та макронутрієнти — або введіть вручну. Усі дані зберігаються на пристрої.',
   onboardingGetStarted: 'Почати →',
   onboardingSkip: 'Пропустити налаштування',
@@ -1735,6 +1879,26 @@ const uk: Translations = {
   recalcMacrosDone: 'Макроси оновлено!',
   profileNotSet: 'Профіль тіла не знайдено.',
   profileNotSetLink: 'Налаштувати профіль',
+
+  tutorialChatTitle: 'Записуйте прийоми їжі звичайною мовою',
+  tutorialChatBody: 'Просто опишіть, що їли — «2 яйця та тост» — або сфотографуйте страву. ШІ сам порахує калорії та макроси.',
+  tutorialDashboardTitle: 'Харчування одним поглядом',
+  tutorialDashboardBody: 'Кільце показує калорії за сьогодні. Кнопка + — записати прийом. Змахніть вліво для перегляду минулих днів.',
+  tutorialArticlesTitle: 'Розберіться в харчуванні',
+  tutorialArticlesBody: 'Короткі матеріали про калорії, білки та інше. Торкніться картки, щоб прочитати.',
+  tutorialDismiss: 'Зрозуміло',
+
+  chatNewDay: 'Новий день',
+  chatOldMessagesHidden: 'Повідомлення попереднього дня приховано.',
+  chatShowOldMessages: 'Показати історію',
+
+  pwaInstallTitle: 'Додати на екран',
+  pwaInstallBody: 'Працює як додаток — без App Store. Доступний офлайн.',
+  pwaInstallAction: 'Додати',
+  pwaInstallDismiss: 'Не зараз',
+
+  articleForYouTitle: 'Що це означає для вас',
+  articleNoProfile: 'Заповніть фізичний профіль у Налаштуваннях, щоб отримати персональні поради.',
 };
 
 export const TRANSLATIONS: Record<AppLanguage, Translations> = { en, ru, cs, de, fr, es, uk };

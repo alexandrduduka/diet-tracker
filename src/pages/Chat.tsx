@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X, Pencil, Trash2, HelpCircle } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, EyeOff, Mic, MicOff, Camera, X, Pencil, Trash2, HelpCircle, ChevronDown } from 'lucide-react';
 import { parseMealDescription, classifyIntent, askNutritionQuestion, type ParsedMeal, type MealContext, type NutritionContext, type ImageAttachment } from '../lib/gemini';
 import { trackMealLogStarted, trackMealSaved, trackMealDiscarded, trackMealEdited, trackNutritionQuestion, trackChatCleared, trackApiKeySaved } from '../lib/analytics';
 import { sumMacros, recalculateCalories, fmt } from '../lib/nutrition';
@@ -14,9 +14,15 @@ import { useLang } from '../store/langContext';
 import { saveSettings, getGoals } from '../store/settings';
 import { useTodayMeals } from '../hooks/useTodayMeals';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { TutorialHint } from '../components/TutorialHint';
 
 const CHAT_HISTORY_KEY = 'dtk_chat_history';
 const MAX_PERSISTED_MESSAGES = 100;
+
+interface PersistedChat {
+  messages: ChatMessage[];
+  dayKey: string;
+}
 
 type ChatMessage =
   | { role: 'assistant'; text: string }
@@ -35,25 +41,31 @@ declare global {
   }
 }
 
-function loadPersistedMessages(): ChatMessage[] {
+function loadPersistedChat(): PersistedChat | null {
   try {
     const raw = localStorage.getItem(CHAT_HISTORY_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as ChatMessage[];
-    // Filter out transient states that don't make sense when reloaded
-    return parsed.filter((m) => m.role !== 'setup');
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    // Support both old format (plain array) and new format ({ messages, dayKey })
+    if (Array.isArray(parsed)) {
+      // Legacy format: treat as today's messages (no day comparison)
+      const messages = (parsed as ChatMessage[]).filter((m) => m.role !== 'setup');
+      return { messages, dayKey: getTodayKey() };
+    }
+    const chat = parsed as PersistedChat;
+    chat.messages = chat.messages.filter((m) => m.role !== 'setup');
+    return chat;
   } catch {
-    return [];
+    return null;
   }
 }
 
 function persistMessages(messages: ChatMessage[]) {
   try {
-    // Keep only the most recent messages to avoid unbounded growth
     const toSave = messages.slice(-MAX_PERSISTED_MESSAGES);
-    // Don't persist 'setup' messages
     const filtered = toSave.filter((m) => m.role !== 'setup');
-    localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(filtered));
+    const chat: PersistedChat = { messages: filtered, dayKey: getTodayKey() };
+    localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chat));
   } catch {
     // Ignore storage quota errors
   }
@@ -75,9 +87,22 @@ export function Chat() {
     []
   );
 
+  // oldMessages: messages from a previous day, hidden by default
+  const [oldMessages, setOldMessages] = useState<ChatMessage[]>([]);
+  const [showOldMessages, setShowOldMessages] = useState(false);
+  const [isNewDay, setIsNewDay] = useState(false);
+
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    const persisted = loadPersistedMessages();
-    if (persisted.length > 0) return persisted;
+    const persisted = loadPersistedChat();
+    if (persisted && persisted.messages.length > 0) {
+      const today = getTodayKey();
+      if (persisted.dayKey !== today) {
+        // Different day — these are old messages, start fresh
+        // We'll set isNewDay and oldMessages in a useEffect
+        return [{ role: 'assistant', text: t.chatWelcome }];
+      }
+      return persisted.messages;
+    }
     return [{ role: 'assistant', text: t.chatWelcome }];
   });
   const [input, setInput] = useState('');
@@ -105,6 +130,16 @@ export function Chat() {
   const isOnline = useOnlineStatus();
   const navigate = useNavigate();
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // On mount: detect if persisted messages are from a previous day
+  useEffect(() => {
+    const persisted = loadPersistedChat();
+    if (persisted && persisted.messages.length > 0 && persisted.dayKey !== getTodayKey()) {
+      setOldMessages(persisted.messages);
+      setIsNewDay(true);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Persist messages on change (but not on initial load)
   const isFirstRender = useRef(true);
@@ -256,6 +291,9 @@ export function Chat() {
     setEditingResult(false);
     setShowManual(false);
     setShowClearConfirm(false);
+    setOldMessages([]);
+    setIsNewDay(false);
+    setShowOldMessages(false);
     setMessages([{ role: 'assistant', text: t.chatWelcome }]);
   }
 
@@ -404,6 +442,174 @@ export function Chat() {
     navigate('/');
   }
 
+  function renderChatMessage(msg: ChatMessage, i: number, keyOffset: number = 0, isInteractive: boolean = true): React.ReactNode {
+    const key = i + keyOffset;
+    if (msg.role === 'assistant' || msg.role === 'coach') {
+      return (
+        <div key={key} className="flex gap-2">
+          <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
+          <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm text-[#c8c4b0]">{msg.text}</div>
+        </div>
+      );
+    }
+    if (msg.role === 'answer') {
+      return (
+        <div key={key} className="flex gap-2">
+          <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
+          <div className="bg-[#242419] border border-[#3a3a2a] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm text-[#c8c4b0] whitespace-pre-wrap">{msg.text}</div>
+        </div>
+      );
+    }
+    if (msg.role === 'user') {
+      return (
+        <div key={key} className="flex justify-end flex-col items-end gap-1">
+          {msg.image && (
+            <img src={msg.image} alt="attached" className="max-w-[200px] max-h-[150px] rounded-xl object-cover border border-[#3a3a2a]" />
+          )}
+          {msg.text && msg.text !== '📷' && (
+            <div className="bg-[#3a3a2a] rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] text-sm text-[#f0ede4]">{msg.text}</div>
+          )}
+        </div>
+      );
+    }
+    if (msg.role === 'error') {
+      return (
+        <div key={key} className="flex gap-2 items-start">
+          <AlertCircle className="w-5 h-5 text-[#d4a24c] shrink-0 mt-0.5" />
+          <div className="bg-[#3a2a1a] border border-[#5a3a20] rounded-2xl px-4 py-3 max-w-[85%] text-sm text-[#d4a24c]">{msg.text}</div>
+        </div>
+      );
+    }
+    // setup and result messages are only rendered in the interactive (current day) section
+    if (!isInteractive) return null;
+    if (msg.role === 'setup') {
+      return (
+        <div key={key} className="flex gap-2">
+          <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
+          <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-4 max-w-[95%] w-full text-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="font-semibold text-[#f0ede4]">{t.apiKeySetupTitle}</p>
+              <button onClick={() => setShowApiKeyExplainer(true)} className="inline-flex items-center gap-1 text-xs text-[#9a9680] hover:text-[#c8c4b0]">
+                <HelpCircle className="w-3 h-3" />{t.apiKeyWhatIsThis}
+              </button>
+            </div>
+            <p className="text-[#9a9680] text-xs">{t.apiKeySetupFree}</p>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#7cb87a] text-[#18180f] font-medium text-sm hover:bg-[#8fce8d] active:bg-[#6aa368]">
+              {t.apiKeyOpenStudio} <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-[#c8c4b0]">{t.apiKeyOnceThereTitle}</p>
+              {([t.apiKeyStep1, t.apiKeyStep2, t.apiKeyStep3, t.apiKeyStep4] as string[]).map((step, si) => (
+                <p key={si} className="text-xs text-[#9a9680]"><span className="text-[#5a5a44] mr-1.5">{si + 1}.</span>{step}</p>
+              ))}
+            </div>
+            <div className="relative">
+              <input type={showSetupKey ? 'text' : 'password'} placeholder="AIza..." value={setupKey} onChange={(e) => setSetupKey(e.target.value)}
+                className="w-full bg-[#1a1a12] border border-[#3a3a2a] rounded-xl px-3 py-2.5 pr-10 text-sm text-[#f0ede4] placeholder:text-[#5a5a44] focus:outline-none focus:ring-2 focus:ring-[#7cb87a]/60" />
+              <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9a9680] hover:text-[#c8c4b0]" onClick={() => setShowSetupKey((v) => !v)}>
+                {showSetupKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+            <Button size="sm" className="w-full" disabled={!setupKey.trim() || loading} onClick={() => handleSetupSave(msg.retryText)}>
+              {t.apiKeySaveAndContinue}
+            </Button>
+          </div>
+        </div>
+      );
+    }
+    if (msg.role === 'result') {
+      const isPending = pendingMeal && i === messages.length - 1;
+      const displayFoods = (isPending && editingResult) ? editedFoods : msg.parsed.foods;
+      const total = sumMacros(displayFoods);
+      return (
+        <div key={key} className="space-y-3">
+          <div className="flex gap-2">
+            <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
+            <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[95%] text-sm w-full">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-[#9a9680]">{t.gotIt}</p>
+                {isPending && !editingResult && (
+                  <button onClick={() => { setEditedFoods(msg.parsed.foods.map(f => ({ ...f, macros: { ...f.macros } }))); setEditingResult(true); }}
+                    className="flex items-center gap-1 text-xs text-[#9a9680] hover:text-[#f0ede4] px-2 py-1 rounded-lg hover:bg-[#3a3a2a]">
+                    <Pencil className="w-3 h-3" /> {t.editSuggestion}
+                  </button>
+                )}
+              </div>
+              {editingResult && isPending ? (
+                <div className="space-y-3">
+                  {editedFoods.map((food, fi) => (
+                    <div key={fi} className="space-y-2 pb-3 border-b border-[#3a3a2a] last:border-0">
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <input className="col-span-2 bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-sm text-[#f0ede4] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
+                          value={food.name} onChange={(e) => setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, name: e.target.value } : f))} placeholder="Food name" />
+                        <input className="col-span-2 bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-xs text-[#9a9680] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
+                          value={food.quantity} onChange={(e) => setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, quantity: e.target.value } : f))} placeholder="Quantity" />
+                      </div>
+                      <div className="grid grid-cols-4 gap-1.5">
+                        <div className="space-y-0.5">
+                          <label className="text-[9px] text-[#5a5a44] uppercase tracking-wide block">kcal</label>
+                          <div className="flex h-[30px] w-full items-center rounded-lg border border-[#3a3a2a] bg-[#1a1a12] px-2 text-xs text-[#5a5a44] select-none">{recalculateCalories(food.macros)}</div>
+                        </div>
+                        {(['protein', 'carbs', 'fat'] as const).map((k) => (
+                          <div key={k} className="space-y-0.5">
+                            <label className="text-[9px] text-[#5a5a44] uppercase tracking-wide block">{k[0].toUpperCase()}</label>
+                            <input type="number" className="w-full bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-xs text-[#f0ede4] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
+                              value={food.macros[k]}
+                              onChange={(e) => {
+                                const updated = { ...food.macros, [k]: Number(e.target.value) || 0 };
+                                updated.calories = recalculateCalories(updated);
+                                setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, macros: updated } : f));
+                              }} />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {displayFoods.map((food, fi) => (
+                    <div key={fi} className="flex justify-between items-start">
+                      <div>
+                        <p className="text-[#f0ede4] font-medium">{food.name}</p>
+                        <p className="text-xs text-[#5a5a44]">{food.quantity}</p>
+                      </div>
+                      <div className="text-right text-xs text-[#9a9680] shrink-0 ml-4">
+                        <p className="text-[#d4a24c] font-medium">{fmt(food.macros.calories, true)} kcal</p>
+                        <p>P:{fmt(food.macros.protein)}g C:{fmt(food.macros.carbs)}g F:{fmt(food.macros.fat)}g</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="mt-3 pt-3 border-t border-[#3a3a2a] flex justify-between text-sm">
+                <span className="text-[#9a9680]">{t.total}</span>
+                <div className="text-right">
+                  <span className="text-[#d4a24c] font-semibold">{fmt(total.calories, true)} kcal</span>
+                  <p className="text-xs text-[#5a5a44]">P:{fmt(total.protein)}g F:{fmt(total.fat)}g C:{fmt(total.carbs)}g</p>
+                </div>
+              </div>
+              {msg.parsed.notes && !editingResult && (
+                <p className="mt-2 text-xs text-[#9a9680] italic">{msg.parsed.notes}</p>
+              )}
+              {isPending && (
+                <div className="mt-4 flex gap-2">
+                  <Button size="sm" onClick={() => { const mealToSave = editingResult ? { ...msg.parsed, foods: editedFoods } : msg.parsed; setEditingResult(false); saveMeal(mealToSave, editingResult); }} className="flex-1 gap-1.5">
+                    <CheckCircle className="w-4 h-4" /> {t.saveBtn}
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => { setPendingMeal(null); setEditingResult(false); trackMealDiscarded(); }} className="flex-1 gap-1.5">
+                    <XCircle className="w-4 h-4" /> {t.discard}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }
+
   return (
     <div className="flex flex-col min-h-screen pb-20">
       {/* Header */}
@@ -504,218 +710,44 @@ export function Chat() {
         </div>
       )}
 
+      {/* Tutorial hint */}
+      <TutorialHint
+        storageKey="dtk_hint_chat"
+        title={t.tutorialChatTitle}
+        body={t.tutorialChatBody}
+        dismissLabel={t.tutorialDismiss}
+        emoji="🍽️"
+      />
+
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 no-scrollbar">
-        {messages.map((msg, i) => {
-          if (msg.role === 'assistant' || msg.role === 'coach') {
-            return (
-              <div key={i} className="flex gap-2">
-                <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
-                <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm text-[#c8c4b0]">{msg.text}</div>
-              </div>
-            );
-          }
-          if (msg.role === 'answer') {
-            return (
-              <div key={i} className="flex gap-2">
-                <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
-                <div className="bg-[#242419] border border-[#3a3a2a] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm text-[#c8c4b0] whitespace-pre-wrap">{msg.text}</div>
-              </div>
-            );
-          }
-          if (msg.role === 'user') {
-            return (
-              <div key={i} className="flex justify-end flex-col items-end gap-1">
-                {msg.image && (
-                  <img
-                    src={msg.image}
-                    alt="attached"
-                    className="max-w-[200px] max-h-[150px] rounded-xl object-cover border border-[#3a3a2a]"
-                  />
-                )}
-                {msg.text && msg.text !== '📷' && (
-                  <div className="bg-[#3a3a2a] rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] text-sm text-[#f0ede4]">{msg.text}</div>
-                )}
-              </div>
-            );
-          }
-          if (msg.role === 'error') {
-            return (
-              <div key={i} className="flex gap-2 items-start">
-                <AlertCircle className="w-5 h-5 text-[#d4a24c] shrink-0 mt-0.5" />
-                <div className="bg-[#3a2a1a] border border-[#5a3a20] rounded-2xl px-4 py-3 max-w-[85%] text-sm text-[#d4a24c]">{msg.text}</div>
-              </div>
-            );
-          }
-          if (msg.role === 'setup') {
-            return (
-              <div key={i} className="flex gap-2">
-                <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
-                <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-4 max-w-[95%] w-full text-sm space-y-3">
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold text-[#f0ede4]">{t.apiKeySetupTitle}</p>
-                    <button
-                      onClick={() => setShowApiKeyExplainer(true)}
-                      className="inline-flex items-center gap-1 text-xs text-[#9a9680] hover:text-[#c8c4b0]"
-                    >
-                      <HelpCircle className="w-3 h-3" />
-                      {t.apiKeyWhatIsThis}
-                    </button>
-                  </div>
-                  <p className="text-[#9a9680] text-xs">{t.apiKeySetupFree}</p>
-                  <a
-                    href="https://aistudio.google.com/app/apikey"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#7cb87a] text-[#18180f] font-medium text-sm hover:bg-[#8fce8d] active:bg-[#6aa368]"
-                  >
-                    {t.apiKeyOpenStudio} <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                  <div className="space-y-1.5">
-                    <p className="text-xs font-medium text-[#c8c4b0]">{t.apiKeyOnceThereTitle}</p>
-                    {([t.apiKeyStep1, t.apiKeyStep2, t.apiKeyStep3, t.apiKeyStep4] as string[]).map((step, si) => (
-                      <p key={si} className="text-xs text-[#9a9680]">
-                        <span className="text-[#5a5a44] mr-1.5">{si + 1}.</span>{step}
-                      </p>
-                    ))}
-                  </div>
-                  <div className="relative">
-                    <input
-                      type={showSetupKey ? 'text' : 'password'}
-                      placeholder="AIza..."
-                      value={setupKey}
-                      onChange={(e) => setSetupKey(e.target.value)}
-                      className="w-full bg-[#1a1a12] border border-[#3a3a2a] rounded-xl px-3 py-2.5 pr-10 text-sm text-[#f0ede4] placeholder:text-[#5a5a44] focus:outline-none focus:ring-2 focus:ring-[#7cb87a]/60"
-                    />
-                    <button
-                      type="button"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9a9680] hover:text-[#c8c4b0]"
-                      onClick={() => setShowSetupKey((v) => !v)}
-                    >
-                      {showSetupKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                  <Button
-                    size="sm"
-                    className="w-full"
-                    disabled={!setupKey.trim() || loading}
-                    onClick={() => handleSetupSave(msg.retryText)}
-                  >
-                    {t.apiKeySaveAndContinue}
-                  </Button>
-                </div>
-              </div>
-            );
-          }
-          if (msg.role === 'result') {
-            const isPending = pendingMeal && i === messages.length - 1;
-            const displayFoods = (isPending && editingResult) ? editedFoods : msg.parsed.foods;
-            const total = sumMacros(displayFoods);
-            return (
-              <div key={i} className="space-y-3">
-                <div className="flex gap-2">
-                  <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
-                  <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[95%] text-sm w-full">
-                    <div className="flex items-center justify-between mb-3">
-                      <p className="text-[#9a9680]">{t.gotIt}</p>
-                      {isPending && !editingResult && (
-                        <button
-                          onClick={() => { setEditedFoods(msg.parsed.foods.map(f => ({ ...f, macros: { ...f.macros } }))); setEditingResult(true); }}
-                          className="flex items-center gap-1 text-xs text-[#9a9680] hover:text-[#f0ede4] px-2 py-1 rounded-lg hover:bg-[#3a3a2a]"
-                        >
-                          <Pencil className="w-3 h-3" /> {t.editSuggestion}
-                        </button>
-                      )}
-                    </div>
 
-                    {editingResult && isPending ? (
-                      <div className="space-y-3">
-                        {editedFoods.map((food, fi) => (
-                          <div key={fi} className="space-y-2 pb-3 border-b border-[#3a3a2a] last:border-0">
-                            <div className="grid grid-cols-2 gap-1.5">
-                              <input
-                                className="col-span-2 bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-sm text-[#f0ede4] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
-                                value={food.name}
-                                onChange={(e) => setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, name: e.target.value } : f))}
-                                placeholder="Food name"
-                              />
-                              <input
-                                className="col-span-2 bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-xs text-[#9a9680] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
-                                value={food.quantity}
-                                onChange={(e) => setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, quantity: e.target.value } : f))}
-                                placeholder="Quantity"
-                              />
-                            </div>
-                            <div className="grid grid-cols-4 gap-1.5">
-                              <div className="space-y-0.5">
-                                <label className="text-[9px] text-[#5a5a44] uppercase tracking-wide block">kcal</label>
-                                <div className="flex h-[30px] w-full items-center rounded-lg border border-[#3a3a2a] bg-[#1a1a12] px-2 text-xs text-[#5a5a44] select-none">
-                                  {recalculateCalories(food.macros)}
-                                </div>
-                              </div>
-                              {(['protein', 'carbs', 'fat'] as const).map((key) => (
-                                <div key={key} className="space-y-0.5">
-                                  <label className="text-[9px] text-[#5a5a44] uppercase tracking-wide block">{key[0].toUpperCase()}</label>
-                                  <input
-                                    type="number"
-                                    className="w-full bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-xs text-[#f0ede4] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
-                                    value={food.macros[key]}
-                                    onChange={(e) => {
-                                      const updated = { ...food.macros, [key]: Number(e.target.value) || 0 };
-                                      updated.calories = recalculateCalories(updated);
-                                      setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, macros: updated } : f));
-                                    }}
-                                  />
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        {displayFoods.map((food, fi) => (
-                          <div key={fi} className="flex justify-between items-start">
-                            <div>
-                              <p className="text-[#f0ede4] font-medium">{food.name}</p>
-                              <p className="text-xs text-[#5a5a44]">{food.quantity}</p>
-                            </div>
-                            <div className="text-right text-xs text-[#9a9680] shrink-0 ml-4">
-                              <p className="text-[#d4a24c] font-medium">{fmt(food.macros.calories, true)} kcal</p>
-                              <p>P:{fmt(food.macros.protein)}g C:{fmt(food.macros.carbs)}g F:{fmt(food.macros.fat)}g</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+        {/* Previous day messages (collapsed by default) */}
+        {isNewDay && oldMessages.length > 0 && (
+          <div className="space-y-3">
+            {showOldMessages && oldMessages.map((msg, i) => renderChatMessage(msg, i, -1000 + i, false))}
+            <button
+              onClick={() => setShowOldMessages((v) => !v)}
+              className="w-full flex items-center gap-2 py-2 px-3 rounded-xl text-xs text-[#9a9680] bg-[#2e2e22]/60 border border-[#3a3a2a] hover:bg-[#2e2e22] transition-colors"
+            >
+              <div className="flex-1 h-px bg-[#3a3a2a]" />
+              <span className="shrink-0">{showOldMessages ? t.chatOldMessagesHidden : t.chatOldMessagesHidden}</span>
+              <ChevronDown className={`w-3.5 h-3.5 shrink-0 transition-transform ${showOldMessages ? 'rotate-180' : ''}`} />
+              {!showOldMessages && (
+                <span className="shrink-0 text-[#7cb87a] font-medium">{t.chatShowOldMessages}</span>
+              )}
+              <div className="flex-1 h-px bg-[#3a3a2a]" />
+            </button>
+            {/* New day separator */}
+            <div className="flex items-center gap-2 py-1">
+              <div className="flex-1 h-px bg-[#3a3a2a]" />
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-[#5a5a44] px-2">{t.chatNewDay}</span>
+              <div className="flex-1 h-px bg-[#3a3a2a]" />
+            </div>
+          </div>
+        )}
 
-                    <div className="mt-3 pt-3 border-t border-[#3a3a2a] flex justify-between text-sm">
-                      <span className="text-[#9a9680]">{t.total}</span>
-                      <div className="text-right">
-                        <span className="text-[#d4a24c] font-semibold">{fmt(total.calories, true)} kcal</span>
-                        <p className="text-xs text-[#5a5a44]">P:{fmt(total.protein)}g F:{fmt(total.fat)}g C:{fmt(total.carbs)}g</p>
-                      </div>
-                    </div>
-                    {msg.parsed.notes && !editingResult && (
-                      <p className="mt-2 text-xs text-[#9a9680] italic">{msg.parsed.notes}</p>
-                    )}
-                    {isPending && (
-                      <div className="mt-4 flex gap-2">
-                        <Button size="sm" onClick={() => { const mealToSave = editingResult ? { ...msg.parsed, foods: editedFoods } : msg.parsed; setEditingResult(false); saveMeal(mealToSave, editingResult); }} className="flex-1 gap-1.5">
-                          <CheckCircle className="w-4 h-4" /> {t.saveBtn}
-                        </Button>
-                        <Button size="sm" variant="outline" onClick={() => { setPendingMeal(null); setEditingResult(false); trackMealDiscarded(); }} className="flex-1 gap-1.5">
-                          <XCircle className="w-4 h-4" /> {t.discard}
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          }
-          return null;
-        })}
+        {messages.map((msg, i) => renderChatMessage(msg, i, 0, true))}
 
         {loading && (
           <div className="flex gap-2 items-center">
