@@ -959,7 +959,7 @@ export function Chat() {
                 />
 
                 {/* Camera button */}
-                <Hotspot storageKey="dtk_hotspot_camera" label={t.hotspotCameraLabel} tooltipSide="top" delay={800}>
+                <Hotspot storageKey="dtk_hotspot_camera" label={t.hotspotCameraLabel} tooltipSide="top" tooltipAlign="left" delay={800}>
                   <button
                     onClick={() => photoInputRef.current?.click()}
                     disabled={loading}
@@ -982,7 +982,7 @@ export function Chat() {
 
                 {/* Mic button — only shown when speech is supported */}
                 {speechSupported && (
-                  <Hotspot storageKey="dtk_hotspot_mic" label={t.hotspotMicLabel} tooltipSide="top" delay={2400}>
+                  <Hotspot storageKey="dtk_hotspot_mic" label={t.hotspotMicLabel} tooltipSide="top" tooltipAlign="right" delay={2400}>
                     <button
                       onClick={toggleMic}
                       disabled={loading}

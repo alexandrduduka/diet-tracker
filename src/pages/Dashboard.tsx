@@ -200,7 +200,7 @@ export function Dashboard() {
       {/* FAB — only shown for today */}
       {isToday && (
         <div className="sticky bottom-24 flex justify-end pr-4 mt-4">
-          <Hotspot storageKey="dtk_hotspot_fab" label={t.hotspotFabLabel} tooltipSide="top" delay={800}>
+          <Hotspot storageKey="dtk_hotspot_fab" label={t.hotspotFabLabel} tooltipSide="top" tooltipAlign="right" delay={800}>
             <button
               onClick={() => navigate('/chat')}
               aria-label="Log a meal"

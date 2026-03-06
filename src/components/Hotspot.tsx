@@ -4,11 +4,12 @@ interface HotspotProps {
   storageKey: string;
   label: string;
   tooltipSide?: 'top' | 'bottom';
+  tooltipAlign?: 'center' | 'left' | 'right';
   delay?: number;
   children: React.ReactNode;
 }
 
-export function Hotspot({ storageKey, label, tooltipSide = 'top', delay = 800, children }: HotspotProps) {
+export function Hotspot({ storageKey, label, tooltipSide = 'top', tooltipAlign = 'center', delay = 800, children }: HotspotProps) {
   const [dismissed, setDismissed] = useState(() => !!localStorage.getItem(storageKey));
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
@@ -39,11 +40,15 @@ export function Hotspot({ storageKey, label, tooltipSide = 'top', delay = 800, c
       {/* Tooltip bubble */}
       {tooltipVisible && (
         <div
-          className={`absolute z-40 ${
-            tooltipSide === 'top'
-              ? 'bottom-full mb-2'
-              : 'top-full mt-2'
-          } left-1/2 -translate-x-1/2 animate-fade-in`}
+          className={`absolute z-40 animate-fade-in ${
+            tooltipSide === 'top' ? 'bottom-full mb-2' : 'top-full mt-2'
+          } ${
+            tooltipAlign === 'right'
+              ? 'right-0'
+              : tooltipAlign === 'left'
+              ? 'left-0'
+              : 'left-1/2 -translate-x-1/2'
+          }`}
           style={{ pointerEvents: 'auto' }}
         >
           <div className="bg-[#2e2e22] border border-[#7cb87a]/40 rounded-xl px-3 py-2 shadow-lg w-max max-w-[190px]">
@@ -55,12 +60,18 @@ export function Hotspot({ storageKey, label, tooltipSide = 'top', delay = 800, c
               Got it ✓
             </button>
           </div>
-          {/* Caret arrow */}
+          {/* Caret arrow — positioned relative to tooltip alignment */}
           <div
-            className={`absolute left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-[#2e2e22] border-[#7cb87a]/40 rotate-45 ${
+            className={`absolute w-2.5 h-2.5 bg-[#2e2e22] border-[#7cb87a]/40 rotate-45 ${
               tooltipSide === 'top'
                 ? 'bottom-0 translate-y-1/2 border-r border-b'
                 : 'top-0 -translate-y-1/2 border-l border-t'
+            } ${
+              tooltipAlign === 'right'
+                ? 'right-4'
+                : tooltipAlign === 'left'
+                ? 'left-4'
+                : 'left-1/2 -translate-x-1/2'
             }`}
           />
         </div>
