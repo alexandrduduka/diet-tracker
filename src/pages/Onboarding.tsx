@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check } from 'lucide-react';
+import { Check, Eye, EyeOff } from 'lucide-react';
 import { useLang } from '../store/langContext';
 import { saveSettings } from '../store/settings';
 import { trackOnboardingCompleted } from '../lib/analytics';
@@ -21,7 +21,7 @@ import { Input } from '../components/ui/input';
 import type { AppLanguage, OnboardingProfile } from '../types';
 
 const LANGUAGES: AppLanguage[] = ['en', 'ru', 'uk', 'cs', 'de', 'fr', 'es'];
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 
 export function Onboarding() {
   const { t, lang, setLang } = useLang();
@@ -41,6 +41,10 @@ export function Onboarding() {
   // Macro slider state
   const [protein, setProtein] = useState(150);
   const [fat, setFat] = useState(65);
+
+  // API key step state
+  const [setupKey, setSetupKey] = useState('');
+  const [showSetupKey, setShowSetupKey] = useState(false);
 
   function buildProfile(): OnboardingProfile {
     return {
@@ -76,10 +80,12 @@ export function Onboarding() {
     const calories = calculateCalorieTarget(profile);
     const carbs = derivedCarbs(calories, protein, fat);
     trackOnboardingCompleted();
+    const trimmedKey = setupKey.trim();
     saveSettings({
       goals: { calories, protein, fat, carbs },
       onboardingComplete: true,
       onboardingProfile: profile,
+      ...(trimmedKey ? { geminiApiKey: trimmedKey } : {}),
     });
     window.dispatchEvent(new Event('dtk:settings-changed'));
     // Save onboarding weight as first Body log entry
@@ -494,8 +500,68 @@ export function Onboarding() {
           </div>
         )}
 
-        {/* Step 5 — Done */}
+        {/* Step 5 — AI / API Key setup */}
         {step === 5 && (
+          <div className="space-y-5">
+            <div>
+              <h1 className="text-xl font-bold text-[#f0ede4] mb-2">{t.onboardingApiKeyTitle}</h1>
+              <p className="text-sm text-[#9a9680] leading-relaxed">{t.onboardingApiKeySubtitle}</p>
+            </div>
+
+            {/* 3-step visual */}
+            <div className="space-y-3">
+              {[
+                t.apiKeyExplainStep1,
+                t.apiKeyExplainStep2,
+                t.apiKeyExplainStep3,
+              ].map((instrText, i) => (
+                <div key={i} className="flex gap-3 items-start">
+                  <span className="w-6 h-6 rounded-full bg-[#7cb87a]/20 border border-[#7cb87a]/40 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-[#7cb87a]">{i + 1}</span>
+                  </span>
+                  <p className="text-sm text-[#c8c4b0] leading-snug">{instrText}</p>
+                </div>
+              ))}
+            </div>
+
+            <a
+              href="https://aistudio.google.com/app/apikey"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full h-11 rounded-xl border border-[#7cb87a]/40 text-sm text-[#7cb87a] font-medium hover:bg-[#7cb87a]/10 transition-colors"
+            >
+              {t.apiKeyOpenStudio} ↗
+            </a>
+
+            {/* Key input */}
+            <div className="relative">
+              <Input
+                type={showSetupKey ? 'text' : 'password'}
+                placeholder={t.onboardingApiKeyInputPlaceholder}
+                value={setupKey}
+                onChange={(e) => setSetupKey(e.target.value)}
+                className="pr-10 font-mono text-sm"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck={false}
+              />
+              <button
+                type="button"
+                onClick={() => setShowSetupKey((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5a5a44] hover:text-[#9a9680]"
+                aria-label={showSetupKey ? 'Hide key' : 'Show key'}
+              >
+                {showSetupKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+
+            <p className="text-xs text-[#5a5a44]">{t.onboardingApiKeySuccessNote}</p>
+          </div>
+        )}
+
+        {/* Step 6 — Done */}
+        {step === 6 && (
           <div className="space-y-5">
             {/* Hero */}
             <div className="flex items-center gap-4">
@@ -586,6 +652,19 @@ export function Onboarding() {
             </>
           )}
           {step === 5 && (
+            <>
+              <Button variant="outline" className="h-12 px-4" onClick={handleBack}>
+                {t.onboardingBack}
+              </Button>
+              <Button
+                className="flex-1 h-12"
+                onClick={() => setStep(6)}
+              >
+                {setupKey.trim() ? t.onboardingApiKeySave : t.onboardingApiKeySkip}
+              </Button>
+            </>
+          )}
+          {step === 6 && (
             <Button className="flex-1 h-12" onClick={handleFinish}>
               {t.onboardingStartTracking}
             </Button>

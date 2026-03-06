@@ -278,6 +278,14 @@ export interface Translations {
   chatEditMealFound: string;
   chatEditMealNotFound: string;
   chatEditMealSaved: string;
+
+  // Onboarding API key step (step 5)
+  onboardingApiKeyTitle: string;
+  onboardingApiKeySubtitle: string;
+  onboardingApiKeySkip: string;
+  onboardingApiKeySave: string;
+  onboardingApiKeyInputPlaceholder: string;
+  onboardingApiKeySuccessNote: string;
 }
 
 const en: Translations = {
@@ -385,8 +393,8 @@ const en: Translations = {
   deleteEverything: 'Delete everything',
   language: 'Language',
 
-  apiKeySetupTitle: 'One quick setup step — then it just works ✨',
-  apiKeySetupFree: "100% free. No credit card, no account in this app, no catch.",
+  apiKeySetupTitle: 'Don\'t worry — it\'s easier than it sounds',
+  apiKeySetupFree: 'Think of it as a free password you generate in 30 seconds. No credit card, no paid plan, seriously your mom could do it.',
   apiKeyOpenStudio: 'Open Google AI Studio',
   apiKeyOnceThereTitle: 'Four taps and you\'re done:',
   apiKeyStep1: 'Sign in with your normal Google account (Gmail works)',
@@ -533,6 +541,13 @@ const en: Translations = {
   chatEditMealFound: 'Found your recent meal. Edit the details below and confirm to save.',
   chatEditMealNotFound: 'No meal from the last 24 hours found to edit. Log a new meal instead.',
   chatEditMealSaved: 'Meal updated ✓',
+
+  onboardingApiKeyTitle: 'One last thing — connect the AI',
+  onboardingApiKeySubtitle: 'This app uses Google\'s AI to understand what you eat. You\'ll need a free API key — think of it as a password you generate yourself in 30 seconds. No credit card, no paid plan, no technical skills needed. Seriously, your mom could do it.',
+  onboardingApiKeySkip: 'Skip for now',
+  onboardingApiKeySave: 'Save & finish →',
+  onboardingApiKeyInputPlaceholder: 'Paste your API key here (starts with AIza…)',
+  onboardingApiKeySuccessNote: 'Free tier: 1,500 requests/day — more than enough for daily meal logging.',
 };
 
 const ru: Translations = {
@@ -640,8 +655,8 @@ const ru: Translations = {
   deleteEverything: 'Удалить всё',
   language: 'Язык',
 
-  apiKeySetupTitle: 'Один шаг настройки — и всё работает ✨',
-  apiKeySetupFree: '100% бесплатно. Никаких карт, никаких подписок, никакого подвоха.',
+  apiKeySetupTitle: 'Не пугайся — это проще, чем звучит',
+  apiKeySetupFree: 'Представь, что это бесплатный пароль, который создаёшь за 30 секунд. Без карты, без подписки, серьёзно — справится даже твоя мама.',
   apiKeyOpenStudio: 'Открыть Google AI Studio',
   apiKeyOnceThereTitle: 'Четыре действия — и готово:',
   apiKeyStep1: 'Войти через обычный Google-аккаунт (Gmail подойдёт)',
@@ -788,6 +803,13 @@ const ru: Translations = {
   chatEditMealFound: 'Нашёл ваш последний приём пищи. Отредактируйте детали ниже и подтвердите сохранение.',
   chatEditMealNotFound: 'За последние 24 часа приёмов пищи не найдено. Запишите новый.',
   chatEditMealSaved: 'Приём пищи обновлён ✓',
+
+  onboardingApiKeyTitle: 'Последний шаг — подключи ИИ',
+  onboardingApiKeySubtitle: 'Приложение использует ИИ от Google, чтобы распознавать еду. Нужен бесплатный API-ключ — это пароль, который ты создаёшь сам за 30 секунд. Без карты, без платной подписки, без технических знаний. Серьёзно, справится даже твоя мама.',
+  onboardingApiKeySkip: 'Пропустить пока',
+  onboardingApiKeySave: 'Сохранить и завершить →',
+  onboardingApiKeyInputPlaceholder: 'Вставьте API-ключ сюда (начинается с AIza…)',
+  onboardingApiKeySuccessNote: 'Бесплатный лимит: 1 500 запросов в день — с запасом для ежедневного учёта питания.',
 };
 
 const cs: Translations = {
@@ -895,8 +917,8 @@ const cs: Translations = {
   deleteEverything: 'Smazat vše',
   language: 'Jazyk',
 
-  apiKeySetupTitle: 'Jeden krok nastavení — a pak to prostě funguje ✨',
-  apiKeySetupFree: '100% zdarma. Žádná karta, žádné předplatné, žádný háček.',
+  apiKeySetupTitle: 'Neboj, je to jednodušší než to zní',
+  apiKeySetupFree: 'Stačí si bezplatně vygenerovat heslo za 30 sekund. Bez karty, bez platby, vážně to zvládne i tvoje máma.',
   apiKeyOpenStudio: 'Otevřít Google AI Studio',
   apiKeyOnceThereTitle: 'Čtyři kroky a hotovo:',
   apiKeyStep1: 'Přihlaš se běžným Google účtem (Gmail funguje)',
@@ -1043,6 +1065,13 @@ const cs: Translations = {
   chatEditMealFound: 'Nalezl jsem vaše poslední jídlo. Upravte podrobnosti níže a potvrďte uložení.',
   chatEditMealNotFound: 'Za posledních 24 hodin nebylo nalezeno žádné jídlo. Zaznamenejte nové.',
   chatEditMealSaved: 'Jídlo aktualizováno ✓',
+
+  onboardingApiKeyTitle: 'Poslední věc — připoj AI',
+  onboardingApiKeySubtitle: 'Aplikace používá Google AI, aby rozuměla tomu, co jíš. Budeš potřebovat bezplatný API klíč — je to jako heslo, které si sám vygeneruješ za 30 sekund. Bez karty, bez platby, bez technických znalostí. Vážně, zvládne to i tvoje máma.',
+  onboardingApiKeySkip: 'Přeskočit prozatím',
+  onboardingApiKeySave: 'Uložit a dokončit →',
+  onboardingApiKeyInputPlaceholder: 'Vlož sem API klíč (začíná AIza…)',
+  onboardingApiKeySuccessNote: 'Bezplatný limit: 1 500 požadavků/den — víc než dost pro každodenní sledování.',
 };
 
 const de: Translations = {
@@ -1150,8 +1179,8 @@ const de: Translations = {
   deleteEverything: 'Alles löschen',
   language: 'Sprache',
 
-  apiKeySetupTitle: 'Einmal einrichten — dann läuft es einfach ✨',
-  apiKeySetupFree: '100% kostenlos. Keine Karte, kein Abo, kein Haken.',
+  apiKeySetupTitle: 'Keine Sorge — einfacher als es klingt',
+  apiKeySetupFree: 'Stell dir das wie ein kostenloses Passwort vor, das du in 30 Sekunden erstellst. Keine Kreditkarte, kein bezahlter Plan, wirklich sogar deine Oma schafft das.',
   apiKeyOpenStudio: 'Google AI Studio öffnen',
   apiKeyOnceThereTitle: 'Vier Schritte und fertig:',
   apiKeyStep1: 'Mit deinem normalen Google-Konto anmelden (Gmail reicht)',
@@ -1298,6 +1327,13 @@ const de: Translations = {
   chatEditMealFound: 'Ihre letzte Mahlzeit wurde gefunden. Bearbeiten Sie die Details unten und bestätigen Sie zum Speichern.',
   chatEditMealNotFound: 'In den letzten 24 Stunden wurde keine Mahlzeit gefunden. Loggen Sie eine neue.',
   chatEditMealSaved: 'Mahlzeit aktualisiert ✓',
+
+  onboardingApiKeyTitle: 'Letzter Schritt — KI verbinden',
+  onboardingApiKeySubtitle: 'Die App nutzt Googles KI, um dein Essen zu erkennen. Du brauchst einen kostenlosen API-Schlüssel — stell dir das wie ein Passwort vor, das du dir in 30 Sekunden selbst erstellst. Keine Kreditkarte, kein bezahlter Plan, kein technisches Wissen. Wirklich, das schafft sogar deine Oma.',
+  onboardingApiKeySkip: 'Erstmal überspringen',
+  onboardingApiKeySave: 'Speichern & abschließen →',
+  onboardingApiKeyInputPlaceholder: 'API-Schlüssel hier einfügen (beginnt mit AIza…)',
+  onboardingApiKeySuccessNote: 'Kostenloses Kontingent: 1.500 Anfragen/Tag — mehr als genug zum täglichen Tracken.',
 };
 
 const fr: Translations = {
@@ -1405,8 +1441,8 @@ const fr: Translations = {
   deleteEverything: 'Tout supprimer',
   language: 'Langue',
 
-  apiKeySetupTitle: 'Une petite config — et après ça marche tout seul ✨',
-  apiKeySetupFree: '100% gratuit. Pas de carte, pas d\'abonnement, pas de piège.',
+  apiKeySetupTitle: 'T\'inquiète — c\'est plus simple que ça en a l\'air',
+  apiKeySetupFree: 'C\'est comme un mot de passe gratuit que tu génères en 30 secondes. Sans carte, sans abonnement, franchement ta grand-mère pourrait le faire.',
   apiKeyOpenStudio: 'Ouvrir Google AI Studio',
   apiKeyOnceThereTitle: 'Quatre étapes et c\'est réglé :',
   apiKeyStep1: 'Connecte-toi avec ton compte Google habituel (Gmail ça marche)',
@@ -1553,6 +1589,13 @@ const fr: Translations = {
   chatEditMealFound: 'Votre dernier repas a été trouvé. Modifiez les détails ci-dessous et confirmez pour sauvegarder.',
   chatEditMealNotFound: 'Aucun repas des dernières 24 heures trouvé. Enregistrez-en un nouveau.',
   chatEditMealSaved: 'Repas mis à jour ✓',
+
+  onboardingApiKeyTitle: 'Dernière étape — connecte l\'IA',
+  onboardingApiKeySubtitle: 'L\'app utilise l\'IA de Google pour comprendre ce que tu manges. Tu as besoin d\'une clé API gratuite — c\'est comme un mot de passe que tu génères toi-même en 30 secondes. Sans carte, sans abonnement, sans connaissance technique. Sérieusement, ta grand-mère pourrait le faire.',
+  onboardingApiKeySkip: 'Passer pour l\'instant',
+  onboardingApiKeySave: 'Enregistrer & terminer →',
+  onboardingApiKeyInputPlaceholder: 'Colle ta clé API ici (commence par AIza…)',
+  onboardingApiKeySuccessNote: 'Quota gratuit : 1 500 requêtes/jour — largement suffisant pour suivre ses repas au quotidien.',
 };
 
 const es: Translations = {
@@ -1660,8 +1703,8 @@ const es: Translations = {
   deleteEverything: 'Eliminar todo',
   language: 'Idioma',
 
-  apiKeySetupTitle: 'Un paso de configuración — y ya funciona solo ✨',
-  apiKeySetupFree: '100% gratis. Sin tarjeta, sin suscripción, sin trampa.',
+  apiKeySetupTitle: 'Tranquilo — es más fácil de lo que parece',
+  apiKeySetupFree: 'Es como una contraseña gratuita que generas en 30 segundos. Sin tarjeta, sin suscripción, en serio hasta tu abuela podría hacerlo.',
   apiKeyOpenStudio: 'Abrir Google AI Studio',
   apiKeyOnceThereTitle: 'Cuatro pasos y listo:',
   apiKeyStep1: 'Inicia sesión con tu cuenta de Google normal (Gmail vale)',
@@ -1808,6 +1851,13 @@ const es: Translations = {
   chatEditMealFound: 'Se encontró tu última comida. Edita los detalles abajo y confirma para guardar.',
   chatEditMealNotFound: 'No se encontró ninguna comida de las últimas 24 horas. Registra una nueva.',
   chatEditMealSaved: 'Comida actualizada ✓',
+
+  onboardingApiKeyTitle: 'Último paso — conecta la IA',
+  onboardingApiKeySubtitle: 'La app usa la IA de Google para entender lo que comes. Necesitas una clave API gratuita — es como una contraseña que generas tú mismo en 30 segundos. Sin tarjeta, sin suscripción, sin conocimientos técnicos. En serio, hasta tu abuela podría hacerlo.',
+  onboardingApiKeySkip: 'Omitir por ahora',
+  onboardingApiKeySave: 'Guardar y terminar →',
+  onboardingApiKeyInputPlaceholder: 'Pega tu clave API aquí (empieza por AIza…)',
+  onboardingApiKeySuccessNote: 'Cuota gratuita: 1.500 peticiones/día — más que suficiente para registrar comidas a diario.',
 };
 
 const uk: Translations = {
@@ -1915,8 +1965,8 @@ const uk: Translations = {
   deleteEverything: 'Видалити все',
   language: 'Мова',
 
-  apiKeySetupTitle: 'Один крок налаштування — і все просто працює ✨',
-  apiKeySetupFree: '100% безкоштовно. Без карти, без підписки, без підступу.',
+  apiKeySetupTitle: 'Не хвилюйся — це простіше, ніж звучить',
+  apiKeySetupFree: 'Уяви це як безплатний пароль, який генеруєш за 30 секунд. Без картки, без підписки, серйозно — впорається навіть твоя мама.',
   apiKeyOpenStudio: 'Відкрити Google AI Studio',
   apiKeyOnceThereTitle: 'Чотири дії — і готово:',
   apiKeyStep1: 'Увійти зі звичайного Google-акаунту (Gmail підійде)',
@@ -2063,6 +2113,13 @@ const uk: Translations = {
   chatEditMealFound: 'Знайдено ваш останній прийом їжі. Відредагуйте деталі нижче та підтвердіть збереження.',
   chatEditMealNotFound: 'За останні 24 години прийомів їжі не знайдено. Запишіть новий.',
   chatEditMealSaved: 'Прийом їжі оновлено ✓',
+
+  onboardingApiKeyTitle: 'Останній крок — підключи ІІ',
+  onboardingApiKeySubtitle: 'Додаток використовує ШІ Google, щоб розпізнавати їжу. Потрібен безплатний API-ключ — це як пароль, який ти сам генеруєш за 30 секунд. Без картки, без платної підписки, без технічних знань. Серйозно, впорається навіть твоя мама.',
+  onboardingApiKeySkip: 'Пропустити поки що',
+  onboardingApiKeySave: 'Зберегти й завершити →',
+  onboardingApiKeyInputPlaceholder: 'Встав API-ключ сюди (починається з AIza…)',
+  onboardingApiKeySuccessNote: 'Безплатний ліміт: 1 500 запитів на день — більш ніж достатньо для щоденного обліку харчування.',
 };
 
 export const TRANSLATIONS: Record<AppLanguage, Translations> = { en, ru, cs, de, fr, es, uk };
