@@ -204,7 +204,7 @@ export async function parseMealDescription(userInput: string, lang: AppLanguage 
 export async function classifyIntent(
   userInput: string,
   lang: AppLanguage = 'en',
-): Promise<'log' | 'question'> {
+): Promise<'log' | 'question' | 'edit'> {
   const key = getApiKey();
   if (!key) throw new Error('NO_API_KEY');
 
@@ -218,10 +218,11 @@ export async function classifyIntent(
       // leave room for the actual JSON output after thinking completes.
       maxOutputTokens: 512,
     },
-    systemInstruction: `Classify the user message as either a meal-logging request or a nutrition/health question.
-Return ONLY a JSON object: {"intent": "log"} or {"intent": "question"}.
+    systemInstruction: `Classify the user message into one of three intents.
+Return ONLY a JSON object: {"intent": "log"}, {"intent": "question"}, or {"intent": "edit"}.
 - "log": user is describing food they ate or want to log (e.g. "I had a banana and coffee", "150g chicken breast", "🍕")
 - "question": user is asking a question or requesting analysis/advice (e.g. "how am I doing today?", "why am I losing weight slowly?", "summarise what I ate", "is my protein high enough?")
+- "edit": user wants to correct or update a previously logged meal (e.g. "I made a mistake in my last entry", "edit my last meal", "change the meal I just logged", "correct my previous entry", "I entered the wrong amount", "it was actually 200g not 100g")
 Lean towards "question" when the message is a question or does not contain food items.${getGeminiLanguageInstruction(lang)}`,
   });
 
@@ -230,6 +231,7 @@ Lean towards "question" when the message is a question or does not contain food 
     const raw = result.response.text().trim();
     const cleaned = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
     const parsed = JSON.parse(cleaned);
+    if (parsed.intent === 'edit') return 'edit';
     return parsed.intent === 'log' ? 'log' : 'question';
   } catch {
     // On any failure, default to 'log' so the normal meal-parsing path handles it

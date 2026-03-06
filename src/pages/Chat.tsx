@@ -3,7 +3,7 @@ import { Send, CheckCircle, XCircle, AlertCircle, Loader2, ExternalLink, Eye, Ey
 import { parseMealDescription, classifyIntent, askNutritionQuestion, analyzeBodyPhoto, type ParsedMeal, type MealContext, type NutritionContext, type ImageAttachment, type BodyAnalysisResult } from '../lib/gemini';
 import { trackMealLogStarted, trackMealSaved, trackMealDiscarded, trackMealEdited, trackNutritionQuestion, trackChatCleared, trackApiKeySaved, trackBodyPhotoAnalysed } from '../lib/analytics';
 import { sumMacros, recalculateCalories, fmt } from '../lib/nutrition';
-import type { FoodItem } from '../types';
+import type { FoodItem, MealEntry } from '../types';
 import { db } from '../db';
 import { getTodayKey, getLastNDayKeys } from '../lib/date';
 import { useOnlineStatus } from '../components/OfflineBanner';
@@ -32,7 +32,8 @@ type ChatMessage =
   | { role: 'setup'; retryText: string }
   | { role: 'coach'; text: string }
   | { role: 'answer'; text: string }
-  | { role: 'body-analysis'; result: BodyAnalysisResult; saved?: boolean };
+  | { role: 'body-analysis'; result: BodyAnalysisResult; saved?: boolean }
+  | { role: 'edit-meal'; meal: MealEntry; saved?: boolean };
 
 function BodyAnalysisCard({
   result,
@@ -115,6 +116,131 @@ function BodyAnalysisCard({
         )}
         {isSaved && (
           <p className="text-xs text-[#7cb87a] font-medium">{t.bodyAnalysisSaved}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function EditMealCard({
+  meal,
+  saved,
+  isInteractive,
+  onSave,
+  onDiscard,
+}: {
+  meal: MealEntry;
+  saved?: boolean;
+  isInteractive: boolean;
+  onSave: (rawInput: string, foods: FoodItem[], notes: string) => void;
+  onDiscard: () => void;
+}) {
+  const { t } = useLang();
+  const [rawInput, setRawInput] = React.useState(meal.rawInput);
+  const [notes, setNotes] = React.useState(meal.notes ?? '');
+  const [editedFoods, setEditedFoods] = React.useState<FoodItem[]>(() =>
+    meal.foods.map((f) => ({ ...f, macros: { ...f.macros } }))
+  );
+  const isSaved = saved;
+
+  return (
+    <div className="flex gap-2">
+      <div className="w-7 h-7 rounded-full bg-[#7cb87a] flex items-center justify-center shrink-0 text-xs font-bold text-[#18180f]">N</div>
+      <div className="bg-[#2e2e22] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[95%] w-full text-sm space-y-3">
+        <p className="text-[#9a9680] text-xs">{isSaved ? t.chatEditMealSaved : t.chatEditMealFound}</p>
+
+        {isSaved ? (
+          <div className="space-y-1">
+            <p className="text-[#f0ede4] font-medium">{rawInput}</p>
+            {meal.foods.map((food, fi) => (
+              <div key={fi} className="flex justify-between items-start text-xs">
+                <span className="text-[#c8c4b0]">{food.name} — {food.quantity}</span>
+                <span className="text-[#9a9680] shrink-0 ml-2">{fmt(food.macros.calories, true)} kcal</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            {/* Description */}
+            <div className="space-y-1">
+              <label className="text-[10px] text-[#5a5a44] uppercase tracking-wide block">{t.mealDescription}</label>
+              <textarea
+                value={rawInput}
+                onChange={(e) => setRawInput(e.target.value)}
+                rows={2}
+                className="w-full rounded-xl border border-[#3a3a2a] bg-[#1a1a12] px-3 py-2 text-sm text-[#f0ede4] placeholder:text-[#5a5a44] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60 resize-none"
+              />
+            </div>
+
+            {/* Food items */}
+            <div className="space-y-3">
+              {editedFoods.map((food, fi) => (
+                <div key={fi} className="space-y-2 pb-3 border-b border-[#3a3a2a] last:border-0">
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <input
+                      className="col-span-2 bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-sm text-[#f0ede4] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
+                      value={food.name}
+                      onChange={(e) => setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, name: e.target.value } : f))}
+                      placeholder={t.foodName}
+                    />
+                    <input
+                      className="col-span-2 bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-xs text-[#9a9680] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
+                      value={food.quantity}
+                      onChange={(e) => setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, quantity: e.target.value } : f))}
+                      placeholder="Quantity"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    <div className="space-y-0.5">
+                      <label className="text-[9px] text-[#5a5a44] uppercase tracking-wide block">kcal</label>
+                      <div className="flex h-[30px] w-full items-center rounded-lg border border-[#3a3a2a] bg-[#1a1a12] px-2 text-xs text-[#5a5a44] select-none">{recalculateCalories(food.macros)}</div>
+                    </div>
+                    {(['protein', 'carbs', 'fat'] as const).map((k) => (
+                      <div key={k} className="space-y-0.5">
+                        <label className="text-[9px] text-[#5a5a44] uppercase tracking-wide block">{k[0].toUpperCase()}</label>
+                        <input
+                          type="number"
+                          className="w-full bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-xs text-[#f0ede4] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
+                          value={food.macros[k]}
+                          onChange={(e) => {
+                            const updated = { ...food.macros, [k]: Number(e.target.value) || 0 };
+                            updated.calories = recalculateCalories(updated);
+                            setEditedFoods((prev) => prev.map((f, j) => j === fi ? { ...f, macros: updated } : f));
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Notes */}
+            <input
+              className="w-full bg-[#1a1a12] border border-[#3a3a2a] rounded-lg px-2 py-1.5 text-xs text-[#f0ede4] focus:outline-none focus:ring-1 focus:ring-[#7cb87a]/60"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder={t.optionalNotes}
+            />
+
+            {isInteractive && (
+              <div className="flex gap-2 pt-1">
+                <button
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[#7cb87a] text-[#18180f] font-medium text-xs hover:bg-[#8fce8d] active:bg-[#6aa368] disabled:opacity-40"
+                  disabled={!rawInput.trim()}
+                  onClick={() => onSave(rawInput.trim(), editedFoods, notes.trim())}
+                >
+                  <CheckCircle className="w-3.5 h-3.5" /> {t.save}
+                </button>
+                <button
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-[#3a3a2a] bg-[#2e2e22] text-[#9a9680] font-medium text-xs hover:text-[#f0ede4] hover:border-[#5a5a44]"
+                  onClick={onDiscard}
+                >
+                  <XCircle className="w-3.5 h-3.5" /> {t.cancel}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -415,13 +541,30 @@ export function Chat() {
       const mealCtx: MealContext = { goals: nutritionCtx.goals, consumed: nutritionCtx.consumed };
 
       // With a photo, always treat as meal log. Otherwise, classify intent.
-      let intent: 'log' | 'question' = 'log';
+      let intent: 'log' | 'question' | 'edit' = 'log';
       if (!imageSnapshot && userText) {
         try {
           intent = await classifyIntent(userText, lang);
         } catch {
           intent = 'log';
         }
+      }
+
+      if (intent === 'edit') {
+        // Find the most recent meal from today or yesterday (within last 2 days)
+        const last2Days = getLastNDayKeys(2);
+        const recentMeals = await db.meals
+          .where('dayKey')
+          .anyOf(last2Days)
+          .sortBy('timestamp');
+        const mostRecent = recentMeals[recentMeals.length - 1] ?? null;
+        if (mostRecent) {
+          setMessages((m) => [...m, { role: 'edit-meal', meal: mostRecent }]);
+        } else {
+          setMessages((m) => [...m, { role: 'error', text: t.chatEditMealNotFound }]);
+        }
+        setLoading(false);
+        return;
       }
 
       if (intent === 'question') {
@@ -722,6 +865,28 @@ export function Chat() {
               dayKey: getTodayKey(),
               weight,
               notes: `AI body estimate: ${msg.result.notes}`,
+            });
+            setMessages((m) => m.map((mm, mi) => mi === i ? { ...mm, saved: true } as ChatMessage : mm));
+          }}
+          onDiscard={() => setMessages((m) => m.filter((_, mi) => mi !== i))}
+        />
+      );
+    }
+    if (msg.role === 'edit-meal') {
+      return (
+        <EditMealCard
+          key={key}
+          meal={msg.meal}
+          saved={msg.saved}
+          isInteractive={isInteractive}
+          onSave={async (rawInput, foods, notes) => {
+            const total = sumMacros(foods);
+            trackMealEdited();
+            await db.meals.update(msg.meal.id!, {
+              rawInput,
+              foods,
+              totalMacros: total,
+              notes: notes || undefined,
             });
             setMessages((m) => m.map((mm, mi) => mi === i ? { ...mm, saved: true } as ChatMessage : mm));
           }}

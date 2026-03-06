@@ -270,6 +270,14 @@ export interface Translations {
   bodyAnalysisSaved: string;
   bodyFatLabel: string;
   bmiLabel: string;
+
+  // Delete meal confirmation
+  deleteMealConfirm: string;
+
+  // Edit meal via chat
+  chatEditMealFound: string;
+  chatEditMealNotFound: string;
+  chatEditMealSaved: string;
 }
 
 const en: Translations = {
@@ -519,6 +527,12 @@ const en: Translations = {
   bodyAnalysisSaved: 'Measurements saved ✓',
   bodyFatLabel: 'Body fat',
   bmiLabel: 'BMI category',
+
+  deleteMealConfirm: 'Delete this meal?',
+
+  chatEditMealFound: 'Found your recent meal. Edit the details below and confirm to save.',
+  chatEditMealNotFound: 'No meal from the last 24 hours found to edit. Log a new meal instead.',
+  chatEditMealSaved: 'Meal updated ✓',
 };
 
 const ru: Translations = {
@@ -768,6 +782,12 @@ const ru: Translations = {
   bodyAnalysisSaved: 'Измерения сохранены ✓',
   bodyFatLabel: 'Жировая масса',
   bmiLabel: 'Категория ИМТ',
+
+  deleteMealConfirm: 'Удалить этот приём пищи?',
+
+  chatEditMealFound: 'Нашёл ваш последний приём пищи. Отредактируйте детали ниже и подтвердите сохранение.',
+  chatEditMealNotFound: 'За последние 24 часа приёмов пищи не найдено. Запишите новый.',
+  chatEditMealSaved: 'Приём пищи обновлён ✓',
 };
 
 const cs: Translations = {
@@ -1017,6 +1037,12 @@ const cs: Translations = {
   bodyAnalysisSaved: 'Měření uložena ✓',
   bodyFatLabel: 'Tělesný tuk',
   bmiLabel: 'Kategorie BMI',
+
+  deleteMealConfirm: 'Smazat toto jídlo?',
+
+  chatEditMealFound: 'Nalezl jsem vaše poslední jídlo. Upravte podrobnosti níže a potvrďte uložení.',
+  chatEditMealNotFound: 'Za posledních 24 hodin nebylo nalezeno žádné jídlo. Zaznamenejte nové.',
+  chatEditMealSaved: 'Jídlo aktualizováno ✓',
 };
 
 const de: Translations = {
@@ -1266,6 +1292,12 @@ const de: Translations = {
   bodyAnalysisSaved: 'Messungen gespeichert ✓',
   bodyFatLabel: 'Körperfett',
   bmiLabel: 'BMI-Kategorie',
+
+  deleteMealConfirm: 'Diese Mahlzeit löschen?',
+
+  chatEditMealFound: 'Ihre letzte Mahlzeit wurde gefunden. Bearbeiten Sie die Details unten und bestätigen Sie zum Speichern.',
+  chatEditMealNotFound: 'In den letzten 24 Stunden wurde keine Mahlzeit gefunden. Loggen Sie eine neue.',
+  chatEditMealSaved: 'Mahlzeit aktualisiert ✓',
 };
 
 const fr: Translations = {
@@ -1515,6 +1547,12 @@ const fr: Translations = {
   bodyAnalysisSaved: 'Mesures enregistrées ✓',
   bodyFatLabel: 'Graisse corporelle',
   bmiLabel: 'Catégorie IMC',
+
+  deleteMealConfirm: 'Supprimer ce repas ?',
+
+  chatEditMealFound: 'Votre dernier repas a été trouvé. Modifiez les détails ci-dessous et confirmez pour sauvegarder.',
+  chatEditMealNotFound: 'Aucun repas des dernières 24 heures trouvé. Enregistrez-en un nouveau.',
+  chatEditMealSaved: 'Repas mis à jour ✓',
 };
 
 const es: Translations = {
@@ -1764,6 +1802,12 @@ const es: Translations = {
   bodyAnalysisSaved: 'Medidas guardadas ✓',
   bodyFatLabel: 'Grasa corporal',
   bmiLabel: 'Categoría IMC',
+
+  deleteMealConfirm: '¿Eliminar esta comida?',
+
+  chatEditMealFound: 'Se encontró tu última comida. Edita los detalles abajo y confirma para guardar.',
+  chatEditMealNotFound: 'No se encontró ninguna comida de las últimas 24 horas. Registra una nueva.',
+  chatEditMealSaved: 'Comida actualizada ✓',
 };
 
 const uk: Translations = {
@@ -2013,6 +2057,12 @@ const uk: Translations = {
   bodyAnalysisSaved: 'Вимірювання збережено ✓',
   bodyFatLabel: 'Жирова маса',
   bmiLabel: 'Категорія ІМТ',
+
+  deleteMealConfirm: 'Видалити цей прийом їжі?',
+
+  chatEditMealFound: 'Знайдено ваш останній прийом їжі. Відредагуйте деталі нижче та підтвердіть збереження.',
+  chatEditMealNotFound: 'За останні 24 години прийомів їжі не знайдено. Запишіть новий.',
+  chatEditMealSaved: 'Прийом їжі оновлено ✓',
 };
 
 export const TRANSLATIONS: Record<AppLanguage, Translations> = { en, ru, cs, de, fr, es, uk };

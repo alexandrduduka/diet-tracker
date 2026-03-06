@@ -74,7 +74,7 @@ diet-tracker/
     │   ├── Hotspot.tsx      ← contextual hint wrapper (animate-ping ring + tooltip, localStorage dismiss-once)
     │   ├── MacroRing.tsx    ← SVG donut for calories
     │   ├── MacroBar.tsx     ← progress bar per macro vs goal
-    │   ├── MealCard.tsx     ← single meal display + delete
+    │   ├── MealCard.tsx     ← single meal display + edit/delete (always-visible buttons, delete requires confirmation)
     │   ├── MeasurementChart.tsx ← Recharts line chart wrapper
     │   ├── OfflineBanner.tsx + useOnlineStatus hook
     │   └── ui/             ← shadcn/ui primitives (button, card, dialog, input)
@@ -141,7 +141,7 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 - Error types thrown: `'NO_API_KEY'` | `'RATE_LIMIT'` | `'INVALID_API_KEY'` | `'PARSE_ERROR'` | `'API_ERROR: ...'`
 - `maxOutputTokens` must stay ≥ 4096 — gemini-2.5-flash uses thinking tokens internally; lower values cause truncated JSON → PARSE_ERROR (confirmed: 2048 caused truncation even on simple queries like "banana")
 - On PARSE_ERROR, `parseMealDescription` automatically retries once with a corrective prompt appended asking the model to complete the truncated JSON
-- `classifyIntent(userInput, lang)` — lightweight JSON call (`maxOutputTokens: 64`) that returns `'log' | 'question'`. Used by Chat page before routing to meal-parsing or Q&A.
+- `classifyIntent(userInput, lang)` — lightweight JSON call (`maxOutputTokens: 512`) that returns `'log' | 'question' | 'edit'`. Used by Chat page before routing to meal-parsing, Q&A, or the edit-meal flow.
 - `askNutritionQuestion(question, lang, context)` — plain-text response (no `responseMimeType`) with a coaching system prompt. Uses `NutritionContext` which extends `MealContext` with `recentDays` (last 7 days totals) and `latestWeight`.
 - `NutritionContext` extends `MealContext` with `recentDays?: Array<{dayKey, calories, protein, fat, carbs}>` and `latestWeight?: number`.
 
@@ -153,7 +153,8 @@ Key: `'dtk_settings'`. Defaults: 2000 kcal / 150g protein / 65g fat / 250g carbs
 - `'assistant'` and `'coach'` render identically (green avatar bubble, `bg-[#2e2e22]`).
 - `'answer'` renders with a distinct background (`bg-[#242419]` + border) and `whitespace-pre-wrap` for multi-line coaching answers.
 - `'body-analysis'` renders as a `BodyAnalysisCard` sub-component (defined above `Chat`) with result rows (estimated weight, body fat %, BMI category), notes, disclaimer, and (when `isInteractive && !saved`) an editable weight input + Save / Discard buttons. Save calls `db.measurements.add()` inline. The `saved` flag is persisted in the ChatMessage union so old-day messages show read-only.
-- **Intent classification**: on each text-only send, `classifyIntent()` (64 token JSON call) determines `'log'` vs `'question'`. Photos always route to `'log'`. Failure falls back to `'log'`.
+- **Intent classification**: on each text-only send, `classifyIntent()` determines `'log'` | `'question'` | `'edit'`. Photos always route to `'log'`. Failure falls back to `'log'`.
+- **Edit meal via chat**: when intent is `'edit'`, Chat queries `db.meals` for the most recent entry from today or yesterday (last 2 days). If found, appends an `'edit-meal'` message with the `MealEntry` embedded; the `EditMealCard` sub-component renders an inline edit form (description + per-food macros). On save, `db.meals.update(id, ...)` is called and the card flips to a read-only saved state. If no meal found, an error bubble is shown. `ChatMessage` union includes `{ role: 'edit-meal'; meal: MealEntry; saved?: boolean }`.
 - **Q&A mode**: when intent is `'question'`, `askNutritionQuestion()` is called with full `NutritionContext` (today goals/consumed + last 7 days totals + latest weight). Response renders as `'answer'` bubble.
 - **Chat history persistence**: messages persist to `localStorage` key `dtk_chat_history` in format `{ messages: ChatMessage[], dayKey: string }` on every change. Restored on load. Max 100 messages; `'setup'` messages are never persisted. Trash icon in header opens a clear-history confirmation dialog.
 - **Day-change message hiding**: on mount, `loadPersistedChat()` compares stored `dayKey` to `getTodayKey()`. If different, the old messages are stashed in `oldMessages` state and hidden behind a collapsible "Show history" / "New day" separator UI. The active session starts fresh with only the welcome message. `PersistedChat` interface: `{ messages: ChatMessage[], dayKey: string }`. Legacy plain-array format auto-upgraded silently.
