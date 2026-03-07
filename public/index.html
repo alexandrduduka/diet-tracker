@@ -224,6 +224,67 @@
     }
     .nav-cta:hover { color: var(--text); border-color: var(--faint); background: rgba(255,255,255,0.03); }
 
+    /* ── Language picker ── */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .lang-picker {
+      position: relative;
+    }
+    .lang-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--faint);
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      font-family: inherit;
+    }
+    .lang-btn:hover { color: var(--muted); border-color: var(--faint); }
+    .lang-btn svg { width: 10px; height: 10px; transition: transform 0.2s; }
+    .lang-btn.open svg { transform: rotate(180deg); }
+    .lang-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 6px;
+      min-width: 130px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 200;
+    }
+    .lang-dropdown.open { display: block; animation: fadeUp 0.18s ease both; }
+    .lang-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+    }
+    .lang-option:hover { background: var(--surface2); color: var(--text); }
+    .lang-option.active { color: var(--green); }
+    .lang-flag { font-size: 15px; line-height: 1; }
+
     /* ── Hero ── */
     .hero {
       padding-top: 100px;
@@ -928,12 +989,32 @@
         <img src="/icons/icon-192x192.png" alt="" class="nav-icon" aria-hidden="true" />
         <span class="nav-brand">Eat Right</span>
       </a>
-      <a href="/app" class="nav-cta" aria-label="Open the Eat Right app">
-        Open app
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-          <path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/>
-        </svg>
-      </a>
+      <div class="nav-right">
+        <!-- Language picker -->
+        <div class="lang-picker" id="lang-picker">
+          <button class="lang-btn" id="lang-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Select language">
+            <span id="lang-current">EN</span>
+            <svg viewBox="0 0 10 6" fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="lang-dropdown" id="lang-dropdown" role="listbox">
+            <button class="lang-option" data-lang="en" role="option"><span class="lang-flag">🇬🇧</span> English</button>
+            <button class="lang-option" data-lang="de" role="option"><span class="lang-flag">🇩🇪</span> Deutsch</button>
+            <button class="lang-option" data-lang="fr" role="option"><span class="lang-flag">🇫🇷</span> Français</button>
+            <button class="lang-option" data-lang="es" role="option"><span class="lang-flag">🇪🇸</span> Español</button>
+            <button class="lang-option" data-lang="ru" role="option"><span class="lang-flag">🇷🇺</span> Русский</button>
+            <button class="lang-option" data-lang="uk" role="option"><span class="lang-flag">🇺🇦</span> Українська</button>
+            <button class="lang-option" data-lang="cs" role="option"><span class="lang-flag">🇨🇿</span> Čeština</button>
+          </div>
+        </div>
+        <a href="/app" class="nav-cta" data-i18n="navOpenApp">
+          Open app
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </nav>
 
@@ -944,31 +1025,31 @@
       <div class="hero-text">
         <div class="hero-badge">
           <span class="badge-dot" aria-hidden="true"></span>
-          Free forever &middot; No sign-up
+          <span data-i18n="heroBadge">Free forever · No sign-up</span>
         </div>
         <h1 class="hero-title">
-          Log meals in<br>
-          <span class="hero-accent">plain English.</span><br>
-          AI does the rest.
+          <span data-i18n="heroTitle1">Log meals in</span><br>
+          <span class="hero-accent" data-i18n="heroTitle2">plain English.</span><br>
+          <span data-i18n="heroTitle3">AI does the rest.</span>
         </h1>
-        <p class="hero-sub">
+        <p class="hero-sub" data-i18n="heroSub">
           Describe what you ate and Eat Right instantly breaks down your calories, protein, carbs and fat. Works with text, photos and voice.
         </p>
         <div class="hero-actions">
-          <a href="/app" class="btn-primary" id="hero-cta" aria-label="Start tracking your nutrition for free">
-            Start tracking free
+          <a href="/app" class="btn-primary" id="hero-cta">
+            <span data-i18n="heroCta">Start tracking free</span>
             <svg class="btn-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/>
             </svg>
           </a>
-          <a href="#how-it-works" class="btn-ghost">See how it works</a>
+          <a href="#how-it-works" class="btn-ghost" data-i18n="heroSeeHow">See how it works</a>
         </div>
         <div class="hero-trust" aria-label="Key benefits">
-          <span class="trust-item"><span class="trust-check" aria-hidden="true">&#10003;</span> No account needed</span>
+          <span class="trust-item"><span class="trust-check" aria-hidden="true">&#10003;</span> <span data-i18n="trustNoAccount">No account needed</span></span>
           <span class="trust-sep" aria-hidden="true">&middot;</span>
-          <span class="trust-item"><span class="trust-check" aria-hidden="true">&#10003;</span> Data on your device</span>
+          <span class="trust-item"><span class="trust-check" aria-hidden="true">&#10003;</span> <span data-i18n="trustDataOnDevice">Data on your device</span></span>
           <span class="trust-sep" aria-hidden="true">&middot;</span>
-          <span class="trust-item"><span class="trust-check" aria-hidden="true">&#10003;</span> Works offline</span>
+          <span class="trust-item"><span class="trust-check" aria-hidden="true">&#10003;</span> <span data-i18n="trustOffline">Works offline</span></span>
         </div>
       </div>
 
@@ -1001,8 +1082,8 @@
   <!-- ── How It Works ── -->
   <section class="how-section" id="how-it-works" aria-label="How it works">
     <div class="section-inner">
-      <p class="section-eyebrow">How it works</p>
-      <h2 class="section-title">Three steps to better nutrition</h2>
+      <p class="section-eyebrow" data-i18n="howEyebrow">How it works</p>
+      <h2 class="section-title" data-i18n="howTitle">Three steps to better nutrition</h2>
       <div class="steps-grid">
 
         <!-- Step 1 -->
@@ -1016,8 +1097,8 @@
             </svg>
           </div>
           <span class="step-num">01</span>
-          <h3 class="step-title">Describe your meal</h3>
-          <p class="step-body">Type what you ate in plain text — "grilled chicken with rice and steamed broccoli". No barcodes, no lookup tables.</p>
+          <h3 class="step-title" data-i18n="step1Title">Describe your meal</h3>
+          <p class="step-body" data-i18n="step1Body">Type what you ate in plain text — "grilled chicken with rice and steamed broccoli". No barcodes, no lookup tables.</p>
         </div>
 
         <!-- Step 2 -->
@@ -1035,8 +1116,8 @@
             </svg>
           </div>
           <span class="step-num">02</span>
-          <h3 class="step-title">AI calculates macros</h3>
-          <p class="step-body">Powered by Google Gemini, Eat Right identifies each food and calculates exact calories, protein, carbs and fat.</p>
+          <h3 class="step-title" data-i18n="step2Title">AI calculates macros</h3>
+          <p class="step-body" data-i18n="step2Body">Powered by Google Gemini, Eat Right identifies each food and calculates exact calories, protein, carbs and fat.</p>
         </div>
 
         <!-- Step 3 -->
@@ -1051,8 +1132,8 @@
             </svg>
           </div>
           <span class="step-num">03</span>
-          <h3 class="step-title">Track your progress</h3>
-          <p class="step-body">Daily and monthly charts, macro goal rings, and AI coaching on how to improve your nutrition over time.</p>
+          <h3 class="step-title" data-i18n="step3Title">Track your progress</h3>
+          <p class="step-body" data-i18n="step3Body">Daily and monthly charts, macro goal rings, and AI coaching on how to improve your nutrition over time.</p>
         </div>
 
       </div>
@@ -1062,8 +1143,8 @@
   <!-- ── Features ── -->
   <section class="features-section" id="features" aria-label="Features">
     <div class="section-inner">
-      <p class="section-eyebrow">Features</p>
-      <h2 class="section-title">Everything you need, nothing you don't</h2>
+      <p class="section-eyebrow" data-i18n="featEyebrow">Features</p>
+      <h2 class="section-title" data-i18n="featTitle">Everything you need, nothing you don't</h2>
       <div class="features-grid">
 
         <!-- Wide: AI Logging -->
@@ -1079,10 +1160,10 @@
                   </svg>
                 </div>
                 <div>
-                  <h3 class="feature-title">AI Meal Logging</h3>
+                  <h3 class="feature-title" data-i18n="feat1Title">AI Meal Logging</h3>
                 </div>
               </div>
-              <p class="feature-body">Just describe what you ate. Eat Right understands mixed descriptions like "a bowl of oatmeal with banana and honey, about 300ml" — no portion lookup, no barcode scanning.</p>
+              <p class="feature-body" data-i18n="feat1Body">Just describe what you ate. Eat Right understands mixed descriptions like "a bowl of oatmeal with banana and honey, about 300ml" — no portion lookup, no barcode scanning.</p>
             </div>
             <div class="macro-demo" aria-label="Example macro breakdown">
               <div class="mdemo-row">
@@ -1116,10 +1197,10 @@
               </svg>
             </div>
             <div>
-              <h3 class="feature-title">Photo &amp; Voice Input</h3>
+              <h3 class="feature-title" data-i18n="feat2Title">Photo &amp; Voice Input</h3>
             </div>
           </div>
-          <p class="feature-body">Snap a photo of your plate or speak your meal aloud. Gemini identifies foods visually and transcribes voice on the fly — no typing required.</p>
+          <p class="feature-body" data-i18n="feat2Body">Snap a photo of your plate or speak your meal aloud. Gemini identifies foods visually and transcribes voice on the fly — no typing required.</p>
         </div>
 
         <!-- Goal Calculator -->
@@ -1133,10 +1214,10 @@
               </svg>
             </div>
             <div>
-              <h3 class="feature-title">Goal Calculator</h3>
+              <h3 class="feature-title" data-i18n="feat3Title">Goal Calculator</h3>
             </div>
           </div>
-          <p class="feature-body">Enter your stats and goal — Eat Right computes a personalised calorie target and macro split using the Mifflin-St Jeor formula. Adjustable with sliders.</p>
+          <p class="feature-body" data-i18n="feat3Body">Enter your stats and goal — Eat Right computes a personalised calorie target and macro split using the Mifflin-St Jeor formula. Adjustable with sliders.</p>
         </div>
 
         <!-- Analytics -->
@@ -1149,10 +1230,10 @@
               </svg>
             </div>
             <div>
-              <h3 class="feature-title">Analytics &amp; Trends</h3>
+              <h3 class="feature-title" data-i18n="feat4Title">Analytics &amp; Trends</h3>
             </div>
           </div>
-          <p class="feature-body">Daily and monthly macro charts, body measurement tracking, and week-over-week intake trends to see what's actually working.</p>
+          <p class="feature-body" data-i18n="feat4Body">Daily and monthly macro charts, body measurement tracking, and week-over-week intake trends to see what's actually working.</p>
         </div>
 
         <!-- Body Measurements -->
@@ -1168,10 +1249,10 @@
               </svg>
             </div>
             <div>
-              <h3 class="feature-title">Body Measurements</h3>
+              <h3 class="feature-title" data-i18n="feat5Title">Body Measurements</h3>
             </div>
           </div>
-          <p class="feature-body">Log weight, waist, and other measurements over time. Spot trends on a chart and get AI body analysis from a photo — all stored locally.</p>
+          <p class="feature-body" data-i18n="feat5Body">Log weight, waist, and other measurements over time. Spot trends on a chart and get AI body analysis from a photo — all stored locally.</p>
         </div>
 
       </div>
@@ -1181,8 +1262,8 @@
   <!-- ── Problem / Stats ── -->
   <section class="problem-section" id="the-problem" aria-label="The nutrition problem">
     <div class="section-inner">
-      <p class="section-eyebrow">The problem</p>
-      <h2 class="section-title">Most people are trying.<br>Almost none are succeeding.</h2>
+      <p class="section-eyebrow" data-i18n="probEyebrow">The problem</p>
+      <h2 class="section-title" data-i18n="probTitle">Most people are trying.<br>Almost none are succeeding.</h2>
 
       <!-- Big stat numbers -->
       <div class="stats-grid">
@@ -1190,22 +1271,22 @@
           <div class="stat-number">
             <span class="stat-count" data-target="45" data-suffix="%">0%</span>
           </div>
-          <p class="stat-label">of adults worldwide try to lose weight every year</p>
-          <p class="stat-source">CDC &amp; global health surveys</p>
+          <p class="stat-label" data-i18n="stat1Label">of adults worldwide try to lose weight every year</p>
+          <p class="stat-source" data-i18n="stat1Source">CDC &amp; global health surveys</p>
         </div>
         <div class="stat-card" data-stat data-delay="120">
           <div class="stat-number">
             <span class="stat-count" data-target="90" data-suffix="%">0%</span>
           </div>
-          <p class="stat-label">of crash diets fail long-term — weight comes back, often with extra</p>
-          <p class="stat-source">Systematic review of weight-loss interventions</p>
+          <p class="stat-label" data-i18n="stat2Label">of crash diets fail long-term — weight comes back, often with extra</p>
+          <p class="stat-source" data-i18n="stat2Source">Systematic review of weight-loss interventions</p>
         </div>
         <div class="stat-card" data-stat data-delay="240">
           <div class="stat-number">
             <span class="stat-count" data-target="12" data-suffix="%">0%</span>
           </div>
-          <p class="stat-label">of people can correctly read and interpret a nutrition label</p>
-          <p class="stat-source">European &amp; Asian nutrition literacy studies</p>
+          <p class="stat-label" data-i18n="stat3Label">of people can correctly read and interpret a nutrition label</p>
+          <p class="stat-source" data-i18n="stat3Source">European &amp; Asian nutrition literacy studies</p>
         </div>
       </div>
 
@@ -1219,8 +1300,8 @@
               <circle cx="14" cy="19" r="1.5" fill="#d4a24c"/>
             </svg>
           </div>
-          <h3 class="problem-title">The information paradox</h3>
-          <p class="problem-body">We live in the most nutrition-informed era in history — and yet only 3–10% of people have genuine, accurate knowledge of how macronutrients work. The rest navigate a sea of myths: "carbs after 6 pm turn to fat," "fat makes you fat," "you need to detox." Most crash diets are built on these exact misconceptions.</p>
+          <h3 class="problem-title" data-i18n="prob1Title">The information paradox</h3>
+          <p class="problem-body" data-i18n="prob1Body">We live in the most nutrition-informed era in history — and yet only 3–10% of people have genuine, accurate knowledge of how macronutrients work. The rest navigate a sea of myths: "carbs after 6 pm turn to fat," "fat makes you fat," "you need to detox." Most crash diets are built on these exact misconceptions.</p>
         </div>
         <div class="problem-col" data-animate data-delay="150">
           <div class="problem-icon-wrap" aria-hidden="true">
@@ -1230,8 +1311,8 @@
               <path d="M22 5 L24 8 L21 9" stroke="#d4a24c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
             </svg>
           </div>
-          <h3 class="problem-title">The yo-yo trap</h3>
-          <p class="problem-body">Up to 30% of dieters turn to extreme restriction — 600–800 kcal days, juice cleanses, skipped meals. Short term the scale moves. Long term: muscle loss, a slower metabolism, spiked cortisol, and the weight returns heavier than before. The cycle repeats every year.</p>
+          <h3 class="problem-title" data-i18n="prob2Title">The yo-yo trap</h3>
+          <p class="problem-body" data-i18n="prob2Body">Up to 30% of dieters turn to extreme restriction — 600–800 kcal days, juice cleanses, skipped meals. Short term the scale moves. Long term: muscle loss, a slower metabolism, spiked cortisol, and the weight returns heavier than before. The cycle repeats every year.</p>
         </div>
         <div class="problem-col" data-animate data-delay="300">
           <div class="problem-icon-wrap" aria-hidden="true">
@@ -1244,8 +1325,8 @@
               <polyline points="19,7 21,9 23,5" stroke="#7cb87a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <h3 class="problem-title">The fix is simpler than you think</h3>
-          <p class="problem-body">Decades of research converge on one finding: awareness of what you actually eat is the single most effective behaviour change for sustainable weight management. You don't need a strict plan — you need honest, effortless tracking. That's exactly what Eat Right is built for.</p>
+          <h3 class="problem-title" data-i18n="prob3Title">The fix is simpler than you think</h3>
+          <p class="problem-body" data-i18n="prob3Body">Decades of research converge on one finding: awareness of what you actually eat is the single most effective behaviour change for sustainable weight management. You don't need a strict plan — you need honest, effortless tracking. That's exactly what Eat Right is built for.</p>
         </div>
       </div>
     </div>
@@ -1256,17 +1337,17 @@
     <div class="section-inner">
       <div class="privacy-card" data-animate-card>
         <div class="privacy-content">
-          <p class="section-eyebrow">Privacy first</p>
-          <h2 class="privacy-title">Your data never leaves your phone</h2>
-          <p class="privacy-body">
+          <p class="section-eyebrow" data-i18n="privEyebrow">Privacy first</p>
+          <h2 class="privacy-title" data-i18n="privTitle">Your data never leaves your phone</h2>
+          <p class="privacy-body" data-i18n="privBody">
             Eat Right stores everything in your browser's IndexedDB — no accounts, no servers, no subscriptions. The only external call is to Google Gemini to parse meals (you bring your own free API key).
           </p>
           <ul class="privacy-list">
-            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> No account or sign-up required</li>
-            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> All data stored on-device in IndexedDB</li>
-            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> Free Gemini API key — 1,500 requests/day</li>
-            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> Works offline after first load (PWA)</li>
-            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> Export your data as JSON anytime</li>
+            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> <span data-i18n="privItem1">No account or sign-up required</span></li>
+            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> <span data-i18n="privItem2">All data stored on-device in IndexedDB</span></li>
+            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> <span data-i18n="privItem3">Free Gemini API key — 1,500 requests/day</span></li>
+            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> <span data-i18n="privItem4">Works offline after first load (PWA)</span></li>
+            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> <span data-i18n="privItem5">Export your data as JSON anytime</span></li>
           </ul>
         </div>
         <div class="shield-wrap" aria-hidden="true">
@@ -1282,9 +1363,9 @@
               id="shield-check"/>
           </svg>
           <div class="shield-chips">
-            <span class="shield-chip">On-device storage</span>
-            <span class="shield-chip">No account</span>
-            <span class="shield-chip">Free forever</span>
+            <span class="shield-chip" data-i18n="shieldChip1">On-device storage</span>
+            <span class="shield-chip" data-i18n="shieldChip2">No account</span>
+            <span class="shield-chip" data-i18n="shieldChip3">Free forever</span>
           </div>
         </div>
       </div>
@@ -1295,10 +1376,10 @@
   <section class="cta-section" aria-label="Get started">
     <div class="section-inner cta-inner">
       <img src="/icons/icon-192x192.png" alt="Eat Right app icon" class="cta-icon" />
-      <h2 class="cta-title">Start eating right today</h2>
-      <p class="cta-sub">Free, no sign-up. Takes 60 seconds to set up.</p>
+      <h2 class="cta-title" data-i18n="ctaTitle">Start eating right today</h2>
+      <p class="cta-sub" data-i18n="ctaSub">Free, no sign-up. Takes 60 seconds to set up.</p>
       <a href="/app" class="btn-primary btn-large" id="cta-bottom" aria-label="Open Eat Right app">
-        Open the app
+        <span data-i18n="ctaBtn">Open the app</span>
         <svg class="btn-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/>
         </svg>
@@ -1314,15 +1395,573 @@
         <span class="footer-brand">Eat Right</span>
       </div>
       <nav class="footer-links" aria-label="Footer links">
-        <a href="/app" class="footer-link">Open App</a>
-        <a href="/app#/articles" class="footer-link">Articles</a>
-        <a href="/app#/settings" class="footer-link">Settings</a>
+        <a href="/app" class="footer-link" data-i18n="footerOpenApp">Open App</a>
+        <a href="/app#/articles" class="footer-link" data-i18n="footerArticles">Articles</a>
+        <a href="/app#/settings" class="footer-link" data-i18n="footerSettings">Settings</a>
       </nav>
-      <p class="footer-copy">AI nutrition tracking. Your data stays on your device.</p>
+      <p class="footer-copy" data-i18n="footerCopy">AI nutrition tracking. Your data stays on your device.</p>
     </div>
   </footer>
 
   <script>
+    // ── i18n translations ──
+    var LANGS = {
+      en: {
+        navOpenApp:   'Open app',
+        heroBadge:    'Free forever · No sign-up',
+        heroTitle1:   'Log meals in',
+        heroTitle2:   'plain English.',
+        heroTitle3:   'AI does the rest.',
+        heroSub:      'Describe what you ate and Eat Right instantly breaks down your calories, protein, carbs and fat. Works with text, photos and voice.',
+        heroCta:      'Start tracking free',
+        heroSeeHow:   'See how it works',
+        trustNoAccount:   'No account needed',
+        trustDataOnDevice:'Data on your device',
+        trustOffline:     'Works offline',
+        howEyebrow:  'How it works',
+        howTitle:    'Three steps to better nutrition',
+        step1Title:  'Describe your meal',
+        step1Body:   'Type what you ate in plain text — "grilled chicken with rice and steamed broccoli". No barcodes, no lookup tables.',
+        step2Title:  'AI calculates macros',
+        step2Body:   'Powered by Google Gemini, Eat Right identifies each food and calculates exact calories, protein, carbs and fat.',
+        step3Title:  'Track your progress',
+        step3Body:   'Daily and monthly charts, macro goal rings, and AI coaching on how to improve your nutrition over time.',
+        featEyebrow: 'Features',
+        featTitle:   "Everything you need, nothing you don't",
+        feat1Title:  'AI Meal Logging',
+        feat1Body:   'Just describe what you ate. Eat Right understands mixed descriptions like "a bowl of oatmeal with banana and honey, about 300ml" — no portion lookup, no barcode scanning.',
+        feat2Title:  'Photo & Voice Input',
+        feat2Body:   'Snap a photo of your plate or speak your meal aloud. Gemini identifies foods visually and transcribes voice on the fly — no typing required.',
+        feat3Title:  'Goal Calculator',
+        feat3Body:   'Enter your stats and goal — Eat Right computes a personalised calorie target and macro split using the Mifflin-St Jeor formula. Adjustable with sliders.',
+        feat4Title:  'Analytics & Trends',
+        feat4Body:   "Daily and monthly macro charts, body measurement tracking, and week-over-week intake trends to see what's actually working.",
+        feat5Title:  'Body Measurements',
+        feat5Body:   'Log weight, waist, and other measurements over time. Spot trends on a chart and get AI body analysis from a photo — all stored locally.',
+        probEyebrow: 'The problem',
+        probTitle:   'Most people are trying.<br>Almost none are succeeding.',
+        stat1Label:  'of adults worldwide try to lose weight every year',
+        stat1Source: 'CDC & global health surveys',
+        stat2Label:  'of crash diets fail long-term — weight comes back, often with extra',
+        stat2Source: 'Systematic review of weight-loss interventions',
+        stat3Label:  'of people can correctly read and interpret a nutrition label',
+        stat3Source: 'European & Asian nutrition literacy studies',
+        prob1Title:  'The information paradox',
+        prob1Body:   'We live in the most nutrition-informed era in history — and yet only 3–10% of people have genuine, accurate knowledge of how macronutrients work. The rest navigate a sea of myths: "carbs after 6 pm turn to fat," "fat makes you fat," "you need to detox." Most crash diets are built on these exact misconceptions.',
+        prob2Title:  'The yo-yo trap',
+        prob2Body:   'Up to 30% of dieters turn to extreme restriction — 600–800 kcal days, juice cleanses, skipped meals. Short term the scale moves. Long term: muscle loss, a slower metabolism, spiked cortisol, and the weight returns heavier than before. The cycle repeats every year.',
+        prob3Title:  'The fix is simpler than you think',
+        prob3Body:   'Decades of research converge on one finding: awareness of what you actually eat is the single most effective behaviour change for sustainable weight management. You don\'t need a strict plan — you need honest, effortless tracking. That\'s exactly what Eat Right is built for.',
+        privEyebrow: 'Privacy first',
+        privTitle:   'Your data never leaves your phone',
+        privBody:    "Eat Right stores everything in your browser's IndexedDB — no accounts, no servers, no subscriptions. The only external call is to Google Gemini to parse meals (you bring your own free API key).",
+        privItem1:   'No account or sign-up required',
+        privItem2:   'All data stored on-device in IndexedDB',
+        privItem3:   'Free Gemini API key — 1,500 requests/day',
+        privItem4:   'Works offline after first load (PWA)',
+        privItem5:   'Export your data as JSON anytime',
+        shieldChip1: 'On-device storage',
+        shieldChip2: 'No account',
+        shieldChip3: 'Free forever',
+        ctaTitle:    'Start eating right today',
+        ctaSub:      'Free, no sign-up. Takes 60 seconds to set up.',
+        ctaBtn:      'Open the app',
+        footerOpenApp:  'Open App',
+        footerArticles: 'Articles',
+        footerSettings: 'Settings',
+        footerCopy:     'AI nutrition tracking. Your data stays on your device.'
+      },
+      de: {
+        navOpenApp:   'App öffnen',
+        heroBadge:    'Kostenlos · Keine Registrierung',
+        heroTitle1:   'Mahlzeiten erfassen,',
+        heroTitle2:   'ganz einfach.',
+        heroTitle3:   'KI erledigt den Rest.',
+        heroSub:      'Beschreibe, was du gegessen hast, und Eat Right berechnet sofort Kalorien, Eiweiß, Kohlenhydrate und Fett. Funktioniert mit Text, Fotos und Sprache.',
+        heroCta:      'Kostenlos starten',
+        heroSeeHow:   'So funktioniert\'s',
+        trustNoAccount:   'Kein Konto nötig',
+        trustDataOnDevice:'Daten auf deinem Gerät',
+        trustOffline:     'Offline nutzbar',
+        howEyebrow:  'So funktioniert\'s',
+        howTitle:    'Drei Schritte zu besserer Ernährung',
+        step1Title:  'Mahlzeit beschreiben',
+        step1Body:   'Tippe ein, was du gegessen hast — "gegrilltes Hähnchen mit Reis und Brokkoli". Kein Scannen, keine langen Listen.',
+        step2Title:  'KI berechnet Makros',
+        step2Body:   'Powered by Google Gemini — Eat Right erkennt jedes Lebensmittel und berechnet Kalorien, Eiweiß, Kohlenhydrate und Fett.',
+        step3Title:  'Fortschritt verfolgen',
+        step3Body:   'Tägliche und monatliche Diagramme, Makro-Zielringe und KI-Coaching für eine nachhaltige Ernährungsverbesserung.',
+        featEyebrow: 'Funktionen',
+        featTitle:   'Alles, was du brauchst – nichts, was du nicht brauchst',
+        feat1Title:  'KI-Mahlzeitenerfassung',
+        feat1Body:   'Beschreibe einfach, was du gegessen hast. Eat Right versteht auch komplexe Eingaben wie "eine Schüssel Haferflocken mit Banane und Honig, ca. 300 ml".',
+        feat2Title:  'Foto & Spracheingabe',
+        feat2Body:   'Foto vom Teller machen oder Mahlzeit laut ansagen. Gemini erkennt Lebensmittel visuell und transkribiert Sprache in Echtzeit.',
+        feat3Title:  'Zielrechner',
+        feat3Body:   'Gib deine Daten ein – Eat Right berechnet deinen persönlichen Kalorienbedarf und Makro-Split nach der Mifflin-St-Jeor-Formel.',
+        feat4Title:  'Analysen & Trends',
+        feat4Body:   'Tägliche und monatliche Makro-Diagramme, Körpermessungen und wöchentliche Aufnahmetrends.',
+        feat5Title:  'Körpermessungen',
+        feat5Body:   'Gewicht, Taille und weitere Messungen im Verlauf erfassen. Trends im Diagramm erkennen und KI-Körperanalyse per Foto erhalten.',
+        probEyebrow: 'Das Problem',
+        probTitle:   'Viele versuchen es.<br>Kaum jemandem gelingt es.',
+        stat1Label:  'der Erwachsenen weltweit versuchen jährlich, Gewicht zu verlieren',
+        stat1Source: 'CDC & globale Gesundheitsstudien',
+        stat2Label:  'der Crash-Diäten scheitern langfristig – das Gewicht kommt zurück',
+        stat2Source: 'Systematische Überprüfung von Gewichtsabnahme-Interventionen',
+        stat3Label:  'der Menschen können eine Nährwerttabelle korrekt lesen und interpretieren',
+        stat3Source: 'Europäische & asiatische Ernährungskompetensstudien',
+        prob1Title:  'Das Informationsparadox',
+        prob1Body:   'Wir leben im informiertesten Zeitalter der Geschichte – und doch haben nur 3–10 % der Menschen echtes Wissen darüber, wie Makronährstoffe wirken. Der Rest navigiert durch einen Ozean von Mythen.',
+        prob2Title:  'Die Jo-Jo-Falle',
+        prob2Body:   'Bis zu 30 % der Diätenden greifen zu extremer Kalorienrestriktion. Kurzfristig verlieren sie Gewicht. Langfristig folgen Muskelabbau, verlangsamter Stoffwechsel und das Gewicht kehrt verstärkt zurück.',
+        prob3Title:  'Die Lösung ist einfacher als du denkst',
+        prob3Body:   'Jahrzehnte der Forschung zeigen: Bewusstsein darüber, was man tatsächlich isst, ist die wirksamste Verhaltensänderung für nachhaltiges Gewichtsmanagement. Du brauchst keinen strengen Plan – nur ehrliches, müheloses Tracking.',
+        privEyebrow: 'Datenschutz zuerst',
+        privTitle:   'Deine Daten verlassen dein Gerät nicht',
+        privBody:    'Eat Right speichert alles im IndexedDB deines Browsers – keine Konten, keine Server. Einziger externer Aufruf: Google Gemini zum Analysieren von Mahlzeiten (eigener kostenloser API-Schlüssel).',
+        privItem1:   'Kein Konto oder Registrierung nötig',
+        privItem2:   'Alle Daten lokal in IndexedDB gespeichert',
+        privItem3:   'Kostenloser Gemini-API-Schlüssel – 1.500 Anfragen/Tag',
+        privItem4:   'Offline nach dem ersten Laden (PWA)',
+        privItem5:   'Daten jederzeit als JSON exportieren',
+        shieldChip1: 'Lokale Speicherung',
+        shieldChip2: 'Kein Konto',
+        shieldChip3: 'Kostenlos für immer',
+        ctaTitle:    'Starte noch heute gesünder',
+        ctaSub:      'Kostenlos, keine Registrierung. In 60 Sekunden bereit.',
+        ctaBtn:      'App öffnen',
+        footerOpenApp:  'App öffnen',
+        footerArticles: 'Artikel',
+        footerSettings: 'Einstellungen',
+        footerCopy:     'KI-Ernährungstracking. Deine Daten bleiben auf deinem Gerät.'
+      },
+      fr: {
+        navOpenApp:   "Ouvrir l'app",
+        heroBadge:    'Gratuit · Sans inscription',
+        heroTitle1:   'Enregistre tes repas',
+        heroTitle2:   'simplement.',
+        heroTitle3:   "L'IA fait le reste.",
+        heroSub:      "Décris ce que tu as mangé et Eat Right calcule instantanément les calories, protéines, glucides et lipides. Texte, photos et voix.",
+        heroCta:      'Commencer gratuitement',
+        heroSeeHow:   'Voir comment ça marche',
+        trustNoAccount:   'Sans compte',
+        trustDataOnDevice:'Données sur ton appareil',
+        trustOffline:     'Fonctionne hors-ligne',
+        howEyebrow:  'Comment ça marche',
+        howTitle:    'Trois étapes vers une meilleure nutrition',
+        step1Title:  'Décris ton repas',
+        step1Body:   'Tape ce que tu as mangé — "poulet grillé avec riz et brocoli vapeur". Pas de codes-barres, pas de longues listes.',
+        step2Title:  "L'IA calcule les macros",
+        step2Body:   'Propulsé par Google Gemini, Eat Right identifie chaque aliment et calcule les calories, protéines, glucides et lipides.',
+        step3Title:  'Suis tes progrès',
+        step3Body:   'Graphiques journaliers et mensuels, anneaux de macro-objectifs et coaching IA pour améliorer ta nutrition.',
+        featEyebrow: 'Fonctionnalités',
+        featTitle:   "Tout ce dont tu as besoin, rien de superflu",
+        feat1Title:  'Journal alimentaire IA',
+        feat1Body:   "Décris simplement ce que tu as mangé. Eat Right comprend des descriptions variées comme \"un bol de flocons d'avoine avec banane et miel, environ 300 ml\".",
+        feat2Title:  'Photo & Saisie vocale',
+        feat2Body:   'Prends une photo de ton assiette ou dicte ton repas à voix haute. Gemini identifie les aliments visuellement et transcrit la voix à la volée.',
+        feat3Title:  'Calculateur d\'objectifs',
+        feat3Body:   'Saisis tes données et ton objectif — Eat Right calcule un apport calorique personnalisé et une répartition des macros via la formule Mifflin-St Jeor.',
+        feat4Title:  'Analyses & Tendances',
+        feat4Body:   'Graphiques macro journaliers et mensuels, suivi des mesures corporelles et tendances hebdomadaires.',
+        feat5Title:  'Mesures corporelles',
+        feat5Body:   'Enregistre poids, tour de taille et autres mesures dans le temps. Repère les tendances sur un graphique et obtiens une analyse corporelle IA par photo.',
+        probEyebrow: 'Le problème',
+        probTitle:   'Beaucoup essaient.<br>Presque personne ne réussit.',
+        stat1Label:  "des adultes dans le monde essaient de perdre du poids chaque année",
+        stat1Source: 'CDC & enquêtes mondiales sur la santé',
+        stat2Label:  'des régimes crash échouent à long terme — le poids revient, souvent en plus',
+        stat2Source: "Revue systématique des interventions de perte de poids",
+        stat3Label:  "des gens peuvent correctement lire et interpréter une étiquette nutritionnelle",
+        stat3Source: "Études européennes & asiatiques sur les connaissances nutritionnelles",
+        prob1Title:  'Le paradoxe de l\'information',
+        prob1Body:   "Nous vivons à l'ère la mieux informée en matière de nutrition — et pourtant seulement 3–10 % des gens ont de vraies connaissances sur le fonctionnement des macronutriments. Les autres naviguent dans un océan de mythes.",
+        prob2Title:  'Le piège yoyo',
+        prob2Body:   "Jusqu'à 30 % des personnes au régime ont recours à une restriction extrême — 600–800 kcal/jour, jus de légumes, repas sautés. À court terme, la balance bouge. À long terme : perte musculaire, métabolisme ralenti, et le poids revient plus lourd.",
+        prob3Title:  'La solution est plus simple que tu ne le penses',
+        prob3Body:   "Des décennies de recherche convergent vers un résultat : la prise de conscience de ce que l'on mange vraiment est le changement comportemental le plus efficace pour gérer durablement son poids.",
+        privEyebrow: 'La vie privée d\'abord',
+        privTitle:   'Tes données ne quittent jamais ton téléphone',
+        privBody:    "Eat Right stocke tout dans l'IndexedDB de ton navigateur — pas de comptes, pas de serveurs. Le seul appel externe est à Google Gemini pour analyser les repas (ta propre clé API gratuite).",
+        privItem1:   'Sans compte ni inscription',
+        privItem2:   'Toutes les données stockées localement dans IndexedDB',
+        privItem3:   'Clé API Gemini gratuite — 1 500 requêtes/jour',
+        privItem4:   'Fonctionne hors-ligne après le premier chargement (PWA)',
+        privItem5:   'Exporte tes données en JSON à tout moment',
+        shieldChip1: 'Stockage local',
+        shieldChip2: 'Sans compte',
+        shieldChip3: 'Gratuit à vie',
+        ctaTitle:    'Commence à mieux manger aujourd\'hui',
+        ctaSub:      'Gratuit, sans inscription. Prêt en 60 secondes.',
+        ctaBtn:      "Ouvrir l'app",
+        footerOpenApp:  "Ouvrir l'app",
+        footerArticles: 'Articles',
+        footerSettings: 'Paramètres',
+        footerCopy:     'Suivi nutritionnel IA. Tes données restent sur ton appareil.'
+      },
+      es: {
+        navOpenApp:   'Abrir app',
+        heroBadge:    'Gratis · Sin registro',
+        heroTitle1:   'Registra comidas',
+        heroTitle2:   'en lenguaje natural.',
+        heroTitle3:   'La IA hace el resto.',
+        heroSub:      'Describe lo que comiste y Eat Right calcula al instante las calorías, proteínas, carbohidratos y grasas. Funciona con texto, fotos y voz.',
+        heroCta:      'Empezar gratis',
+        heroSeeHow:   'Ver cómo funciona',
+        trustNoAccount:   'Sin cuenta',
+        trustDataOnDevice:'Datos en tu dispositivo',
+        trustOffline:     'Funciona sin conexión',
+        howEyebrow:  'Cómo funciona',
+        howTitle:    'Tres pasos hacia una mejor nutrición',
+        step1Title:  'Describe tu comida',
+        step1Body:   'Escribe lo que comiste en texto libre — "pollo a la plancha con arroz y brócoli al vapor". Sin códigos de barras ni tablas.',
+        step2Title:  'La IA calcula los macros',
+        step2Body:   'Impulsado por Google Gemini, Eat Right identifica cada alimento y calcula las calorías, proteínas, carbohidratos y grasas exactas.',
+        step3Title:  'Sigue tu progreso',
+        step3Body:   'Gráficos diarios y mensuales, anillos de objetivos de macros y coaching IA para mejorar tu nutrición.',
+        featEyebrow: 'Funcionalidades',
+        featTitle:   'Todo lo que necesitas, nada más',
+        feat1Title:  'Registro de comidas con IA',
+        feat1Body:   'Simplemente describe lo que comiste. Eat Right entiende descripciones como "un bol de avena con plátano y miel, unos 300 ml" — sin búsqueda de porciones ni escaneo.',
+        feat2Title:  'Entrada por foto y voz',
+        feat2Body:   'Saca una foto a tu plato o dicta tu comida en voz alta. Gemini identifica los alimentos visualmente y transcribe la voz al instante.',
+        feat3Title:  'Calculadora de objetivos',
+        feat3Body:   'Introduce tus datos y objetivo — Eat Right calcula tu objetivo calórico personalizado y la distribución de macros con la fórmula Mifflin-St Jeor.',
+        feat4Title:  'Análisis y tendencias',
+        feat4Body:   'Gráficos de macros diarios y mensuales, seguimiento de medidas corporales y tendencias semanales.',
+        feat5Title:  'Medidas corporales',
+        feat5Body:   'Registra peso, cintura y otras medidas a lo largo del tiempo. Detecta tendencias en un gráfico y obtén análisis corporal IA por foto.',
+        probEyebrow: 'El problema',
+        probTitle:   'Muchos lo intentan.<br>Casi nadie lo logra.',
+        stat1Label:  'de los adultos en el mundo intentan perder peso cada año',
+        stat1Source: 'CDC y encuestas mundiales de salud',
+        stat2Label:  'de las dietas extremas fracasan a largo plazo — el peso regresa, a menudo con más',
+        stat2Source: 'Revisión sistemática de intervenciones de pérdida de peso',
+        stat3Label:  'de las personas pueden leer e interpretar correctamente una etiqueta nutricional',
+        stat3Source: 'Estudios europeos y asiáticos de alfabetización nutricional',
+        prob1Title:  'La paradoja de la información',
+        prob1Body:   'Vivimos en la era más informada sobre nutrición de la historia — y sin embargo solo el 3–10 % de las personas tiene un conocimiento real de cómo funcionan los macronutrientes. El resto navega en un mar de mitos.',
+        prob2Title:  'La trampa del yo-yo',
+        prob2Body:   'Hasta el 30 % de los que hacen dieta recurren a la restricción extrema — días de 600–800 kcal, zumos, saltarse comidas. A corto plazo la báscula baja. A largo plazo: pérdida muscular, metabolismo más lento y el peso vuelve mayor que antes.',
+        prob3Title:  'La solución es más sencilla de lo que crees',
+        prob3Body:   'Décadas de investigación convergen en un hallazgo: la conciencia de lo que realmente comes es el cambio de comportamiento más efectivo para controlar el peso de forma sostenible.',
+        privEyebrow: 'Privacidad primero',
+        privTitle:   'Tus datos nunca salen de tu teléfono',
+        privBody:    'Eat Right almacena todo en el IndexedDB de tu navegador — sin cuentas, sin servidores. La única llamada externa es a Google Gemini para analizar comidas (tu propia clave API gratuita).',
+        privItem1:   'Sin cuenta ni registro',
+        privItem2:   'Todos los datos almacenados localmente en IndexedDB',
+        privItem3:   'Clave API de Gemini gratuita — 1.500 solicitudes/día',
+        privItem4:   'Funciona sin conexión tras la primera carga (PWA)',
+        privItem5:   'Exporta tus datos en JSON cuando quieras',
+        shieldChip1: 'Almacenamiento local',
+        shieldChip2: 'Sin cuenta',
+        shieldChip3: 'Gratis para siempre',
+        ctaTitle:    'Empieza a comer mejor hoy',
+        ctaSub:      'Gratis, sin registro. Listo en 60 segundos.',
+        ctaBtn:      'Abrir la app',
+        footerOpenApp:  'Abrir App',
+        footerArticles: 'Artículos',
+        footerSettings: 'Ajustes',
+        footerCopy:     'Seguimiento nutricional con IA. Tus datos permanecen en tu dispositivo.'
+      },
+      ru: {
+        navOpenApp:   'Открыть приложение',
+        heroBadge:    'Бесплатно · Без регистрации',
+        heroTitle1:   'Записывай приёмы пищи',
+        heroTitle2:   'обычным текстом.',
+        heroTitle3:   'ИИ сделает всё остальное.',
+        heroSub:      'Опиши, что ты ел, и Eat Right мгновенно рассчитает калории, белки, углеводы и жиры. Работает с текстом, фото и голосом.',
+        heroCta:      'Начать бесплатно',
+        heroSeeHow:   'Как это работает',
+        trustNoAccount:   'Без аккаунта',
+        trustDataOnDevice:'Данные на устройстве',
+        trustOffline:     'Работает офлайн',
+        howEyebrow:  'Как это работает',
+        howTitle:    'Три шага к лучшему питанию',
+        step1Title:  'Опиши приём пищи',
+        step1Body:   'Напиши, что ты ел — «куриная грудка 200г с рисом и брокколи». Никаких штрихкодов, никаких таблиц.',
+        step2Title:  'ИИ рассчитывает макросы',
+        step2Body:   'На основе Google Gemini Eat Right распознаёт каждый продукт и рассчитывает точные калории, белки, углеводы и жиры.',
+        step3Title:  'Следи за прогрессом',
+        step3Body:   'Дневные и месячные графики, кольца целей по макросам и ИИ-коучинг по улучшению питания.',
+        featEyebrow: 'Возможности',
+        featTitle:   'Всё необходимое — ничего лишнего',
+        feat1Title:  'ИИ-дневник питания',
+        feat1Body:   'Просто опиши, что ел. Eat Right понимает разнообразные описания: «миска овсянки с бананом и мёдом, примерно 300 мл» — без поиска порций и сканирования.',
+        feat2Title:  'Фото и голосовой ввод',
+        feat2Body:   'Сфотографируй тарелку или надиктуй приём пищи вслух. Gemini распознаёт продукты визуально и транскрибирует речь на лету.',
+        feat3Title:  'Калькулятор целей',
+        feat3Body:   'Введи свои данные и цель — Eat Right рассчитает персональную норму калорий и распределение макросов по формуле Миффлина–Сан Жеора.',
+        feat4Title:  'Аналитика и тренды',
+        feat4Body:   'Дневные и месячные графики макросов, отслеживание измерений тела и недельные тренды потребления.',
+        feat5Title:  'Замеры тела',
+        feat5Body:   'Записывай вес, талию и другие параметры с течением времени. Отслеживай тренды на графике и получай ИИ-анализ тела по фото.',
+        probEyebrow: 'Проблема',
+        probTitle:   'Многие пытаются.<br>Почти никто не добивается результата.',
+        stat1Label:  'взрослых по всему миру пытаются похудеть каждый год',
+        stat1Source: 'CDC и международные исследования здоровья',
+        stat2Label:  'жёстких диет не работают в долгосрочной перспективе — вес возвращается',
+        stat2Source: 'Систематический обзор вмешательств по снижению веса',
+        stat3Label:  'людей правильно читают и интерпретируют этикетку с пищевой ценностью',
+        stat3Source: 'Европейские и азиатские исследования нутрициональной грамотности',
+        prob1Title:  'Информационный парадокс',
+        prob1Body:   'Мы живём в самую просвещённую эпоху — и при этом лишь 3–10% людей действительно понимают, как работают макронутриенты. Остальные блуждают в море мифов: «углеводы после 18:00 становятся жиром», «жир делает тебя жирным».',
+        prob2Title:  'Ловушка йо-йо',
+        prob2Body:   'До 30% сидящих на диете прибегают к жёстким ограничениям — 600–800 ккал в день, соковые диеты, пропуск приёмов пищи. Краткосрочно вес снижается. Долгосрочно: потеря мышц, замедленный метаболизм и вес возвращается больше прежнего.',
+        prob3Title:  'Решение проще, чем кажется',
+        prob3Body:   'Десятилетия исследований сходятся в одном: осознанность в том, что ты действительно ешь, — это самое эффективное изменение поведения для устойчивого контроля веса. Нужен не жёсткий план, а честный и простой трекинг.',
+        privEyebrow: 'Приватность прежде всего',
+        privTitle:   'Твои данные не покидают телефон',
+        privBody:    'Eat Right хранит всё в IndexedDB браузера — никаких аккаунтов и серверов. Единственный внешний запрос — к Google Gemini для анализа блюд (собственный бесплатный API-ключ).',
+        privItem1:   'Без аккаунта и регистрации',
+        privItem2:   'Все данные хранятся на устройстве в IndexedDB',
+        privItem3:   'Бесплатный API-ключ Gemini — 1 500 запросов/день',
+        privItem4:   'Работает офлайн после первой загрузки (PWA)',
+        privItem5:   'Экспорт данных в JSON в любой момент',
+        shieldChip1: 'Локальное хранение',
+        shieldChip2: 'Без аккаунта',
+        shieldChip3: 'Бесплатно навсегда',
+        ctaTitle:    'Начни питаться правильно сегодня',
+        ctaSub:      'Бесплатно, без регистрации. Настройка за 60 секунд.',
+        ctaBtn:      'Открыть приложение',
+        footerOpenApp:  'Открыть приложение',
+        footerArticles: 'Статьи',
+        footerSettings: 'Настройки',
+        footerCopy:     'ИИ-трекинг питания. Данные остаются на твоём устройстве.'
+      },
+      uk: {
+        navOpenApp:   'Відкрити застосунок',
+        heroBadge:    'Безкоштовно · Без реєстрації',
+        heroTitle1:   'Фіксуй прийоми їжі',
+        heroTitle2:   'звичайним текстом.',
+        heroTitle3:   'ШІ зробить решту.',
+        heroSub:      'Опиши, що ти їв, і Eat Right миттєво розрахує калорії, білки, вуглеводи та жири. Працює з текстом, фото та голосом.',
+        heroCta:      'Почати безкоштовно',
+        heroSeeHow:   'Як це працює',
+        trustNoAccount:   'Без акаунту',
+        trustDataOnDevice:'Дані на пристрої',
+        trustOffline:     'Працює офлайн',
+        howEyebrow:  'Як це працює',
+        howTitle:    'Три кроки до кращого харчування',
+        step1Title:  'Опиши прийом їжі',
+        step1Body:   'Напиши, що ти їв — «куряче філе 200г з рисом і броколі». Без штрихкодів і таблиць.',
+        step2Title:  'ШІ розраховує макроси',
+        step2Body:   'На базі Google Gemini Eat Right розпізнає кожен продукт і розраховує точні калорії, білки, вуглеводи та жири.',
+        step3Title:  'Відстежуй прогрес',
+        step3Body:   'Денні та місячні графіки, кільця цілей за макросами і ШІ-коучинг для покращення харчування.',
+        featEyebrow: 'Можливості',
+        featTitle:   'Все необхідне — нічого зайвого',
+        feat1Title:  'ШІ-щоденник харчування',
+        feat1Body:   'Просто опиши, що їв. Eat Right розуміє різноманітні описи: «миска вівсянки з бананом і медом, близько 300 мл» — без пошуку порцій і сканування.',
+        feat2Title:  'Фото та голосовий ввід',
+        feat2Body:   'Сфотографуй тарілку або продиктуй прийом їжі вголос. Gemini розпізнає продукти візуально і транскрибує мову на льоту.',
+        feat3Title:  'Калькулятор цілей',
+        feat3Body:   'Введи свої дані і ціль — Eat Right розрахує персональну норму калорій і розподіл макросів за формулою Міффліна–Сан Жеора.',
+        feat4Title:  'Аналітика і тренди',
+        feat4Body:   'Денні та місячні графіки макросів, відстеження вимірювань тіла і тижневі тренди споживання.',
+        feat5Title:  'Виміри тіла',
+        feat5Body:   'Записуй вагу, талію та інші параметри з часом. Відстежуй тренди на графіку і отримуй ШІ-аналіз тіла за фото.',
+        probEyebrow: 'Проблема',
+        probTitle:   'Багато хто намагається.<br>Майже нікому не вдається.',
+        stat1Label:  'дорослих у всьому світі намагаються схуднути щороку',
+        stat1Source: 'CDC та міжнародні дослідження здоров\'я',
+        stat2Label:  'жорстких дієт не працюють у довгостроковій перспективі — вага повертається',
+        stat2Source: 'Систематичний огляд втручань зі схуднення',
+        stat3Label:  'людей правильно читають і інтерпретують етикетку харчової цінності',
+        stat3Source: 'Європейські та азійські дослідження нутрієнтної грамотності',
+        prob1Title:  'Інформаційний парадокс',
+        prob1Body:   'Ми живемо в найбільш поінформовану епоху — і при цьому лише 3–10% людей дійсно розуміють, як працюють макронутрієнти. Решта блукає у морі міфів: «вуглеводи після 18:00 перетворюються на жир», «жир робить тебе жирним».',
+        prob2Title:  'Пастка йо-йо',
+        prob2Body:   'До 30% тих, хто дотримується дієти, вдаються до жорстких обмежень — 600–800 ккал на день, соківниці, пропуск прийомів їжі. Короткостроково вага знижується. Довгостроково: втрата м\'язів, уповільнений метаболізм і вага повертається більшою.',
+        prob3Title:  'Рішення простіше, ніж здається',
+        prob3Body:   'Десятиліття досліджень сходяться в одному: усвідомленість того, що ти справді їси, — це найефективніша зміна поведінки для стійкого контролю ваги. Не потрібен жорсткий план — потрібен чесний і легкий трекінг.',
+        privEyebrow: 'Приватність понад усе',
+        privTitle:   'Твої дані не виходять за межі телефону',
+        privBody:    'Eat Right зберігає все в IndexedDB браузера — без акаунтів і серверів. Єдиний зовнішній запит — до Google Gemini для аналізу страв (власний безкоштовний API-ключ).',
+        privItem1:   'Без акаунту та реєстрації',
+        privItem2:   'Усі дані зберігаються на пристрої в IndexedDB',
+        privItem3:   'Безкоштовний API-ключ Gemini — 1 500 запитів/день',
+        privItem4:   'Працює офлайн після першого завантаження (PWA)',
+        privItem5:   'Експорт даних у JSON будь-коли',
+        shieldChip1: 'Локальне зберігання',
+        shieldChip2: 'Без акаунту',
+        shieldChip3: 'Безкоштовно назавжди',
+        ctaTitle:    'Почни харчуватись правильно сьогодні',
+        ctaSub:      'Безкоштовно, без реєстрації. Налаштування за 60 секунд.',
+        ctaBtn:      'Відкрити застосунок',
+        footerOpenApp:  'Відкрити застосунок',
+        footerArticles: 'Статті',
+        footerSettings: 'Налаштування',
+        footerCopy:     'ШІ-трекінг харчування. Дані залишаються на твоєму пристрої.'
+      },
+      cs: {
+        navOpenApp:   'Otevřít aplikaci',
+        heroBadge:    'Zdarma · Bez registrace',
+        heroTitle1:   'Zaznamenávej jídla',
+        heroTitle2:   'prostým textem.',
+        heroTitle3:   'AI udělá zbytek.',
+        heroSub:      'Popiš, co jsi jedl/a, a Eat Right okamžitě spočítá kalorie, bílkoviny, sacharidy a tuky. Funguje s textem, fotografiemi i hlasem.',
+        heroCta:      'Začít zdarma',
+        heroSeeHow:   'Jak to funguje',
+        trustNoAccount:   'Bez účtu',
+        trustDataOnDevice:'Data na tvém zařízení',
+        trustOffline:     'Funguje offline',
+        howEyebrow:  'Jak to funguje',
+        howTitle:    'Tři kroky k lepší výživě',
+        step1Title:  'Popiš své jídlo',
+        step1Body:   'Napiš, co jsi jedl/a — „grilované kuře 200g s rýží a brokolicí". Žádné čárové kódy, žádné vyhledávací tabulky.',
+        step2Title:  'AI vypočítá makra',
+        step2Body:   'Díky Google Gemini Eat Right identifikuje každou potravinu a vypočítá přesné kalorie, bílkoviny, sacharidy a tuky.',
+        step3Title:  'Sleduj pokrok',
+        step3Body:   'Denní a měsíční grafy, prstence maker cílů a AI koučink pro zlepšení výživy v průběhu času.',
+        featEyebrow: 'Funkce',
+        featTitle:   'Vše, co potřebuješ – nic navíc',
+        feat1Title:  'AI deník jídla',
+        feat1Body:   'Jednoduše popiš, co jsi jedl/a. Eat Right rozumí smíšeným popisům jako „miska ovesných vloček s banánem a medem, asi 300 ml".',
+        feat2Title:  'Foto a hlasový vstup',
+        feat2Body:   'Vyfoť svůj talíř nebo nahlas řekni, co jsi jedl/a. Gemini identifikuje potraviny vizuálně a přepisuje hlas za chodu.',
+        feat3Title:  'Kalkulačka cílů',
+        feat3Body:   'Zadej své údaje a cíl — Eat Right vypočítá personalizovaný kalorický cíl a rozdělení maker pomocí vzorce Mifflin-St Jeor.',
+        feat4Title:  'Analýzy a trendy',
+        feat4Body:   'Denní a měsíční grafy maker, sledování tělesných měr a týdenní trendy příjmu.',
+        feat5Title:  'Tělesná měření',
+        feat5Body:   'Zaznamenávej váhu, obvod pasu a další měření v čase. Sleduj trendy v grafu a získej AI analýzu těla z fotografie.',
+        probEyebrow: 'Problém',
+        probTitle:   'Mnozí se snaží.<br>Téměř nikdo neuspěje.',
+        stat1Label:  'dospělých po celém světě se každý rok snaží zhubnout',
+        stat1Source: 'CDC a globální zdravotní průzkumy',
+        stat2Label:  'drastických diet selže z dlouhodobého hlediska — váha se vrátí, often s přídavkem',
+        stat2Source: 'Systematický přehled intervencí pro hubnutí',
+        stat3Label:  'lidí dokáže správně číst a interpretovat nutričního štítku',
+        stat3Source: 'Evropské a asijské studie nutriční gramotnosti',
+        prob1Title:  'Informační paradox',
+        prob1Body:   'Žijeme v nejlépe informované době v historii — a přesto jen 3–10 % lidí má skutečné znalosti o tom, jak makronutrienty fungují. Zbytek se pohybuje v moři mýtů.',
+        prob2Title:  'Past jo-jo efektu',
+        prob2Body:   'Až 30 % dietářů sahá po extrémním omezení — 600–800 kcal/den, džusové diety, vynechávání jídel. Krátkodobě váha klesne. Dlouhodobě: ztráta svalů, pomalejší metabolismus a váha se vrátí vyšší než dříve.',
+        prob3Title:  'Řešení je jednodušší, než si myslíš',
+        prob3Body:   'Desetiletí výzkumů dospívají k jednomu závěru: uvědomění si toho, co skutečně jíš, je nejúčinnější změnou chování pro udržitelné řízení hmotnosti.',
+        privEyebrow: 'Soukromí na prvním místě',
+        privTitle:   'Tvá data nikdy neopustí tvůj telefon',
+        privBody:    'Eat Right ukládá vše do IndexedDB tvého prohlížeče — žádné účty, žádné servery. Jediné externí volání je Google Gemini pro analýzu jídel (vlastní bezplatný API klíč).',
+        privItem1:   'Bez účtu nebo registrace',
+        privItem2:   'Všechna data uložena místně v IndexedDB',
+        privItem3:   'Bezplatný API klíč Gemini — 1 500 požadavků/den',
+        privItem4:   'Funguje offline po prvním načtení (PWA)',
+        privItem5:   'Exportuj data jako JSON kdykoliv',
+        shieldChip1: 'Místní úložiště',
+        shieldChip2: 'Bez účtu',
+        shieldChip3: 'Zdarma navždy',
+        ctaTitle:    'Začni se správně stravovat ještě dnes',
+        ctaSub:      'Zdarma, bez registrace. Nastavení za 60 sekund.',
+        ctaBtn:      'Otevřít aplikaci',
+        footerOpenApp:  'Otevřít aplikaci',
+        footerArticles: 'Články',
+        footerSettings: 'Nastavení',
+        footerCopy:     'AI sledování výživy. Tvá data zůstávají na tvém zařízení.'
+      }
+    };
+
+    // Map display codes for the lang button
+    var LANG_LABELS = { en:'EN', de:'DE', fr:'FR', es:'ES', ru:'RU', uk:'UK', cs:'CS' };
+
+    // ── Language application ──
+    function applyLang(lang) {
+      var t = LANGS[lang] || LANGS['en'];
+      document.documentElement.lang = lang;
+
+      // Update all data-i18n elements
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) {
+          // Some strings contain <br> — use innerHTML for those
+          if (t[key].indexOf('<') !== -1) {
+            el.innerHTML = t[key];
+          } else {
+            el.textContent = t[key];
+          }
+        }
+      });
+
+      // Update lang picker display
+      var cur = document.getElementById('lang-current');
+      if (cur) cur.textContent = LANG_LABELS[lang] || lang.toUpperCase();
+
+      // Mark active option
+      document.querySelectorAll('.lang-option').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+    }
+
+    // ── Language picker toggle ──
+    function setupLangPicker() {
+      var btn      = document.getElementById('lang-btn');
+      var dropdown = document.getElementById('lang-dropdown');
+      if (!btn || !dropdown) return;
+
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var open = dropdown.classList.toggle('open');
+        btn.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+
+      // Close on option click
+      dropdown.querySelectorAll('.lang-option').forEach(function(opt) {
+        opt.addEventListener('click', function() {
+          var lang = opt.getAttribute('data-lang');
+          if (!lang) return;
+
+          // Close dropdown
+          dropdown.classList.remove('open');
+          btn.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+
+          // Persist to dtk_settings (same key the React app uses)
+          try {
+            var raw = localStorage.getItem('dtk_settings');
+            var settings = raw ? JSON.parse(raw) : {};
+            settings.language = lang;
+            localStorage.setItem('dtk_settings', JSON.stringify(settings));
+          } catch(e2) {}
+
+          applyLang(lang);
+        });
+      });
+
+      // Close on click outside
+      document.addEventListener('click', function() {
+        dropdown.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    // ── Language initialisation ──
+    function initLang() {
+      var lang = 'en';
+
+      // 1. Check dtk_settings (React app preference)
+      try {
+        var raw = localStorage.getItem('dtk_settings');
+        if (raw) {
+          var s = JSON.parse(raw);
+          if (s && s.language && LANGS[s.language]) {
+            lang = s.language;
+          }
+        }
+      } catch(e) {}
+
+      // 2. Fall back to browser language
+      if (lang === 'en') {
+        var nav = (navigator.language || '').toLowerCase().slice(0, 2);
+        if (LANGS[nav]) lang = nav;
+      }
+
+      applyLang(lang);
+    }
+
     // ── PWA standalone mode: redirect to app ──
     if (window.matchMedia('(display-mode: standalone)').matches) {
       window.location.replace('/app');
@@ -1647,6 +2286,8 @@
 
     // ── Init ──
     document.addEventListener('DOMContentLoaded', function() {
+      initLang();
+      setupLangPicker();
       setupNavScroll();
       setupSmoothScroll();
       setupScrollAnimations();
