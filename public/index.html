@@ -1,0 +1,1437 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Primary SEO -->
+  <title>Eat Right — AI-Powered Nutrition &amp; Calorie Tracker</title>
+  <meta name="description" content="Track calories and macros with AI. Describe what you ate in plain text and Eat Right instantly calculates calories, protein, carbs and fat. Free PWA, no sign-up." />
+  <link rel="canonical" href="https://diet-tracker-f3b.pages.dev" />
+  <meta name="robots" content="index, follow" />
+  <meta name="keywords" content="calorie tracker, macro tracker, AI nutrition, meal logging, calorie counter, protein tracker, diet app, nutrition app, PWA, free" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://diet-tracker-f3b.pages.dev" />
+  <meta property="og:title" content="Eat Right — AI-Powered Nutrition &amp; Calorie Tracker" />
+  <meta property="og:description" content="Track calories and macros with AI. Describe what you ate in plain text and Eat Right instantly calculates calories, protein, carbs and fat. Free PWA, no sign-up." />
+  <meta property="og:image" content="https://diet-tracker-f3b.pages.dev/icons/icon-512x512.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Eat Right — AI-Powered Nutrition &amp; Calorie Tracker" />
+  <meta name="twitter:description" content="Track calories and macros with AI. Describe meals in plain text — Eat Right calculates everything automatically. Free PWA, no sign-up." />
+  <meta name="twitter:image" content="https://diet-tracker-f3b.pages.dev/icons/icon-512x512.png" />
+
+  <!-- PWA / App -->
+  <meta name="theme-color" content="#18180f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Eat Right" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CX3LDP2Y41"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-CX3LDP2Y41', { anonymize_ip: true, send_page_view: false });
+  </script>
+
+  <!-- Microsoft Clarity -->
+  <script>
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "vr5878quce");
+  </script>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Eat Right",
+    "description": "AI-powered nutrition and calorie tracker. Describe meals in plain text to get instant macro breakdowns. Track calories, protein, carbs, fat and body measurements.",
+    "url": "https://diet-tracker-f3b.pages.dev",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "featureList": [
+      "AI meal parsing via Google Gemini",
+      "Calorie and macro tracking",
+      "Body measurements tracking",
+      "Nutrition analytics and charts",
+      "Photo and voice meal input",
+      "Offline support via PWA",
+      "No sign-up required",
+      "Data stays on your device"
+    ]
+  }
+  </script>
+
+  <style>
+    /* ── Design tokens ── */
+    :root {
+      --bg:       #18180f;
+      --surface:  #2e2e22;
+      --surface2: #242419;
+      --border:   #3a3a2a;
+      --text:     #f0ede4;
+      --muted:    #9a9680;
+      --faint:    #5a5a44;
+      --green:    #7cb87a;
+      --green-hi: #8fce8d;
+      --amber:    #d4a24c;
+      --rust:     #c17a5a;
+      --max-w:    1100px;
+      --r-sm:     12px;
+      --r-md:     18px;
+      --r-lg:     24px;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ── Keyframes ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+    @keyframes checkDraw {
+      to { stroke-dashoffset: 0; }
+    }
+    @keyframes barExpand {
+      from { width: 0; }
+      to   { width: var(--w); }
+    }
+    @keyframes ping {
+      0%   { transform: scale(1);    opacity: 0.6; }
+      100% { transform: scale(2.2);  opacity: 0; }
+    }
+    @keyframes floatUp {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-6px); }
+    }
+    @keyframes gradShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* ── Utility ── */
+    .section-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.15;
+      margin-bottom: 48px;
+    }
+
+    /* ── Navigation ── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      transition: background 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+    }
+    .nav--scrolled {
+      background: rgba(24,24,15,0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(58,58,42,0.6);
+    }
+    .nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+    }
+    .nav-brand {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .nav-cta:hover { color: var(--text); border-color: var(--faint); background: rgba(255,255,255,0.03); }
+
+    /* ── Hero ── */
+    .hero {
+      padding-top: 100px;
+      padding-bottom: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Subtle radial bg glow */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 600px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(124,184,122,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 64px;
+    }
+    .hero-text { animation: fadeUp 0.7s ease both; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      background: rgba(124,184,122,0.1);
+      border: 1px solid rgba(124,184,122,0.28);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--green);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: ping 2s ease-out infinite;
+    }
+    .hero-title {
+      font-size: clamp(36px, 5.5vw, 60px);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .hero-accent {
+      color: var(--green);
+      text-shadow: 0 0 40px rgba(124,184,122,0.4);
+    }
+    .hero-sub {
+      font-size: 18px;
+      line-height: 1.65;
+      color: var(--muted);
+      margin-bottom: 36px;
+      max-width: 480px;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: var(--green);
+      color: var(--bg);
+      font-weight: 700;
+      font-size: 16px;
+      border-radius: 14px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 8px 28px rgba(124,184,122,0.3);
+    }
+    .btn-primary:hover {
+      background: var(--green-hi);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 36px rgba(124,184,122,0.4);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-large { padding: 18px 40px; font-size: 18px; border-radius: 16px; }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 14px 22px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 15px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--faint); }
+    .btn-arrow {
+      width: 18px; height: 18px;
+      transition: transform 0.2s;
+    }
+    .btn-primary:hover .btn-arrow { transform: translateX(3px); }
+
+    /* Trust row */
+    .hero-trust {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      font-size: 12px;
+      color: var(--faint);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .trust-check { color: var(--green); font-size: 13px; }
+    .trust-sep { color: var(--faint); opacity: 0.4; }
+
+    /* ── Hero chat mockup ── */
+    .hero-visual {
+      animation: scaleIn 0.8s ease 0.2s both;
+      display: flex;
+      justify-content: center;
+    }
+    .chat-mockup {
+      width: 320px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      box-shadow:
+        0 32px 80px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(124,184,122,0.07),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+      animation: floatUp 5s ease-in-out 1s infinite;
+    }
+    .chat-titlebar {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tl-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .tl-close  { background: #5a5a44; }
+    .tl-min    { background: var(--amber); opacity: 0.85; }
+    .tl-max    { background: var(--green); opacity: 0.85; }
+    .tl-title {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--faint);
+      letter-spacing: 0.03em;
+    }
+    .chat-body {
+      padding: 16px 12px;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    /* Suggestion chips row */
+    .chat-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+    .chat-chip {
+      padding: 4px 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .chat-bubble-user {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px 14px 3px 14px;
+      padding: 10px 13px;
+      font-size: 12.5px;
+      color: var(--text);
+      max-width: 85%;
+      align-self: flex-end;
+      opacity: 0;
+      min-height: 38px;
+    }
+    .chat-cursor {
+      display: inline-block;
+      width: 1.5px;
+      height: 12px;
+      background: var(--green);
+      margin-left: 1px;
+      vertical-align: middle;
+      animation: blink 0.75s step-end infinite;
+    }
+    .chat-bubble-ai {
+      display: flex;
+      gap: 8px;
+      align-self: flex-start;
+      max-width: 95%;
+      opacity: 0;
+    }
+    .ai-avatar {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--green);
+      color: var(--bg);
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .ai-content { flex: 1; }
+    .ai-food-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(58,58,42,0.6);
+      gap: 8px;
+    }
+    .ai-food-row:last-child { border-bottom: none; }
+    .food-name { color: var(--text); }
+    .food-cal  { color: var(--amber); font-weight: 600; white-space: nowrap; }
+    .ai-macro-pills {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .mpill {
+      padding: 3px 8px;
+      border-radius: 7px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .mpill-cal  { background: rgba(212,162,76,0.15);  color: var(--amber); }
+    .mpill-prot { background: rgba(124,184,122,0.15); color: var(--green); }
+    .mpill-carb { background: rgba(212,162,76,0.1);   color: #c8a86a; }
+    .mpill-fat  { background: rgba(193,122,90,0.15);  color: var(--rust); }
+
+    /* ── How It Works ── */
+    .how-section {
+      padding: 100px 0;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      position: relative;
+      opacity: 0;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .step-card:hover { border-color: var(--faint); transform: translateY(-2px); }
+    .step-icon-wrap {
+      width: 56px; height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .step-green { background: rgba(124,184,122,0.12); }
+    .step-amber { background: rgba(212,162,76,0.12); }
+    .step-icon { width: 32px; height: 32px; }
+    .step-num {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: var(--faint);
+      margin-bottom: 8px;
+    }
+    .step-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .step-body {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--muted);
+    }
+
+    /* Ring SVG */
+    .ring-track { opacity: 0.2; }
+
+    /* ── Features ── */
+    .features-section { padding: 0 0 100px; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .feature-wide { grid-column: span 2; }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.025) 50%, transparent 60%);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+      pointer-events: none;
+    }
+    @media (hover: hover) {
+      .feature-card:hover { border-color: rgba(124,184,122,0.35); transform: translateY(-2px); }
+      .feature-card:hover::after { transform: translateX(100%); }
+    }
+    .feature-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .feature-icon-wrap {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .ficon-green { background: rgba(124,184,122,0.12); }
+    .ficon-amber { background: rgba(212,162,76,0.12); }
+    .feature-icon { width: 26px; height: 26px; }
+    .feature-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      padding-top: 4px;
+    }
+    .feature-body {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+    /* Wide card layout */
+    .feature-wide-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+    /* Macro bars demo */
+    .macro-demo { margin-top: 4px; }
+    .mdemo-row {
+      display: grid;
+      grid-template-columns: 56px 1fr 36px;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .mdemo-label { font-size: 11px; font-weight: 600; color: var(--faint); }
+    .mdemo-track {
+      height: 8px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .mdemo-bar {
+      height: 100%;
+      border-radius: 100px;
+      width: 0;
+    }
+    .mdemo-bar.anim-done { animation: barExpand 1s cubic-bezier(0.34,1.1,0.64,1) both; }
+    .mdemo-prot { background: linear-gradient(90deg, #5a9a58, var(--green)); }
+    .mdemo-carb { background: linear-gradient(90deg, #b08030, var(--amber)); }
+    .mdemo-fat  { background: linear-gradient(90deg, #9a5a3a, var(--rust)); }
+    .mdemo-val { font-size: 11px; font-weight: 700; color: var(--muted); text-align: right; }
+
+    /* ── Privacy ── */
+    .privacy-section {
+      padding: 0 0 100px;
+    }
+    .privacy-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 48px;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+    }
+    /* Green gradient top-left corner glow */
+    .privacy-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: -60px;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, rgba(124,184,122,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .privacy-title {
+      font-size: clamp(24px, 3.5vw, 34px);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .privacy-body {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 28px;
+      max-width: 480px;
+    }
+    .privacy-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .privacy-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .privacy-check {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(124,184,122,0.15);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    /* Shield visual */
+    .shield-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .shield-svg { width: 120px; height: 140px; overflow: visible; }
+    .shield-check-path {
+      stroke-dasharray: 60;
+      stroke-dashoffset: 60;
+    }
+    .shield-check-path.drawn {
+      animation: checkDraw 0.7s ease 0.2s forwards;
+    }
+    .shield-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+    }
+    .shield-chip {
+      padding: 4px 12px;
+      background: rgba(124,184,122,0.08);
+      border: 1px solid rgba(124,184,122,0.2);
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--green);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    /* ── CTA section ── */
+    .cta-section {
+      padding: 80px 0 100px;
+      position: relative;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(124,184,122,0.06) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-inner {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cta-icon {
+      width: 72px; height: 72px;
+      border-radius: 20px;
+      margin-bottom: 4px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+    }
+    .cta-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .cta-sub {
+      font-size: 17px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-icon { width: 22px; height: 22px; border-radius: 6px; }
+    .footer-brand {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .footer-link {
+      font-size: 13px;
+      color: var(--faint);
+      transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--muted); }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--faint);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 840px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-visual { order: -1; }
+      .hero-title { font-size: clamp(32px, 8vw, 48px); }
+      .hero-sub { font-size: 16px; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feature-wide { grid-column: 1; }
+      .feature-wide-inner { grid-template-columns: 1fr; gap: 24px; }
+      .privacy-card { grid-template-columns: 1fr; padding: 32px 24px; gap: 32px; }
+      .shield-wrap { flex-direction: row; justify-content: flex-start; flex-wrap: wrap; }
+      .shield-chips { flex-direction: row; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+    @media (max-width: 480px) {
+      .chat-mockup { width: 280px; }
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="top-nav" aria-label="Site navigation">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo" aria-label="Eat Right home">
+        <img src="/icons/icon-192x192.png" alt="" class="nav-icon" aria-hidden="true" />
+        <span class="nav-brand">Eat Right</span>
+      </a>
+      <a href="/app" class="nav-cta" aria-label="Open the Eat Right app">
+        Open app
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/>
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="hero" id="hero" aria-label="Hero">
+    <div class="hero-inner">
+
+      <div class="hero-text">
+        <div class="hero-badge">
+          <span class="badge-dot" aria-hidden="true"></span>
+          Free forever &middot; No sign-up
+        </div>
+        <h1 class="hero-title">
+          Log meals in<br>
+          <span class="hero-accent">plain English.</span><br>
+          AI does the rest.
+        </h1>
+        <p class="hero-sub">
+          Describe what you ate and Eat Right instantly breaks down your calories, protein, carbs and fat. Works with text, photos and voice.
+        </p>
+        <div class="hero-actions">
+          <a href="/app" class="btn-primary" id="hero-cta" aria-label="Start tracking your nutrition for free">
+            Start tracking free
+            <svg class="btn-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/>
+            </svg>
+          </a>
+          <a href="#how-it-works" class="btn-ghost">See how it works</a>
+        </div>
+        <div class="hero-trust" aria-label="Key benefits">
+          <span class="trust-item"><span class="trust-check" aria-hidden="true">&#10003;</span> No account needed</span>
+          <span class="trust-sep" aria-hidden="true">&middot;</span>
+          <span class="trust-item"><span class="trust-check" aria-hidden="true">&#10003;</span> Data on your device</span>
+          <span class="trust-sep" aria-hidden="true">&middot;</span>
+          <span class="trust-item"><span class="trust-check" aria-hidden="true">&#10003;</span> Works offline</span>
+        </div>
+      </div>
+
+      <!-- Animated chat mockup -->
+      <div class="hero-visual" aria-hidden="true">
+        <div class="chat-mockup">
+          <div class="chat-titlebar">
+            <span class="tl-dot tl-close"></span>
+            <span class="tl-dot tl-min"></span>
+            <span class="tl-dot tl-max"></span>
+            <span class="tl-title">Log &amp; Ask</span>
+          </div>
+          <div class="chat-body">
+            <div class="chat-chips">
+              <span class="chat-chip">What did I eat?</span>
+              <span class="chat-chip">High protein meal?</span>
+            </div>
+            <div class="chat-bubble-user" id="hero-user-bubble"></div>
+            <div class="chat-bubble-ai" id="hero-ai-bubble">
+              <div class="ai-avatar">N</div>
+              <div class="ai-content" id="hero-ai-content"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── How It Works ── -->
+  <section class="how-section" id="how-it-works" aria-label="How it works">
+    <div class="section-inner">
+      <p class="section-eyebrow">How it works</p>
+      <h2 class="section-title">Three steps to better nutrition</h2>
+      <div class="steps-grid">
+
+        <!-- Step 1 -->
+        <div class="step-card" data-animate data-delay="0">
+          <div class="step-icon-wrap step-green" aria-hidden="true">
+            <svg class="step-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <rect x="3" y="5" width="26" height="22" rx="4" stroke="#7cb87a" stroke-width="2"/>
+              <line x1="8" y1="13" x2="24" y2="13" stroke="#7cb87a" stroke-width="1.8" stroke-linecap="round"/>
+              <line x1="8" y1="18" x2="18" y2="18" stroke="#7cb87a" stroke-width="1.8" stroke-linecap="round"/>
+              <rect x="20" y="16.5" width="2" height="3" rx="1" fill="#7cb87a" class="step1-cursor"/>
+            </svg>
+          </div>
+          <span class="step-num">01</span>
+          <h3 class="step-title">Describe your meal</h3>
+          <p class="step-body">Type what you ate in plain text — "grilled chicken with rice and steamed broccoli". No barcodes, no lookup tables.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card" data-animate data-delay="150">
+          <div class="step-icon-wrap step-amber" aria-hidden="true">
+            <svg class="step-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true" id="step2-ring-svg">
+              <circle cx="16" cy="16" r="11" stroke="#2e2e22" stroke-width="4" class="ring-track"/>
+              <circle cx="16" cy="16" r="11" stroke="#d4a24c" stroke-width="4"
+                stroke-linecap="round"
+                stroke-dasharray="69.1"
+                stroke-dashoffset="69.1"
+                transform="rotate(-90 16 16)"
+                id="step2-ring-arc"/>
+              <text x="16" y="19.5" text-anchor="middle" font-size="7" font-weight="800" fill="#f0ede4" id="step2-ring-label">0</text>
+            </svg>
+          </div>
+          <span class="step-num">02</span>
+          <h3 class="step-title">AI calculates macros</h3>
+          <p class="step-body">Powered by Google Gemini, Eat Right identifies each food and calculates exact calories, protein, carbs and fat.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card" data-animate data-delay="300">
+          <div class="step-icon-wrap step-green" aria-hidden="true">
+            <svg class="step-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+              <!-- Static chart bars — will animate via JS -->
+              <rect x="4"  y="24" width="6" height="0" rx="2" fill="#7cb87a" id="bar1" style="transform-origin: 7px 24px; transform: scaleY(0);"/>
+              <rect x="13" y="24" width="6" height="0" rx="2" fill="#d4a24c" id="bar2" style="transform-origin: 16px 24px; transform: scaleY(0);"/>
+              <rect x="22" y="24" width="6" height="0" rx="2" fill="#c17a5a" id="bar3" style="transform-origin: 25px 24px; transform: scaleY(0);"/>
+              <line x1="3" y1="25" x2="29" y2="25" stroke="#3a3a2a" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="step-num">03</span>
+          <h3 class="step-title">Track your progress</h3>
+          <p class="step-body">Daily and monthly charts, macro goal rings, and AI coaching on how to improve your nutrition over time.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ── -->
+  <section class="features-section" id="features" aria-label="Features">
+    <div class="section-inner">
+      <p class="section-eyebrow">Features</p>
+      <h2 class="section-title">Everything you need, nothing you don't</h2>
+      <div class="features-grid">
+
+        <!-- Wide: AI Logging -->
+        <div class="feature-card feature-wide" data-animate data-delay="0">
+          <div class="feature-wide-inner">
+            <div>
+              <div class="feature-header">
+                <div class="feature-icon-wrap ficon-green" aria-hidden="true">
+                  <svg class="feature-icon" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                    <path d="M2 4h22a2 2 0 012 2v11a2 2 0 01-2 2H8l-6 4V6a2 2 0 012-2z" stroke="#7cb87a" stroke-width="1.8" stroke-linejoin="round"/>
+                    <line x1="7" y1="10" x2="19" y2="10" stroke="#7cb87a" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="7" y1="14" x2="14" y2="14" stroke="#7cb87a" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="feature-title">AI Meal Logging</h3>
+                </div>
+              </div>
+              <p class="feature-body">Just describe what you ate. Eat Right understands mixed descriptions like "a bowl of oatmeal with banana and honey, about 300ml" — no portion lookup, no barcode scanning.</p>
+            </div>
+            <div class="macro-demo" aria-label="Example macro breakdown">
+              <div class="mdemo-row">
+                <span class="mdemo-label">Protein</span>
+                <div class="mdemo-track"><div class="mdemo-bar mdemo-prot" style="--w:82%" id="mbar-prot"></div></div>
+                <span class="mdemo-val">148g</span>
+              </div>
+              <div class="mdemo-row">
+                <span class="mdemo-label">Carbs</span>
+                <div class="mdemo-track"><div class="mdemo-bar mdemo-carb" style="--w:70%" id="mbar-carb"></div></div>
+                <span class="mdemo-val">220g</span>
+              </div>
+              <div class="mdemo-row">
+                <span class="mdemo-label">Fat</span>
+                <div class="mdemo-track"><div class="mdemo-bar mdemo-fat" style="--w:58%" id="mbar-fat"></div></div>
+                <span class="mdemo-val">52g</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photo & Voice -->
+        <div class="feature-card" data-animate data-delay="100">
+          <div class="feature-header">
+            <div class="feature-icon-wrap ficon-amber" aria-hidden="true">
+              <svg class="feature-icon" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                <rect x="1" y="6" width="24" height="17" rx="3" stroke="#d4a24c" stroke-width="1.8"/>
+                <circle cx="13" cy="15" r="4.5" stroke="#d4a24c" stroke-width="1.8"/>
+                <circle cx="13" cy="15" r="1.8" fill="#d4a24c"/>
+                <path d="M8 6V5a2 2 0 012-2h6a2 2 0 012 2v1" stroke="#d4a24c" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="feature-title">Photo &amp; Voice Input</h3>
+            </div>
+          </div>
+          <p class="feature-body">Snap a photo of your plate or speak your meal aloud. Gemini identifies foods visually and transcribes voice on the fly — no typing required.</p>
+        </div>
+
+        <!-- Goal Calculator -->
+        <div class="feature-card" data-animate data-delay="200">
+          <div class="feature-header">
+            <div class="feature-icon-wrap ficon-green" aria-hidden="true">
+              <svg class="feature-icon" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                <circle cx="13" cy="13" r="11" stroke="#7cb87a" stroke-width="1.8"/>
+                <circle cx="13" cy="13" r="6.5" stroke="#7cb87a" stroke-width="1.5" stroke-dasharray="3 2.5"/>
+                <circle cx="13" cy="13" r="2.5" fill="#7cb87a"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="feature-title">Goal Calculator</h3>
+            </div>
+          </div>
+          <p class="feature-body">Enter your stats and goal — Eat Right computes a personalised calorie target and macro split using the Mifflin-St Jeor formula. Adjustable with sliders.</p>
+        </div>
+
+        <!-- Analytics -->
+        <div class="feature-card" data-animate data-delay="300">
+          <div class="feature-header">
+            <div class="feature-icon-wrap ficon-amber" aria-hidden="true">
+              <svg class="feature-icon" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                <polyline points="3,20 8,12 13,15 18,6 23,10" stroke="#d4a24c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="3" y1="21.5" x2="23" y2="21.5" stroke="#3a3a2a" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="feature-title">Analytics &amp; Trends</h3>
+            </div>
+          </div>
+          <p class="feature-body">Daily and monthly macro charts, body measurement tracking, and week-over-week intake trends to see what's actually working.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Privacy ── -->
+  <section class="privacy-section" id="privacy" aria-label="Privacy">
+    <div class="section-inner">
+      <div class="privacy-card" data-animate-card>
+        <div class="privacy-content">
+          <p class="section-eyebrow">Privacy first</p>
+          <h2 class="privacy-title">Your data never leaves your phone</h2>
+          <p class="privacy-body">
+            Eat Right stores everything in your browser's IndexedDB — no accounts, no servers, no subscriptions. The only external call is to Google Gemini to parse meals (you bring your own free API key).
+          </p>
+          <ul class="privacy-list">
+            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> No account or sign-up required</li>
+            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> All data stored on-device in IndexedDB</li>
+            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> Free Gemini API key — 1,500 requests/day</li>
+            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> Works offline after first load (PWA)</li>
+            <li class="privacy-item"><span class="privacy-check" aria-hidden="true">&#10003;</span> Export your data as JSON anytime</li>
+          </ul>
+        </div>
+        <div class="shield-wrap" aria-hidden="true">
+          <svg class="shield-svg" viewBox="0 0 120 140" fill="none" id="shield-svg">
+            <path d="M60 8 L108 30 L108 72 C108 102 86 126 60 133 C34 126 12 102 12 72 L12 30 Z"
+              fill="#2e2e22" stroke="#3a3a2a" stroke-width="1.5"/>
+            <path d="M60 20 L96 39 L96 72 C96 96 80 116 60 122 C40 116 24 96 24 72 L24 39 Z"
+              fill="#242419"/>
+            <polyline points="42,73 54,85 78,58"
+              stroke="#7cb87a" stroke-width="5.5"
+              stroke-linecap="round" stroke-linejoin="round"
+              class="shield-check-path"
+              id="shield-check"/>
+          </svg>
+          <div class="shield-chips">
+            <span class="shield-chip">On-device storage</span>
+            <span class="shield-chip">No account</span>
+            <span class="shield-chip">Free forever</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="cta-section" aria-label="Get started">
+    <div class="section-inner cta-inner">
+      <img src="/icons/icon-192x192.png" alt="Eat Right app icon" class="cta-icon" />
+      <h2 class="cta-title">Start eating right today</h2>
+      <p class="cta-sub">Free, no sign-up. Takes 60 seconds to set up.</p>
+      <a href="/app" class="btn-primary btn-large" id="cta-bottom" aria-label="Open Eat Right app">
+        Open the app
+        <svg class="btn-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer">
+    <div class="section-inner footer-inner">
+      <div class="footer-logo">
+        <img src="/icons/icon-192x192.png" alt="Eat Right" class="footer-icon" />
+        <span class="footer-brand">Eat Right</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="/app" class="footer-link">Open App</a>
+        <a href="/app#/articles" class="footer-link">Articles</a>
+        <a href="/app#/settings" class="footer-link">Settings</a>
+      </nav>
+      <p class="footer-copy">AI nutrition tracking. Your data stays on your device.</p>
+    </div>
+  </footer>
+
+  <script>
+    // ── PWA standalone mode: redirect to app ──
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      window.location.replace('/app');
+    }
+
+    // ── GA4 page view ──
+    if (typeof gtag === 'function') {
+      gtag('event', 'page_view', {
+        page_path: '/',
+        page_location: window.location.href,
+        page_title: 'Landing Page'
+      });
+    }
+
+    // ── CTA click tracking ──
+    document.querySelectorAll('a[href="/app"]').forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (typeof gtag === 'function') {
+          var section = link.closest('section');
+          gtag('event', 'cta_click', {
+            location: section ? (section.id || 'unknown') : 'nav'
+          });
+        }
+      });
+    });
+
+    // ── Nav scroll effect ──
+    function setupNavScroll() {
+      var nav = document.getElementById('top-nav');
+      if (!nav) return;
+      window.addEventListener('scroll', function() {
+        nav.classList.toggle('nav--scrolled', window.scrollY > 40);
+      }, { passive: true });
+    }
+
+    // ── Smooth scroll for anchor links ──
+    function setupSmoothScroll() {
+      document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          var href = link.getAttribute('href');
+          if (href === '#') return;
+          var target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    }
+
+    // ── Hero chat animation ──
+    var DEMO_TEXT = "I had grilled chicken 200g with rice and broccoli";
+    var DEMO_FOODS = [
+      { name: "Grilled chicken", cal: "330 kcal" },
+      { name: "White rice",      cal: "240 kcal" },
+      { name: "Broccoli",        cal: "55 kcal"  }
+    ];
+    var DEMO_MACROS = { cal: "625 kcal", prot: "70g protein", carb: "63g carbs", fat: "8g fat" };
+
+    function runHeroChat() {
+      var userBubble = document.getElementById('hero-user-bubble');
+      var aiBubble   = document.getElementById('hero-ai-bubble');
+      var aiContent  = document.getElementById('hero-ai-content');
+      if (!userBubble || !aiBubble || !aiContent) return;
+
+      // Reset state
+      userBubble.style.opacity = '0';
+      userBubble.innerHTML = '';
+      aiBubble.style.opacity = '0';
+      aiContent.innerHTML = '';
+
+      // Fade in user bubble
+      setTimeout(function() {
+        userBubble.style.transition = 'opacity 0.3s ease';
+        userBubble.style.opacity = '1';
+
+        var charIndex = 0;
+        var textSpan = document.createElement('span');
+        var cursor   = document.createElement('span');
+        cursor.className = 'chat-cursor';
+        userBubble.appendChild(textSpan);
+        userBubble.appendChild(cursor);
+
+        function typeNext() {
+          if (charIndex < DEMO_TEXT.length) {
+            textSpan.textContent = DEMO_TEXT.slice(0, ++charIndex);
+            setTimeout(typeNext, 32 + Math.random() * 28);
+          } else {
+            // Done typing — pause, remove cursor, show AI
+            setTimeout(function() {
+              cursor.style.display = 'none';
+              showAI();
+            }, 650);
+          }
+        }
+        typeNext();
+      }, 400);
+
+      function showAI() {
+        // Build food rows
+        var html = DEMO_FOODS.map(function(f) {
+          return '<div class="ai-food-row"><span class="food-name">' + f.name + '</span><span class="food-cal">' + f.cal + '</span></div>';
+        }).join('');
+        // Macro pills
+        html += '<div class="ai-macro-pills">'
+          + '<span class="mpill mpill-cal">'  + DEMO_MACROS.cal  + '</span>'
+          + '<span class="mpill mpill-prot">' + DEMO_MACROS.prot + '</span>'
+          + '<span class="mpill mpill-carb">' + DEMO_MACROS.carb + '</span>'
+          + '<span class="mpill mpill-fat">'  + DEMO_MACROS.fat  + '</span>'
+          + '</div>';
+        aiContent.innerHTML = html;
+
+        aiBubble.style.transition = 'opacity 0.5s ease';
+        aiBubble.style.opacity = '1';
+
+        // Loop after 5.5 seconds
+        setTimeout(function() {
+          aiBubble.style.transition = 'opacity 0.4s ease';
+          userBubble.style.transition = 'opacity 0.4s ease';
+          aiBubble.style.opacity = '0';
+          userBubble.style.opacity = '0';
+          setTimeout(runHeroChat, 500);
+        }, 5500);
+      }
+    }
+
+    // ── Scroll-triggered animations ──
+    function setupScrollAnimations() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          var delay = parseInt(el.getAttribute('data-delay') || '0', 10);
+
+          setTimeout(function() {
+            el.style.animation = 'fadeUp 0.65s ease both';
+            el.style.opacity = '1';
+          }, delay);
+
+          observer.unobserve(el);
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('[data-animate]').forEach(function(el) {
+        el.style.opacity = '0';
+        observer.observe(el);
+      });
+
+      // Privacy card
+      var privacyCard = document.querySelector('[data-animate-card]');
+      if (privacyCard) {
+        var privObs = new IntersectionObserver(function(entries) {
+          if (!entries[0].isIntersecting) return;
+          privacyCard.style.animation = 'fadeUp 0.65s ease both';
+          privacyCard.style.opacity = '1';
+          // Draw shield checkmark
+          setTimeout(function() {
+            var check = document.getElementById('shield-check');
+            if (check) check.classList.add('drawn');
+          }, 400);
+          privObs.disconnect();
+        }, { threshold: 0.15 });
+        privObs.observe(privacyCard);
+      }
+    }
+
+    // ── Step 2 ring animation ──
+    function setupRingAnimation() {
+      var arc   = document.getElementById('step2-ring-arc');
+      var label = document.getElementById('step2-ring-label');
+      if (!arc || !label) return;
+
+      var card = arc.closest('.step-card');
+      if (!card) return;
+
+      var triggered = false;
+      var obs = new IntersectionObserver(function(entries) {
+        if (!entries[0].isIntersecting || triggered) return;
+        triggered = true;
+        obs.disconnect();
+
+        var FULL = 69.1;          // circumference of r=11
+        var TARGET_OFFSET = 10;   // ~86% fill
+        var TARGET_LABEL  = 1847;
+        var DURATION = 1300;
+        var startTime = null;
+
+        function tick(now) {
+          if (!startTime) startTime = now;
+          var elapsed = now - startTime;
+          var pct = Math.min(elapsed / DURATION, 1);
+          // Ease-out cubic
+          var eased = 1 - Math.pow(1 - pct, 3);
+
+          arc.setAttribute('stroke-dashoffset', (FULL - (FULL - TARGET_OFFSET) * eased).toFixed(1));
+
+          var cal = Math.round(TARGET_LABEL * eased);
+          label.textContent = cal > 999 ? (cal / 1000).toFixed(1) + 'k' : cal;
+
+          if (pct < 1) requestAnimationFrame(tick);
+          else label.textContent = '1.8k';
+        }
+        requestAnimationFrame(tick);
+      }, { threshold: 0.3 });
+
+      obs.observe(card);
+    }
+
+    // ── Step 3 bar animation ──
+    function setupBarAnimation() {
+      var bar1 = document.getElementById('bar1');
+      var bar2 = document.getElementById('bar2');
+      var bar3 = document.getElementById('bar3');
+      if (!bar1) return;
+
+      var card = bar1.closest('.step-card');
+      if (!card) return;
+
+      var triggered = false;
+      var obs = new IntersectionObserver(function(entries) {
+        if (!entries[0].isIntersecting || triggered) return;
+        triggered = true;
+        obs.disconnect();
+
+        // Each bar: [element, height, yPos]
+        var bars = [
+          { el: bar1, h: 14, y: 10 },
+          { el: bar2, h: 20, y: 4  },
+          { el: bar3, h: 9,  y: 15 }
+        ];
+
+        bars.forEach(function(b, i) {
+          setTimeout(function() {
+            b.el.setAttribute('height', b.h);
+            b.el.setAttribute('y', b.y);
+            b.el.style.transition = 'none';
+            b.el.style.transform = 'scaleY(0)';
+            b.el.style.transformOrigin = b.el.getAttribute('x') + 'px 24px';
+            // Force reflow
+            b.el.getBoundingClientRect();
+            b.el.style.transition = 'transform 0.7s cubic-bezier(0.34,1.1,0.64,1)';
+            b.el.style.transform = 'scaleY(1)';
+          }, i * 130);
+        });
+      }, { threshold: 0.3 });
+
+      obs.observe(card);
+    }
+
+    // ── Feature macro bar animation ──
+    function setupFeatureBars() {
+      var bars = [
+        document.getElementById('mbar-prot'),
+        document.getElementById('mbar-carb'),
+        document.getElementById('mbar-fat')
+      ].filter(Boolean);
+      if (!bars.length) return;
+
+      var card = bars[0].closest('.feature-card');
+      if (!card) return;
+
+      var triggered = false;
+      var obs = new IntersectionObserver(function(entries) {
+        if (!entries[0].isIntersecting || triggered) return;
+        triggered = true;
+        obs.disconnect();
+
+        bars.forEach(function(bar, i) {
+          setTimeout(function() {
+            bar.classList.add('anim-done');
+          }, i * 120);
+        });
+      }, { threshold: 0.2 });
+
+      obs.observe(card);
+    }
+
+    // ── Init ──
+    document.addEventListener('DOMContentLoaded', function() {
+      setupNavScroll();
+      setupSmoothScroll();
+      setupScrollAnimations();
+      setupRingAnimation();
+      setupBarAnimation();
+      setupFeatureBars();
+      // Small delay so page is painted before typing starts
+      setTimeout(runHeroChat, 600);
+    });
+  </script>
+</body>
+</html>

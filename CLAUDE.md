@@ -266,6 +266,27 @@ New test files go alongside source in `src/**/*.test.ts`.
 - Visible on all routes including `/settings` and `/onboarding`
 - Height: 32px (`h-8`); pages with `pt-12` have enough top padding that content never clips behind it
 
+## Landing Page
+
+The marketing landing page lives at `public/index.html` (pure static HTML/CSS/JS, no framework).
+The React SPA entry point moved from `index.html` to `app.html`.
+
+| URL | File | Note |
+|---|---|---|
+| `/` | `dist/index.html` | Static landing page (copied from `public/index.html` by Vite's publicDir) |
+| `/app` | `dist/app.html` | React SPA (built from root-level `app.html`) |
+| `/app/*` | `dist/app.html` | Cloudflare Pages rewrite via `public/_redirects` |
+
+**Vite build input:** `app: 'app.html'` in `vite.config.ts` → `build.rollupOptions.input`.
+**PWA manifest:** `start_url: '/app'`. Shortcuts: `/app` (Dashboard) and `/app#/chat` (Log Meal).
+
+The landing page is entirely self-contained — inline `<style>` + `<script>`, no external dependencies.
+To edit it, modify `public/index.html` directly. Changes take effect after `npm run build`.
+
+Note: `vite preview` serves from `dist/` but does NOT honour `_redirects` (Cloudflare-only).
+To test the React app locally during development use `npm run dev` (Vite dev server at :5173).
+To test the built output navigate directly to `http://localhost:4173/app.html` in preview mode.
+
 ## Known Decisions / History
 
 - HashRouter over BrowserRouter: Cloudflare Pages serves a single static file, no server routing

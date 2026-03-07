@@ -18,7 +18,7 @@ export default defineConfig({
         background_color: '#18180f',
         display: 'standalone',
         orientation: 'portrait',
-        start_url: '/',
+        start_url: '/app',
         categories: ['health', 'fitness', 'food'],
         icons: [
           {
@@ -45,14 +45,14 @@ export default defineConfig({
             name: 'Log a Meal',
             short_name: 'Log Meal',
             description: 'Open the meal logging chat',
-            url: '/#/chat',
+            url: '/app#/chat',
             icons: [{ src: '/icons/icon-192x192.png', sizes: '192x192' }],
           },
           {
             name: 'Dashboard',
             short_name: 'Today',
             description: "View today's nutrition summary",
-            url: '/',
+            url: '/app',
             icons: [{ src: '/icons/icon-192x192.png', sizes: '192x192' }],
           },
         ],
@@ -71,6 +71,9 @@ export default defineConfig({
   build: {
     target: 'esnext',
     rollupOptions: {
+      input: {
+        app: 'app.html',
+      },
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
