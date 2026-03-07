@@ -1963,7 +1963,8 @@
     }
 
     // ── PWA standalone mode: redirect to app ──
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    // Guard: only redirect when actually on the landing page, not already inside /app
+    if (window.matchMedia('(display-mode: standalone)').matches && !window.location.pathname.startsWith('/app')) {
       window.location.replace('/app');
     }
 
