@@ -2,7 +2,7 @@
 
 ## Overview
 
-Eat Me is a personal nutrition tracking app that runs entirely in your browser as a Progressive Web App (PWA). It uses Google's Gemini AI to parse meal descriptions into structured nutrition data — just describe what you ate and the app calculates calories, protein, fat, and carbs automatically.
+Eat Right is a personal nutrition tracking app that runs entirely in your browser as a Progressive Web App (PWA). It uses Google's Gemini AI to parse meal descriptions into structured nutrition data — just describe what you ate and the app calculates calories, protein, fat, and carbs automatically.
 
 There is no sign-up, no cloud sync, and no subscription. Your data stays on your device.
 

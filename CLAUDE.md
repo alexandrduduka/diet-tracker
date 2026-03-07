@@ -261,7 +261,7 @@ New test files go alongside source in `src/**/*.test.ts`.
 - Injected via standard Clarity snippet in `index.html` (free heatmaps + session recordings)
 
 ## Persistent Logo
-- A fixed `<header>` rendered in `AppShell` (above `<main>`) shows the icon PNG + "Eat Me" wordmark
+- A fixed `<header>` rendered in `AppShell` (above `<main>`) shows the icon PNG + "Eat Right" wordmark
 - `z-50`, `pointer-events-none`, opacity-muted so it never interferes with content
 - Visible on all routes including `/settings` and `/onboarding`
 - Height: 32px (`h-8`); pages with `pt-12` have enough top padding that content never clips behind it
