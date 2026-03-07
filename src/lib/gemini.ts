@@ -4,6 +4,14 @@ import type { FoodItem, AppLanguage, OnboardingProfile } from '../types';
 import { validateAndFixCalories, roundMacros } from './nutrition';
 import { getGeminiLanguageInstruction } from './i18n';
 
+function logTokens(label: string, response: { usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; thoughtsTokenCount?: number; totalTokenCount?: number } }): void {
+  const u = response.usageMetadata;
+  if (!u) return;
+  console.log(
+    `[Gemini] ${label} — in: ${u.promptTokenCount ?? '?'} | thinking: ${u.thoughtsTokenCount ?? 0} | out: ${u.candidatesTokenCount ?? '?'} | total: ${u.totalTokenCount ?? '?'}`
+  );
+}
+
 export interface MealContext {
   goals: { calories: number; protein: number; fat: number; carbs: number };
   consumed: { calories: number; protein: number; fat: number; carbs: number };
@@ -158,6 +166,7 @@ export async function parseMealDescription(userInput: string, lang: AppLanguage 
     };
   }
 
+  logTokens('parseMeal', result.response);
   const rawText = result.response.text().trim();
   let parsed: any;
   try {
@@ -182,6 +191,7 @@ export async function parseMealDescription(userInput: string, lang: AppLanguage 
       const retryResult = await chat.sendMessage(
         'Your previous response was cut off before the JSON was complete. Please output the full, valid JSON object from the beginning — no truncation.'
       );
+      logTokens('parseMeal/retry', retryResult.response);
       const retryText = retryResult.response.text().trim();
       const retryParsed = parseResponseText(retryText);
       return buildResult(retryParsed);
@@ -228,6 +238,7 @@ Lean towards "question" when the message is a question or does not contain food 
 
   try {
     const result = await model.generateContent(userInput);
+    logTokens('classifyIntent', result.response);
     const raw = result.response.text().trim();
     const cleaned = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
     const parsed = JSON.parse(cleaned);
@@ -307,6 +318,7 @@ export async function askNutritionQuestion(
 
   try {
     const result = await model.generateContent(question);
+    logTokens('askQuestion', result.response);
     return result.response.text().trim();
   } catch (err: any) {
     const status = err?.status ?? err?.statusCode ?? err?.httpErrorCode;
@@ -387,6 +399,7 @@ ${langInstruction}`;
       { text: 'Analyse this photo and return the JSON.' },
     ];
     const result = await model.generateContent(parts);
+    logTokens('analyzeBody', result.response);
     const raw = result.response.text().trim();
     const parsed = JSON.parse(raw) as BodyAnalysisResult;
     if (!parsed.notes) parsed.notes = 'Unable to provide an estimate from this image.';
