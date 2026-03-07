@@ -1,3 +1,4 @@
-# Serve the React SPA for /app and all hash-router paths under it
-/app    /app.html    200
-/app/*  /app.html    200
+# /app is served natively by Cloudflare Pages as dist/app/index.html.
+# Only the wildcard is needed for any deep paths under /app (shouldn't
+# occur with a hash router, but kept as a safety net).
+/app/*  /app/index.html    200

@@ -61,7 +61,7 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         // Only use app.html as the navigation fallback for /app paths.
         // This prevents the SW from intercepting / and serving the SPA shell.
-        navigateFallback: '/app.html',
+        navigateFallback: '/app/index.html',
         navigateFallbackAllowlist: [/^\/app/],
         runtimeCaching: [
           {
@@ -76,7 +76,7 @@ export default defineConfig({
     target: 'esnext',
     rollupOptions: {
       input: {
-        app: 'app.html',
+        app: 'app/index.html',
       },
       output: {
         manualChunks: {
