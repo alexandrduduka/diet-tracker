@@ -59,6 +59,10 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Only use app.html as the navigation fallback for /app paths.
+        // This prevents the SW from intercepting / and serving the SPA shell.
+        navigateFallback: '/app.html',
+        navigateFallbackAllowlist: [/^\/app/],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/generativelanguage\.googleapis\.com/,
