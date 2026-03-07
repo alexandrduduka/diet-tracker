@@ -811,6 +811,91 @@
       color: var(--faint);
     }
 
+    /* ── Problem / Stats section ── */
+    .problem-section { padding: 0 0 100px; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 56px;
+    }
+    .stat-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      opacity: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Amber top-border accent */
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 24px; right: 24px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+      border-radius: 0 0 2px 2px;
+    }
+    .stat-number {
+      margin-bottom: 12px;
+    }
+    .stat-count {
+      font-size: clamp(44px, 6vw, 64px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--amber);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-label {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    .stat-source {
+      font-size: 11px;
+      color: var(--faint);
+      font-style: italic;
+    }
+
+    /* Narrative columns */
+    .problem-narrative {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .problem-col {
+      opacity: 0;
+    }
+    .problem-icon-wrap {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: rgba(212,162,76,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .problem-col:last-child .problem-icon-wrap {
+      background: rgba(124,184,122,0.1);
+    }
+    .problem-icon { width: 22px; height: 22px; }
+    .problem-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .problem-body {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
     /* ── Responsive ── */
     @media (max-width: 840px) {
       .hero-inner { grid-template-columns: 1fr; gap: 48px; }
@@ -821,6 +906,8 @@
       .features-grid { grid-template-columns: 1fr; }
       .feature-wide { grid-column: 1; }
       .feature-wide-inner { grid-template-columns: 1fr; gap: 24px; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .problem-narrative { grid-template-columns: 1fr; }
       .privacy-card { grid-template-columns: 1fr; padding: 32px 24px; gap: 32px; }
       .shield-wrap { flex-direction: row; justify-content: flex-start; flex-wrap: wrap; }
       .shield-chips { flex-direction: row; }
@@ -1087,6 +1174,79 @@
           <p class="feature-body">Log weight, waist, and other measurements over time. Spot trends on a chart and get AI body analysis from a photo — all stored locally.</p>
         </div>
 
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Problem / Stats ── -->
+  <section class="problem-section" id="the-problem" aria-label="The nutrition problem">
+    <div class="section-inner">
+      <p class="section-eyebrow">The problem</p>
+      <h2 class="section-title">Most people are trying.<br>Almost none are succeeding.</h2>
+
+      <!-- Big stat numbers -->
+      <div class="stats-grid">
+        <div class="stat-card" data-stat data-delay="0">
+          <div class="stat-number">
+            <span class="stat-count" data-target="45" data-suffix="%">0%</span>
+          </div>
+          <p class="stat-label">of adults worldwide try to lose weight every year</p>
+          <p class="stat-source">CDC &amp; global health surveys</p>
+        </div>
+        <div class="stat-card" data-stat data-delay="120">
+          <div class="stat-number">
+            <span class="stat-count" data-target="90" data-suffix="%">0%</span>
+          </div>
+          <p class="stat-label">of crash diets fail long-term — weight comes back, often with extra</p>
+          <p class="stat-source">Systematic review of weight-loss interventions</p>
+        </div>
+        <div class="stat-card" data-stat data-delay="240">
+          <div class="stat-number">
+            <span class="stat-count" data-target="12" data-suffix="%">0%</span>
+          </div>
+          <p class="stat-label">of people can correctly read and interpret a nutrition label</p>
+          <p class="stat-source">European &amp; Asian nutrition literacy studies</p>
+        </div>
+      </div>
+
+      <!-- Narrative explanation -->
+      <div class="problem-narrative">
+        <div class="problem-col" data-animate data-delay="0">
+          <div class="problem-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 28 28" fill="none" class="problem-icon">
+              <circle cx="14" cy="14" r="12" stroke="#d4a24c" stroke-width="2"/>
+              <line x1="14" y1="8" x2="14" y2="15" stroke="#d4a24c" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="14" cy="19" r="1.5" fill="#d4a24c"/>
+            </svg>
+          </div>
+          <h3 class="problem-title">The information paradox</h3>
+          <p class="problem-body">We live in the most nutrition-informed era in history — and yet only 3–10% of people have genuine, accurate knowledge of how macronutrients work. The rest navigate a sea of myths: "carbs after 6 pm turn to fat," "fat makes you fat," "you need to detox." Most crash diets are built on these exact misconceptions.</p>
+        </div>
+        <div class="problem-col" data-animate data-delay="150">
+          <div class="problem-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 28 28" fill="none" class="problem-icon">
+              <path d="M4 20 Q8 8 14 14 Q20 20 24 8" stroke="#d4a24c" stroke-width="2" stroke-linecap="round" fill="none"/>
+              <circle cx="14" cy="14" r="2.5" fill="#d4a24c"/>
+              <path d="M22 5 L24 8 L21 9" stroke="#d4a24c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <h3 class="problem-title">The yo-yo trap</h3>
+          <p class="problem-body">Up to 30% of dieters turn to extreme restriction — 600–800 kcal days, juice cleanses, skipped meals. Short term the scale moves. Long term: muscle loss, a slower metabolism, spiked cortisol, and the weight returns heavier than before. The cycle repeats every year.</p>
+        </div>
+        <div class="problem-col" data-animate data-delay="300">
+          <div class="problem-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 28 28" fill="none" class="problem-icon">
+              <rect x="4" y="6" width="20" height="16" rx="3" stroke="#7cb87a" stroke-width="2"/>
+              <line x1="9" y1="12" x2="19" y2="12" stroke="#7cb87a" stroke-width="1.8" stroke-linecap="round"/>
+              <line x1="9" y1="16" x2="15" y2="16" stroke="#7cb87a" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="21" cy="7" r="4" fill="#18180f"/>
+              <circle cx="21" cy="7" r="4" stroke="#7cb87a" stroke-width="1.5"/>
+              <polyline points="19,7 21,9 23,5" stroke="#7cb87a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="problem-title">The fix is simpler than you think</h3>
+          <p class="problem-body">Decades of research converge on one finding: awareness of what you actually eat is the single most effective behaviour change for sustainable weight management. You don't need a strict plan — you need honest, effortless tracking. That's exactly what Eat Right is built for.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -1440,6 +1600,51 @@
       obs.observe(card);
     }
 
+    // ── Stat counter animations ──
+    function setupStatCounters() {
+      var cards = document.querySelectorAll('[data-stat]');
+      if (!cards.length) return;
+
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (!entry.isIntersecting) return;
+          var card = entry.target;
+          obs.unobserve(card);
+
+          var delay = parseInt(card.getAttribute('data-delay') || '0', 10);
+          setTimeout(function() {
+            // Animate card entrance
+            card.style.animation = 'fadeUp 0.6s ease both';
+            card.style.opacity = '1';
+
+            // Animate the number counter
+            var el = card.querySelector('.stat-count');
+            if (!el) return;
+            var target  = parseInt(el.getAttribute('data-target') || '0', 10);
+            var suffix  = el.getAttribute('data-suffix') || '';
+            var DURATION = 1400;
+            var startTime = null;
+
+            function tick(now) {
+              if (!startTime) startTime = now;
+              var elapsed = now - startTime;
+              var pct = Math.min(elapsed / DURATION, 1);
+              // Ease-out quart
+              var eased = 1 - Math.pow(1 - pct, 4);
+              el.textContent = Math.round(target * eased) + suffix;
+              if (pct < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+          }, delay);
+        });
+      }, { threshold: 0.25 });
+
+      cards.forEach(function(c) {
+        c.style.opacity = '0';
+        obs.observe(c);
+      });
+    }
+
     // ── Init ──
     document.addEventListener('DOMContentLoaded', function() {
       setupNavScroll();
@@ -1448,6 +1653,7 @@
       setupRingAnimation();
       setupBarAnimation();
       setupFeatureBars();
+      setupStatCounters();
       // Small delay so page is painted before typing starts
       setTimeout(runHeroChat, 600);
     });
